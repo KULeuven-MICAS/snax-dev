@@ -28,7 +28,7 @@ import pytest
 # -----------------------------------
 # Extracting and setting important variables and paths
 # -----------------------------------
-repo_path = os.getenv("SNAX_REPO")
+repo_path = os.getenv("PWD")
 tests_path = repo_path + "/tests/cocotb/"
 
 # -----------------------------------
