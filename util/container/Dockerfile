@@ -25,8 +25,3 @@ ENV PATH="$VERILATOR_ROOT/bin:$PATH"
 WORKDIR /repo
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-
-#---------------------
-# Necessary environment variables
-#---------------------
-ENV SNAX_REPO=/repo
