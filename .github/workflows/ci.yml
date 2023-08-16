@@ -1,0 +1,14 @@
+name: Hello world workflow
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  rtl-test-vlt:
+    name: RTL test using verilator
+    runs-on: ubuntu-22.04
+    container:
+      image: rgantonio/snax-cocotb
+    steps:
+      - uses: actions/checkout@v3
+      - name: Running Pytest
+        run: |
+          pytest -v -o log_cli=True
