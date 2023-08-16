@@ -2,15 +2,6 @@ name: Hello world workflow
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  hello:
-    name: Simple hello world
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: hello world
-        run: echo "Hello world!"
-        shell: bash
-
   rtl-test-vlt:
     name: RTL test using verilator
     runs-on: ubuntu-22.04
