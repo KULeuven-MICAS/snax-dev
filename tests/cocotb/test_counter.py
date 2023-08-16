@@ -6,43 +6,14 @@
 # ---------------------------------
 
 # -----------------------------------
-# Importing useful tools
+# Imports
 # -----------------------------------
 import os
-import random
-import sys
-
-# -----------------------------------
-# Importing cocotb
-# -----------------------------------
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
-
-# -----------------------------------
-# Importing pytest
-# -----------------------------------
 import pytest
-
-# -----------------------------------
-# Extracting and setting important variables and paths
-# -----------------------------------
-repo_path = os.getenv("PWD")
-tests_path = repo_path + "/tests/cocotb/"
-
-# -----------------------------------
-# Top-level definitions
-# -----------------------------------
-# Specify top-level module
-toplevel = 'counter'
-# Specify python test name that contains the @cocotb.test.
-# Usually the name of this test.
-module = "test_counter"
-# Specify what simulator to use (e.g., verilator, modelsim, icarus)
-simulator = "verilator"
-# Specify build directory
-sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)
 
 # -----------------------------------
 # Global parameters for testing
@@ -53,17 +24,6 @@ CHECK_COUNT = 5
 
 # DUT parameters
 COUNTER_WIDTH = 16
-
-# For random seed logging
-RANDOM_SEED = random.randrange(sys.maxsize)
-random.seed(RANDOM_SEED)
-
-# -----------------------------------
-# GMain RTL source
-# -----------------------------------
-counter_source = repo_path + "/rtl/counter.sv"
-rtl_sources = [counter_source]
-
 
 # -----------------------------------
 # Main test bench
@@ -84,8 +44,7 @@ async def counter_dut(dut):
     dut.rst_ni.value = 0
     dut.clr_i.value = 0
 
-    # Wait 2 cycles to reset
-    await RisingEdge(dut.clk_i)
+    # Wait 1 cycle to reset
     await RisingEdge(dut.clk_i)
 
     # Deassert reset
@@ -98,25 +57,36 @@ async def counter_dut(dut):
         assert (i == counter_val), f"ERROR! Output mismatch - \
             Expected output: {i}; Actual output: {counter_val}"
 
-# -----------------------------------
-# Pytest run
-# -----------------------------------
 
-
-# Parametrization
 @pytest.mark.parametrize(
     "parameters", [
         {"COUNTER_WIDTH": str(COUNTER_WIDTH)}
     ]
 )
-# Main test run
-def test_hwpe_stream_merge(parameters):
 
-    global rtl_sources
-    global toplevel
-    global module
-    global simulator
-    global sim_build
+# Main test run
+def test_counter(parameters):
+
+    # Working paths
+    repo_path = os.getcwd()
+    tests_path = repo_path + "/tests/cocotb/"
+
+    # RTL paths
+    counter_source = repo_path + "/rtl/counter.sv"
+    rtl_sources = [counter_source]
+
+    # Specify top-level module
+    toplevel = 'counter'
+    
+    # Specify python test name that contains the @cocotb.test.
+    # Usually the name of this test.
+    module = "test_counter"
+
+    # Specify what simulator to use (e.g., verilator, modelsim, icarus)
+    simulator = "verilator"
+
+    # Specify build directory
+    sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)
 
     run(
         verilog_sources=rtl_sources,
