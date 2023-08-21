@@ -1,9 +1,9 @@
 name: CI - Pyright
 on:
+  pull-request:
   push:
     branches:
       - main
-  pull-request:
 
 jobs:
   pyright:
