@@ -3,7 +3,7 @@
 #--------------------------------------------
 +incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/include
 +incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/register_interface-f4ec7adf92a180e1/include
-+incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/include
++incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/include
 +incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/apb-dd5fd983e8b56cda/include
 +incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/include
 +incdir+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/register_interface-c2acb33430a1b464/include
@@ -16,69 +16,68 @@
 #--------------------------------------------
 # Common components
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/cf_math_pkg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/ecc_pkg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/cb_filter_pkg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/spill_register_flushable.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/spill_register.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/isochronous_spill_register.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/fifo_v3.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_to_mem.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_mux.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_demux.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_arbiter.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_arbiter_flushable.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/rr_arb_tree.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_fifo.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_fifo.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/addr_decode_napot.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/addr_decode.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/lzc.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/popcount.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/delta_counter.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/counter.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/shift_reg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/shift_reg_gated.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_xbar.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/mem_to_banks_detailed.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/mem_to_banks.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_fork.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_intf.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_join.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-02aa01ee4a3b2e52/src/stream_fork_dynamic.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/cf_math_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/ecc_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/cb_filter_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/spill_register_flushable.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/spill_register.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/isochronous_spill_register.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/fifo_v3.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_to_mem.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_mux.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_demux.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_arbiter.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_arbiter_flushable.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/rr_arb_tree.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_fifo.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/addr_decode_napot.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/addr_decode.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/lzc.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/popcount.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/delta_counter.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/counter.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_xbar.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/mem_to_banks_detailed.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/mem_to_banks.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_fork.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_intf.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_join.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/stream_fork_dynamic.sv
 
 #--------------------------------------------
 # Tech cells
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/tech_cells_generic-1282165f7b690985/src/rtl/tc_clk.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/tech_cells_generic-1282165f7b690985/src/deprecated/cluster_clk_cells.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/tech_cells_generic-4d110630f7d586c3/src/rtl/tc_clk.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/tech_cells_generic-4d110630f7d586c3/src/deprecated/cluster_clk_cells.sv
 
 #--------------------------------------------
 # AXI components
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/src/axi_pkg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/src/axi_intf.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/src/axi_demux.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/src/axi_to_mem.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-10c18867bc585e38/src/axi_to_mem_interleaved.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/src/axi_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/src/axi_intf.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/src/axi_demux.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/src/axi_to_mem.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/axi-ce2f2a7fa65f3d1d/src/axi_to_mem_interleaved.sv
 
 #--------------------------------------------
 # Floating point components
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-afcaf014ef5047df/src/fpnew_pkg.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-afcaf014ef5047df/src/fpnew_cast_multi.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-afcaf014ef5047df/src/fpnew_classifier.sv
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-afcaf014ef5047df/src/fpnew_rounding.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-662ead5ecf06e492/src/fpnew_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-662ead5ecf06e492/src/fpnew_cast_multi.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-662ead5ecf06e492/src/fpnew_classifier.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/fpnew-662ead5ecf06e492/src/fpnew_rounding.sv
 
 #--------------------------------------------
 # Register interfaces components
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/register_interface-f4ec7adf92a180e1/src/reg_intf.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/register_interface-c2acb33430a1b464/src/reg_intf.sv
 
 #--------------------------------------------
 # RISCV debug components
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/riscv-dbg-4d2e83f8d49c3adc/src/dm_pkg.sv
+/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/riscv-dbg-57624590bf1fdfd3/src/dm_pkg.sv
 
 #--------------------------------------------
 # Core Snitch Components
@@ -155,12 +154,7 @@
 /users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/snitch_cluster-3ae32fa04e980e55/hw/snitch_cluster/src/snitch_cluster.sv
 
 
-
-
-
 #--------------------------------------------
-# Snax testbenches
+# Testbenches
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/hw/snax_shell/test/tb/tb_snax_shell_wb.sv
-/users/micas/rantonio/no_backup/snax-dev/hw/snax_shell/test/tb/tb_snax_dummy_memory.sv
-/users/micas/rantonio/no_backup/snax-dev/hw/snax_shell/test/tb/tb_snax_wb.sv
+/users/micas/rantonio/no_backup/snax-dev/tests/tb/tb_snitch_cc.sv
