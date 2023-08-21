@@ -46,7 +46,7 @@ module tb_snitch_cc;
     //---------------------------------------------
 
     parameter int unsigned PhysicalAddrWidth        = 48;
-    parameter int unsigned NarrowDataWidth          = 32;
+    parameter int unsigned NarrowDataWidth          = 64;
     parameter int unsigned WideDataWidth            = 512;
     parameter int unsigned WideIdWidthIn            = 1;
     parameter int unsigned WideUserWidth            = 1;
@@ -54,7 +54,7 @@ module tb_snitch_cc;
     parameter int unsigned DMAReqFifoDepth          = 3;
     parameter int unsigned BootAddr                 = 32'h0000_1000;
 
-    parameter int unsigned NumIntOutstandingLoads   = 4; // This controls how many load transactions can be buffered in the Snitch's LSU
+    parameter int unsigned NumIntOutstandingLoads   = 1; // This controls how many load transactions can be buffered in the Snitch's LSU
     parameter int unsigned NumIntOutstandingMem     = 4;
     parameter int unsigned NumFPOutstandingLoads    = 4;
     parameter int unsigned NumFPOutstandingMem      = 4;
@@ -75,34 +75,33 @@ module tb_snitch_cc;
     parameter int unsigned RegisterFPUIn            = 0;
     parameter int unsigned RegisterFPUOut           = 0;
 
-    localparam int unsigned NrBanks                 = 8;    // Default was 32 - but kept small for TCDM port testing purposes
-    localparam int unsigned TCDMDepth               = 64;   // Default was 512 - but kept small for TCDM port testing purposes
+    localparam int unsigned NrBanks                 = 32;    // Default was 32 - but kept small for TCDM port testing purposes
+    localparam int unsigned TCDMDepth               = 512;   // Default was 512 - but kept small for TCDM port testing purposes
     localparam int unsigned TCDMSize                = NrBanks * TCDMDepth * (NarrowDataWidth/8);
     localparam int unsigned TCDMAddrWidth           = $clog2(TCDMSize); //Default was $clog2(TCDMSize) but we can change to 10 bits for now
 
-    localparam int unsigned NrWideMasters  = 1;
     localparam int unsigned WideIdWidthOut =  WideIdWidthIn;
 
 
     //---------------------------------------------
     // For generated modules, a 1'b1 means they exist
     //---------------------------------------------
-    parameter bit RVE         = 1'b0;
-    parameter bit RVF         = 1'b0;
-    parameter bit RVD         = 1'b0;
-    parameter bit XDivSqrt    = 1'b0;
-    parameter bit XF16        = 1'b0;
-    parameter bit XF16ALT     = 1'b0;
-    parameter bit XF8         = 1'b0;
-    parameter bit XF8ALT      = 1'b0;
-    parameter bit XFVEC       = 1'b0;
-    parameter bit XFDOTP      = 1'b0;
-    parameter bit Xdma        = 1'b0;
-    parameter bit IsoCrossing = 1'b0;
-    parameter bit Xfrep       = 1'b0;
-    parameter bit Xssr        = 1'b0;
-    parameter bit Xipu        = 1'b0;
-    parameter bit VMSupport   = 1'b0;
+    parameter int unsigned RVE         = 1'b0;
+    parameter int unsigned RVF         = 1'b0;
+    parameter int unsigned RVD         = 1'b0;
+    parameter int unsigned XDivSqrt    = 1'b0;
+    parameter int unsigned XF16        = 1'b0;
+    parameter int unsigned XF16ALT     = 1'b0;
+    parameter int unsigned XF8         = 1'b0;
+    parameter int unsigned XF8ALT      = 1'b0;
+    parameter int unsigned XFVEC       = 1'b0;
+    parameter int unsigned XFDOTP      = 1'b0;
+    parameter int unsigned Xdma        = 1'b1;
+    parameter int unsigned IsoCrossing = 1'b0;
+    parameter int unsigned Xfrep       = 1'b0;
+    parameter int unsigned Xssr        = 1'b0;
+    parameter int unsigned Xipu        = 1'b0;
+    parameter int unsigned VMSupport   = 1'b0;
 
     //---------------------------------------------
     // Necessary type definitions
@@ -111,7 +110,7 @@ module tb_snitch_cc;
     typedef logic [PhysicalAddrWidth-1:0] addr_t;
     typedef logic [  NarrowDataWidth-1:0] data_t;
     typedef logic [NarrowDataWidth/8-1:0] strb_t;
-    typedef logic [    47:0] tcdm_addr_t; //Watch out for me
+    typedef logic [PhysicalAddrWidth-1:0] tcdm_addr_t; //Watch out for me
     typedef logic [    WideIdWidthIn-1:0] id_dma_mst_t;
     typedef logic [   WideIdWidthOut-1:0] id_dma_slv_t;
     typedef logic [    WideDataWidth-1:0] data_dma_t;
@@ -284,6 +283,80 @@ module tb_snitch_cc;
     //---------------------------------------------
     logic clk_i;
     logic rst_ni;
+    
+
+    //---------------------------------------------
+    // Instruction memory
+    //---------------------------------------------
+    logic [PhysicalAddrWidth-1:0] inst_mem [0:1024];
+    logic [PhysicalAddrWidth-1:0] instruction_addr_offset;
+
+    // Brute force path for now
+		initial begin $readmemh("/users/micas/rantonio/no_backup/snax-dev/tests/mem/inst/addi_only.txt", inst_mem); end
+
+		// Dirty fix to offset the instruction memory since boot starts at 4096
+		always_comb begin
+			instruction_addr_offset = hive_req_o.inst_addr - 48'd4096;
+		end
+
+    assign hive_rsp_i.inst_data  = inst_mem[(instruction_addr_offset >> 2)];
+    assign hive_rsp_i.inst_ready = 1;
+
+    //---------------------------------------------
+    // Data memory
+    //---------------------------------------------
+    logic [NarrowDataWidth-1:0] data_mem [0:255];
+
+    // Brute force path for now
+		initial begin $readmemh("/users/micas/rantonio/no_backup/snax-dev/tests/mem/data/zero_data.txt", data_mem); end
+
+    // This signal is to fake a start-up because starting immediately on a load
+    // Messes up the simulation so we need to have a "fake" start-up
+    logic start_mem;
+    logic [NarrowDataWidth-1:0] data_addr_offset;
+    logic [NarrowDataWidth-1:0] next_data_mem;
+
+    assign data_addr_offset = data_req_o.q.addr >> 3;
+    assign next_data_mem = data_mem[data_addr_offset];
+
+    // Seperate start memory for now
+    always_ff @ (posedge clk_i or negedge rst_ni) begin
+        if(!rst_ni) begin
+            start_mem <= 1'b0;
+        end else begin
+            if(!start_mem) begin
+                start_mem <= 1'b1;
+            end else begin
+                start_mem <= start_mem;
+            end
+        end
+    end
+
+    // Main memory control incorporated in the fake startup
+    always_ff @ (posedge clk_i or negedge rst_ni) begin
+        if(!rst_ni) begin
+            data_rsp_i.p_valid <= 1'b0;
+            data_rsp_i.p.data  <= 64'd0;
+            data_rsp_i.p.error <= 0;
+        end else begin
+            data_rsp_i.p_valid <= (start_mem) ? data_rsp_i.q_ready & data_req_o.q_valid: 1'b0;
+            data_rsp_i.p.data  <= (start_mem) ?  next_data_mem : '0;
+            data_rsp_i.p.error <= 0;
+        end
+    end
+
+    // Synchronized writing of data since this messes up the simulation
+    // Need to accommodate memory multiplexing for this part
+    // Let's assume first that no arbitration is set
+    always @ (posedge clk_i) begin
+
+        if((data_req_o.q.write  & data_req_o.q_valid) & data_rsp_i.q_ready) begin
+            data_mem[data_addr_offset] <= data_req_o.q.data;
+        end
+
+    end
+
+    assign data_rsp_i.q_ready = (start_mem) ? 1'b1 : 1'b0;
 
 
     //---------------------------------------------

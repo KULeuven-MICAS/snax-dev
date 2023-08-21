@@ -18,10 +18,12 @@ import pytest
 
 
 # Reconfigurable parameters
-TEST_COUNT = 10
+CLOCK_CYCLES = 20
 
 @cocotb.test()
-async def shift_reg_dut(dut):
+async def snitch_cc_dut(dut):
+
+    print(dir(dut.i_snitch_cc))
 
     # Initialize clock
     clock = Clock(dut.clk_i, 10, units="ns")
@@ -36,9 +38,19 @@ async def shift_reg_dut(dut):
     # Deassert reset
     dut.rst_ni.value = 1
 
-    for i in range(TEST_COUNT):
+    for i in range(CLOCK_CYCLES):
+
+        # Simple check if instructions are running normally
+        instruction_value = hex(dut.i_snitch_cc.i_snitch.inst_data_i.value)
+        instruction_address = int(dut.instruction_addr_offset.value)
+
+        cocotb.log.info('---------- Instruction Info ----------')
+        cocotb.log.info(f'Instruction Value: {instruction_value}')
+        cocotb.log.info(f'Instruction Addr: {instruction_address}')
 
         await RisingEdge(dut.clk_i)
+
+
 
 
 # Main test run
@@ -51,14 +63,14 @@ async def shift_reg_dut(dut):
     ]
 )
 
-def test_shift_reg(parameters):
+def test_snitch_cc(parameters):
 
     # Working paths
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
 
     # Extract RTL files and include folders from Bender filelist
-    with open("snitch_cluster.f","r") as file:
+    with open("reduced_snitch_cluster.f","r") as file:
         file_list = file.readlines()
 
     include_folders = []
