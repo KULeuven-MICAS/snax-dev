@@ -35,7 +35,6 @@ COUNTER_WIDTH = 16
 
 @cocotb.test()
 async def counter_dut(dut):
-
     # Initialize clock
     clock = Clock(dut.clk_i, 10, units="ns")
     cocotb.start_soon(clock.start())
@@ -53,20 +52,16 @@ async def counter_dut(dut):
     for i in range(CHECK_COUNT):
         await RisingEdge(dut.clk_i)
         counter_val = int(dut.out.value)
-        cocotb.log.info(f'Counter value: {counter_val}')
-        assert (i == counter_val), f"ERROR! Output mismatch - \
+        cocotb.log.info(f"Counter value: {counter_val}")
+        assert (
+            i == counter_val
+        ), f"ERROR! Output mismatch - \
             Expected output: {i}; Actual output: {counter_val}"
 
 
-@pytest.mark.parametrize(
-    "parameters", [
-        {"COUNTER_WIDTH": str(COUNTER_WIDTH)}
-    ]
-)
-
 # Main test run
-def test_counter(parameters):
-
+@pytest.mark.parametrize("parameters", [{"COUNTER_WIDTH": str(COUNTER_WIDTH)}])
+def test_counter(parameters, simulator):
     # Working paths
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
@@ -76,14 +71,11 @@ def test_counter(parameters):
     rtl_sources = [counter_source]
 
     # Specify top-level module
-    toplevel = 'counter'
-    
+    toplevel = "counter"
+
     # Specify python test name that contains the @cocotb.test.
     # Usually the name of this test.
     module = "test_counter"
-
-    # Specify what simulator to use (e.g., verilator, modelsim, icarus)
-    simulator = "verilator"
 
     # Specify build directory
     sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)
@@ -94,5 +86,5 @@ def test_counter(parameters):
         module=module,
         simulator=simulator,
         sim_build=sim_build,
-        parameters=parameters
+        parameters=parameters,
     )
