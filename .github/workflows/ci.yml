@@ -1,5 +1,9 @@
-name: Hello world workflow
-on: [push, pull_request, workflow_dispatch]
+name: Hardware Unit Tests
+on: 
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   rtl-test-vlt:
@@ -12,3 +16,4 @@ jobs:
       - name: Running Pytest
         run: |
           pytest -v -o log_cli=True
+
