@@ -7,24 +7,24 @@ on:
 
 jobs:
   pyright:
+    name: Static python test with Pyright
     runs-on: ubuntu-22.04
-  env:
-    PYRIGHT_VERSION: notset
-
-  steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        cache: 'pip'
-    - run: pip install -r requirements.txt
-    - name: Retrieve pyright version
-      run: |
-        VER=$(sed -n 's/^.*pyright==\s*\(\S*\).*$/\1/p' requirements-optional.txt)
-        echo "PYRIGHT_VERSION=$VER" >> $GITHUB_ENV
-    - name: Pyright
-      uses: jakebailey/pyright-action@v1
-      with:
-        version: ${{env.PYRIGHT_VERSION}}
+    env:
+      PYRIGHT_VERSION: notset
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Retrieve pyright version
+        run: |
+          VER=$(sed -n 's/^.*pyright==\s*\(\S*\).*$/\1/p' requirements-optional.txt)
+          echo "PYRIGHT_VERSION=$VER" >> $GITHUB_ENV
+      - name: Pyright
+        uses: jakebailey/pyright-action@v1
+        with:
+          version: ${{env.PYRIGHT_VERSION}}
 
