@@ -20,11 +20,13 @@ import pytest
     Let's do this manually first
 '''
 
+# Reconfigurable parameters
+DataWidth = 8
+Depth = 0
+TEST_COUNT = 10
+
 @cocotb.test()
 async def shift_reg_dut(dut):
-
-    # Debugging
-    print(dir(dut))
 
     # Initialize clock
     clock = Clock(dut.clk_i, 10, units="ns")
@@ -39,23 +41,40 @@ async def shift_reg_dut(dut):
     # Deassert reset
     dut.rst_ni.value = 1
 
-    for i in range(20):
+    # Getting check list
+    checker = [0]*(Depth + 1)
+    answer = []
 
-        input_val = random.randint(0,1)
+    for i in range(TEST_COUNT):
+
+        input_val = random.randint(0,(2**DataWidth-1))
         dut.d_i.value = input_val
 
-        output_val = int(dut.d_o.value)
+        output_val = dut.d_o.value
+
+        # Workaround so that both Verilator and Modelsim pass
+        if(str(output_val).isnumeric()):
+            output_val = int(output_val)
+        else:
+            output_val = 0
+            
 
         cocotb.log.info(f'Shift reg input: {input_val}')
         cocotb.log.info(f'Shift reg output: {output_val}')
 
+        checker.append(input_val)
+        answer.append(output_val)
+
         await RisingEdge(dut.clk_i)
+
+    assert (checker[0:TEST_COUNT] == answer)
 
 # Main test run
 @pytest.mark.parametrize(
     "parameters", [
         {
-            "Depth": str(1)
+            "DataWidth": str(DataWidth),
+            "Depth": str(Depth)
         }
     ]
 )
@@ -68,13 +87,14 @@ def test_shift_reg(parameters):
 
     # RTL paths
     rtl_sources = ["/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg.sv", \
-                   "/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv"]
+                   "/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv", \
+                   "/users/micas/rantonio/no_backup/snax-dev/tests/tb/tb_shift_reg.sv"]
     
     # Include directories
     include_folders = ['/users/micas/rantonio/no_backup/snax-dev/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/include']
 
     # Specify top-level module
-    toplevel = "shift_reg"
+    toplevel = "tb_shift_reg"
     
     # Specify python test name that contains the @cocotb.test.
     # Usually the name of this test.
