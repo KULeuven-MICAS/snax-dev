@@ -1,3 +1,7 @@
+![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/code-formatting.yml/badge.svg)
+![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/pyright.yml/badge.svg)
+
 #  SNAX - Snitch Accelerator Extension
 
 This is the development repo for the SNAX project. It is a variant of the [Snitch Cluster Platform](https://github.com/pulp-platform/snitch_cluster) where it focuses on heterogenous architectures. 
