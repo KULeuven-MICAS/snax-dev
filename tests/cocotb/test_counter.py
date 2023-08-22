@@ -78,7 +78,7 @@ def test_counter(parameters, simulator):
     module = "test_counter"
 
     # Specify build directory
-    sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)
+    sim_build = tests_path + "/sim_build/{}/".format(toplevel)
 
     run(
         verilog_sources=rtl_sources,

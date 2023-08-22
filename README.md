@@ -22,3 +22,11 @@ To hook the pre-commit hooks into git, use:
 ```bash
 pre-commit install
 ```
+# Bender for Snitch Cluster
+* We use PULP's [Bender](https://github.com/pulp-platform/bender) for file management.
+* To generate a file list (`snax_filelist.f`) for the SNAX shell:
+
+```bash
+bender script flist > snax_filelist.f
+```
+

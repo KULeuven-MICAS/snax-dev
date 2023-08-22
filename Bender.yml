@@ -1,0 +1,14 @@
+# Copyright 2023 KU Leuven
+# Solderpad Hardware License, Version 0.51, see LICENSE for details.
+# SPDX-License-Identifier: SHL-0.51
+
+package:
+  name: snax
+  authors:
+    - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
+    - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
+    - Guilherme Paim <gpaim@esat.kuleuven.be>
+
+dependencies:
+  # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
+  snitch_cluster: { git: "https://github.com/pulp-platform/snitch_cluster", rev: ca5e74453ab08a7e3079aecfdf0547c97c98e247 }
