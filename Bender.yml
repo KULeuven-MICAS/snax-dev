@@ -9,19 +9,5 @@ package:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
 
 dependencies:
-  # TODO: Find stable version, for now this is stable as of Aug 20, 2023
+  # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
   snitch_cluster: { git: https://github.com/pulp-platform/snitch_cluster, rev:  1183399a1f2cdcad326f1f110146a008256c0c98 }
-
-# Use these later...
-# export_include_dirs:
-#   - hw/reqrsp_interface/include
-#   - hw/mem_interface/include
-#   - hw/tcdm_interface/include
-#   - hw/snitch/include
-#   - hw/snitch_ssr/include
-
-sources:
-  # future
-  - files:
-      # Level 0
-      - rtl/counter.sv
