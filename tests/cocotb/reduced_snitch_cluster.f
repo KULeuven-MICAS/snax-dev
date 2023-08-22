@@ -157,4 +157,4 @@
 #--------------------------------------------
 # Testbenches
 #--------------------------------------------
-/users/micas/rantonio/no_backup/snax-dev/tests/tb/tb_snitch_cc.sv
+/users/micas/rantonio/no_backup/snax-dev/tests/tb/tb_snitch_cc_wb.sv

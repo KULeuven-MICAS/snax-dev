@@ -79,7 +79,7 @@ async def shift_reg_dut(dut):
     ]
 )
 
-def test_shift_reg(parameters):
+def test_shift_reg(parameters, simulator):
 
     # Working paths
     repo_path = os.getcwd()
@@ -99,9 +99,6 @@ def test_shift_reg(parameters):
     # Specify python test name that contains the @cocotb.test.
     # Usually the name of this test.
     module = "test_shift_reg"
-
-    # Specify what simulator to use (e.g., verilator, modelsim, icarus)
-    simulator = "verilator"
 
     # Specify build directory
     sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)

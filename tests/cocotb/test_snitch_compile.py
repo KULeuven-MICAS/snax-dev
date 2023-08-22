@@ -23,8 +23,6 @@ CLOCK_CYCLES = 20
 @cocotb.test()
 async def snitch_cc_dut(dut):
 
-    print(dir(dut.i_snitch_cc))
-
     # Initialize clock
     clock = Clock(dut.clk_i, 10, units="ns")
     cocotb.start_soon(clock.start())
@@ -50,9 +48,6 @@ async def snitch_cc_dut(dut):
 
         await RisingEdge(dut.clk_i)
 
-
-
-
 # Main test run
 @pytest.mark.parametrize(
     "parameters", [
@@ -63,14 +58,14 @@ async def snitch_cc_dut(dut):
     ]
 )
 
-def test_snitch_cc(parameters):
+def test_snitch_cc(parameters, simulator):
 
     # Working paths
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
 
     # Extract RTL files and include folders from Bender filelist
-    with open("reduced_snitch_cluster.f","r") as file:
+    with open("/users/micas/rantonio/no_backup/snax-dev/tests/cocotb/reduced_snitch_cluster.f","r") as file:
         file_list = file.readlines()
 
     include_folders = []
@@ -84,40 +79,54 @@ def test_snitch_cc(parameters):
         else:
             rtl_sources.append(item.strip())
 
-    print(include_folders)
+    #print(include_folders)
+
+    for i in rtl_sources:
+        print(i)
 
     # Specify top-level module
-    toplevel = "tb_snitch_cc"
+    toplevel = "tb_snitch_cc_wb"
     
     # Specify python test name that contains the @cocotb.test.
     # Usually the name of this test.
     module = "test_snitch_compile"
 
-    # Specify what simulator to use (e.g., verilator, modelsim, icarus)
-    simulator = "verilator"
-
     # Specify build directory
     sim_build = tests_path + "/test/sim_build/{}/".format(toplevel)
 
-    compile_args = ["-Wno-LITENDIAN",
-                    "-Wno-WIDTH",
-                    "-Wno-CASEINCOMPLETE",
-                    "-Wno-BLKANDNBLK",
-                    "-Wno-CMPCONST",
-                    "-Wno-WIDTHCONCAT",
-                    "-Wno-UNSIGNED",
-                    "-Wno-UNOPTFLAT",
-                    "-Wno-TIMESCALEMOD",
-                    "-Wno-fatal",
-                    "--no-timing"
-                    ]
+    if(simulator=="verilator"):
+        compile_args = [
+                        "-Wno-LITENDIAN",
+                        "-Wno-WIDTH",
+                        "-Wno-CASEINCOMPLETE",
+                        "-Wno-BLKANDNBLK",
+                        "-Wno-CMPCONST",
+                        "-Wno-WIDTHCONCAT",
+                        "-Wno-UNSIGNED",
+                        "-Wno-UNOPTFLAT",
+                        "-Wno-TIMESCALEMOD",
+                        "-Wno-fatal",
+                        "--no-timing"
+                        ]
+        
+        run(
+            verilog_sources=rtl_sources,
+            includes=include_folders,
+            toplevel=toplevel,
+            module=module,
+            simulator=simulator,
+            sim_build=sim_build,
+            compile_args=compile_args,
+        )
+    else:
 
-    run(
-        verilog_sources=rtl_sources,
-        includes=include_folders,
-        toplevel=toplevel,
-        module=module,
-        simulator=simulator,
-        sim_build=sim_build,
-        compile_args=compile_args,
-    )
+        run(
+            verilog_sources=rtl_sources,
+            includes=include_folders,
+            toplevel=toplevel,
+            module=module,
+            simulator=simulator,
+            timescale="1ps",
+        )
+
+    

@@ -38,7 +38,7 @@ import snitch_pma_pkg::*;
 import fpnew_pkg::*;
 import reqrsp_pkg::*;
 
-module tb_snitch_cc;
+module tb_snitch_cc_wb;
 
     //---------------------------------------------
     // Prototype parameters
@@ -273,7 +273,6 @@ module tb_snitch_cc;
     tcdm_req_t [NumSsrs-1:0] tcdm_req_o;
     tcdm_rsp_t [NumSsrs-1:0] tcdm_rsp_i;
 
-
     axi_mst_dma_req_t   axi_dma_req_o;
     axi_mst_dma_resp_t  axi_dma_res_i;
 
@@ -434,9 +433,11 @@ module tb_snitch_cc;
       .data_req_o             ( data_req_o              ),
       .data_rsp_i             ( data_rsp_i              ),
       .tcdm_req_o             ( tcdm_req_o              ),
-      .tcdm_rsp_i             ( tcdm_rsp_i              ),
+      //.tcdm_rsp_i             ( tcdm_rsp_i              ),
+      .tcdm_rsp_i             ( '0                      ),
       .axi_dma_req_o          ( axi_dma_req_o           ),
-      .axi_dma_res_i          ( axi_dma_res_i           ),
+      //.axi_dma_res_i          ( axi_dma_res_i           ),
+      .axi_dma_res_i          ( '0                      ),
       .axi_dma_busy_o         (                         ), // Leave this unused first
       .axi_dma_perf_o         (                         ), // Leave this unused first
       .axi_dma_events_o       (                         ), // Leave this unused first
