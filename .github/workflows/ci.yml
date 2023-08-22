@@ -17,3 +17,14 @@ jobs:
         run: |
           pytest -v -o log_cli=True
 
+  bender-test:
+    name: Bender test
+    runs-on: ubuntu-22.04
+    container:
+      image: rgantonio/snax-cocotb
+    steps:
+      - uses: actions/checkout@v3
+      - name: Bender test
+        run: |
+          bender script flist
+
