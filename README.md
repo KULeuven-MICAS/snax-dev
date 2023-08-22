@@ -1,6 +1,6 @@
-![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/ci.yml/badge.svg)
-![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/code-formatting.yml/badge.svg)
-![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/pyright.yml/badge.svg)
+[![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/ci.yml/badge.svg)](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/ci.yml)
+[![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/code-formatting.yml/badge.svg)](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/code-formatting.yml)
+[![CI](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/pyright.yml/badge.svg)](https://github.com/KULeuven-MICAS/snax-dev/actions/workflows/pyright.yml)
 
 #  SNAX - Snitch Accelerator Extension
 
