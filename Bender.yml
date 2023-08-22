@@ -11,4 +11,4 @@ package:
 
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
-  snitch_cluster: { git: "https://github.com/pulp-platform/snitch_cluster", rev: 1183399a1f2cdcad326f1f110146a008256c0c98 }
+  snitch_cluster: { git: "https://github.com/pulp-platform/snitch_cluster", rev: ca5e74453ab08a7e3079aecfdf0547c97c98e247 }
