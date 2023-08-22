@@ -9,7 +9,6 @@ This is the development repo for the SNAX project. It is a variant of the [Snitc
 ```bash
 pip install -r requirements.txt
 ```
-
 Run tests:
 ```bash
 pytest --simulator=verilator
@@ -17,3 +16,9 @@ pytest --simulator=verilator
 You can set `--simulator` to any of the [cocotb supported simulators](https://docs.cocotb.org/en/stable/simulator_support.html).
 This option is set to `verilator` by default.
 
+# Development
+We provide pre-commit hooks to help formatting python and yaml code.
+To hook the pre-commit hooks into git, use:
+```bash
+pre-commit install
+```
