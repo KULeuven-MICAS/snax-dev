@@ -1,0 +1,21 @@
+name: Lint
+on: 
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  verible-lint:
+    name: Lint Verilog sources
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: chipsalliance/verible-linter-action@main
+      with:
+        paths: |
+          ./rtl
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        fail_on_error: true
+        reviewdog_reporter: github-check
+        verible_version: "v0.0-3318-g8d254167"
