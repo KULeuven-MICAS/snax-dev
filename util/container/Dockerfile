@@ -13,13 +13,9 @@ RUN make test
 ENV PATH="$VERILATOR_ROOT/bin:$PATH"
 
 # Build Rust tools for bender
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH "/root/.cargo/bin:${PATH}"
-RUN rustup install 1.63.0
-RUN rustup override set 1.63.0
-
-# Install Bender
-RUN cargo install bender --version 0.23.2
+WORKDIR /tools/bender/bin
+RUN curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh
+ENV PATH "/tools/bender/bin:${PATH}"
 
 # Install python dependencies
 WORKDIR /repo
