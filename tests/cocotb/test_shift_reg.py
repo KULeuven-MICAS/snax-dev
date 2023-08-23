@@ -8,6 +8,7 @@
 # -----------------------------------
 # Imports
 # -----------------------------------
+import subprocess
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
@@ -82,15 +83,22 @@ async def shift_reg_dut(dut):
 # -----------------------------------
 def test_shift_reg(parameters, simulator):
     # RTL paths
-    # TODO: Change this later. For now this is just a simple test.
+    # Extract paths for benderized files
+    # This way is also seen on github actions
+    common_cells_dir = subprocess.run(
+        ["bender", "path", "common_cells"], stdout=subprocess.PIPE
+    )
+
+    common_cells_dir = common_cells_dir.stdout.decode("utf-8").strip()
+
     rtl_sources = [
-        ".bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg.sv",
-        ".bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv",
+        common_cells_dir + "/src/shift_reg.sv",
+        common_cells_dir + "/src/shift_reg_gated.sv",
         "tests/tb/tb_shift_reg.sv",
     ]
 
     # Include directories
-    include_folders = [".bender/git/checkouts/common_cells-9e51f4fce2109f7f/include"]
+    include_folders = [common_cells_dir + "/include"]
 
     # Specify top-level module
     toplevel = "tb_shift_reg"
