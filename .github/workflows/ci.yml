@@ -13,18 +13,12 @@ jobs:
       image: rgantonio/snax-cocotb
     steps:
       - uses: actions/checkout@v3
+      - name: Pull Snitch cluster files
+        run: |
+          bender script flist
       - name: Running Pytest
         run: |
           pytest -v -o log_cli=True
 
-  bender-test:
-    name: Bender test
-    runs-on: ubuntu-22.04
-    container:
-      image: rgantonio/snax-cocotb
-    steps:
-      - uses: actions/checkout@v3
-      - name: Bender test
-        run: |
-          bender script flist
+  
 
