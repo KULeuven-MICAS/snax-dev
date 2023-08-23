@@ -12,7 +12,7 @@ RUN autoconf && ./configure && make -j `nproc`
 RUN make test
 ENV PATH="$VERILATOR_ROOT/bin:$PATH"
 
-# Build Rust tools for bender
+# Get bender binary
 WORKDIR /tools/bender/bin
 RUN curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh
 ENV PATH "/tools/bender/bin:${PATH}"
