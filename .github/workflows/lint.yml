@@ -8,7 +8,7 @@ on:
 jobs:
   verible-lint:
     name: Lint Verilog sources
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - uses: chipsalliance/verible-linter-action@main
