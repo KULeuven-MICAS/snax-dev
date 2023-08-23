@@ -8,7 +8,6 @@
 # -----------------------------------
 # Imports
 # -----------------------------------
-import subprocess
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
@@ -19,9 +18,9 @@ import pytest
 # -----------------------------------
 # Variables
 # -----------------------------------
-FIFO_DEPTH = 1
-TEST_COUNT = 10
-DATA_WIDTH = 8
+FIFO_DEPTH = 0
+TEST_COUNT = 20
+DATA_WIDTH = 16
 
 
 # -----------------------------------
@@ -60,8 +59,7 @@ async def shift_reg_dut(dut):
             output_val = 0
 
         # Log debug
-        cocotb.log.info(f"Shift reg input: {input_val}")
-        cocotb.log.info(f"Shift reg output: {output_val}")
+        cocotb.log.info(f"Shift reg input: {input_val}; Shift reg output: {output_val}")
 
         # Collect answers and expected outputs
         checker.append(input_val)
@@ -83,27 +81,16 @@ async def shift_reg_dut(dut):
 # Run setup
 # -----------------------------------
 def test_shift_reg(parameters, simulator):
-    # Working paths
-    repo_dir = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"], stdout=subprocess.PIPE
-    )
-    repo_dir = repo_dir.stdout.decode("utf-8").strip()
-    tests_path = repo_dir + "/tests/cocotb/"
-
     # RTL paths
     # TODO: Change this later. For now this is just a simple test.
     rtl_sources = [
-        repo_dir
-        + "/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg.sv",
-        repo_dir
-        + "/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv",
-        repo_dir + "/tests/tb/tb_shift_reg.sv",
+        ".bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg.sv",
+        ".bender/git/checkouts/common_cells-9e51f4fce2109f7f/src/shift_reg_gated.sv",
+        "tests/tb/tb_shift_reg.sv",
     ]
 
     # Include directories
-    include_folders = [
-        repo_dir + "/.bender/git/checkouts/common_cells-9e51f4fce2109f7f/include"
-    ]
+    include_folders = [".bender/git/checkouts/common_cells-9e51f4fce2109f7f/include"]
 
     # Specify top-level module
     toplevel = "tb_shift_reg"
@@ -113,7 +100,7 @@ def test_shift_reg(parameters, simulator):
     module = "test_shift_reg"
 
     # Specify build directory
-    sim_build = tests_path + "/sim_build/{}/".format(toplevel)
+    sim_build = "tests/sim_build/{}/".format(toplevel)
 
     run(
         verilog_sources=rtl_sources,
