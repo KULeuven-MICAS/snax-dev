@@ -1,34 +1,31 @@
 //---------------------------------
 // Copyright 2023 KULeuven
 // Author: Ryan Antonio (ryan.antonio@esat.kuleuven.be)
+//
+// Description:
+//
+// This wrapper is necessary, since cocotb can not resolve user-defined
+// typedefs attached to the DUT directly. 
+//
+// The testbench contains parameters that can be controlled
+// directly from cocotb.
 //---------------------------------
 
 module tb_shift_reg #(
-
-    //---------------------------------
-    // Soft parameters that can change from cocotb pytest
-    //---------------------------------
     parameter int unsigned DataWidth = 8,
     parameter int unsigned Depth     = 1
-
 );
 
     //---------------------------------
-    // Hard parameters that cannot be changed from cocotb pytest
+    // Workaround for cocotb to access the user defined dtype
     //---------------------------------
     localparam type dtype = logic [DataWidth-1:0];
 
-    //---------------------------------
-    // Wires
-    //---------------------------------
     logic clk_i;
     logic rst_ni;
     dtype d_i;
     dtype d_o;
 
-    //---------------------------------
-    // Main DUT
-    //---------------------------------
     shift_reg #(
         .dtype  ( dtype  ),
         .Depth  ( Depth  )
