@@ -224,6 +224,8 @@ module tb_snitch_cc;
     // MEM_TYPEDEF_ALL     - can be found in mem_interface/typedef.svh
     // TCDM_TYPEDEF_ALL    - can be found in tcdm_interface/typedef.svh
     // REG_BUS_TYPEDEF_REQ - can be found in register_interface/typedef.svh
+    //
+    // The source paths for these typedefs are found in .bender/git/checkouts/<respective package>
     //---------------------------------------------
 
     //---------------------------------------------
