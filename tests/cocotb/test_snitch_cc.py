@@ -5,12 +5,12 @@
 # Author: Ryan Antonio (ryan.antonio@esat.kuleuven.be)
 # ---------------------------------
 
-import subprocess
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import pytest
+import snax_util
 
 
 # Testing parameters
@@ -46,30 +46,10 @@ async def snitch_cc_dut(dut):
 def test_snitch_cc(parameters, simulator):
     tests_path = "./tests/cocotb/"
 
-    filelist = subprocess.run(["bender", "script", "verilator"], stdout=subprocess.PIPE)
-
-    filelist = filelist.stdout.decode("utf-8").strip().split("\n")
-
-    include_folders = []
-    rtl_sources = []
-
-    for item in filelist:
-        if item == "":
-            pass
-        elif (
-            item[0] == "#"
-            or item[0] == ""
-            or item[0] == "\n"
-            or item[0:8] == "+define+"
-        ):
-            pass
-        elif item[0:8] == "+incdir+":
-            include_folders.append(item[8:].strip())
-        else:
-            rtl_sources.append(item.strip())
+    includes, defines, verilog_sources = snax_util.extract_bender_filelist()
 
     # Append test bench to rtl list
-    rtl_sources.append("tests/tb/tb_snitch_cc.sv")
+    verilog_sources.append("tests/tb/tb_snitch_cc.sv")
 
     toplevel = "tb_snitch_cc"
 
@@ -97,9 +77,10 @@ def test_snitch_cc(parameters, simulator):
         timescale = "1ns/1ps"
 
     run(
-        verilog_sources=rtl_sources,
-        includes=include_folders,
+        verilog_sources=verilog_sources,
+        includes=includes,
         toplevel=toplevel,
+        defines=defines,
         module=module,
         simulator=simulator,
         sim_build=sim_build,
