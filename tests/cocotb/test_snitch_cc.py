@@ -5,10 +5,6 @@
 # Author: Ryan Antonio (ryan.antonio@esat.kuleuven.be)
 # ---------------------------------
 
-
-# -----------------------------------
-# Imports
-# -----------------------------------
 import subprocess
 import cocotb
 from cocotb.triggers import RisingEdge
@@ -17,26 +13,23 @@ from cocotb_test.simulator import run
 import pytest
 
 
-# Reconfigurable parameters
+# Testing parameters
 CLOCK_CYCLES = 20
 
 
 @cocotb.test()
 async def snitch_cc_dut(dut):
-    # Initialize clock
     clock = Clock(dut.clk_i, 10, units="ns")
     cocotb.start_soon(clock.start())
 
-    # Reset or intial values
     dut.rst_ni.value = 0
 
-    # Wait 1 cycle to reset
     await RisingEdge(dut.clk_i)
 
-    # Deassert reset
     dut.rst_ni.value = 1
 
     for i in range(CLOCK_CYCLES):
+        # TODO: Fix me to be working later
         # Simple check if instructions are running normally
         # instruction_value = hex(dut.i_snitch_cc.i_snitch.inst_data_i.value)
         # instruction_address = int(dut.instruction_addr_offset.value)
@@ -51,9 +44,7 @@ async def snitch_cc_dut(dut):
 # Main test run
 @pytest.mark.parametrize("parameters", [{"AddrWidth": str(48), "DataWidth": str(64)}])
 def test_snitch_cc(parameters, simulator):
-    # Working paths
-    repo_path = "something"
-    tests_path = repo_path + "/tests/cocotb/"
+    tests_path = "./tests/cocotb/"
 
     filelist = subprocess.run(["bender", "script", "verilator"], stdout=subprocess.PIPE)
 
@@ -80,14 +71,10 @@ def test_snitch_cc(parameters, simulator):
     # Append test bench to rtl list
     rtl_sources.append("tests/tb/tb_snitch_cc.sv")
 
-    # Specify top-level module
     toplevel = "tb_snitch_cc"
 
-    # Specify python test name that contains the @cocotb.test.
-    # Usually the name of this test.
     module = "test_snitch_cc"
 
-    # Specify build directory
     sim_build = tests_path + "/sim_build/{}/".format(toplevel)
 
     if simulator == "verilator":
@@ -104,22 +91,18 @@ def test_snitch_cc(parameters, simulator):
             "-Wno-fatal",
             "--no-timing",
         ]
-
-        run(
-            verilog_sources=rtl_sources,
-            includes=include_folders,
-            toplevel=toplevel,
-            module=module,
-            simulator=simulator,
-            sim_build=sim_build,
-            compile_args=compile_args,
-        )
+        timescale = None
     else:
-        run(
-            verilog_sources=rtl_sources,
-            includes=include_folders,
-            toplevel=toplevel,
-            module=module,
-            simulator=simulator,
-            timescale="1ps",
-        )
+        compile_args = None
+        timescale = "1ns/1ps"
+
+    run(
+        verilog_sources=rtl_sources,
+        includes=include_folders,
+        toplevel=toplevel,
+        module=module,
+        simulator=simulator,
+        sim_build=sim_build,
+        compile_args=compile_args,
+        timescale=timescale,
+    )
