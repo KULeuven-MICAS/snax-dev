@@ -38,5 +38,5 @@ def extract_bender_filepath(target_module: str, given_list: List[str]) -> Option
         if target_module in path:
             filepath = path
             return filepath
-        else:
-            return None
+
+    return None
