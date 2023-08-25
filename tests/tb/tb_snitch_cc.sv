@@ -55,7 +55,7 @@ module tb_snitch_cc;
     parameter int unsigned DMAReqFifoDepth          = 3;
     parameter int unsigned BootAddr                 = 32'h0000_1000;
 
-    parameter int unsigned NumIntOutstandingLoads   = 4; // This controls how many load transactions can be buffered in the Snitch's LSU
+    parameter int unsigned NumIntOutstandingLoads   = 4;
     parameter int unsigned NumIntOutstandingMem     = 4;
     parameter int unsigned NumFPOutstandingLoads    = 4;
     parameter int unsigned NumFPOutstandingMem      = 4;
@@ -111,7 +111,7 @@ module tb_snitch_cc;
     typedef logic [PhysicalAddrWidth-1:0] addr_t;
     typedef logic [  NarrowDataWidth-1:0] data_t;
     typedef logic [NarrowDataWidth/8-1:0] strb_t;
-    typedef logic [    47:0] tcdm_addr_t; //Watch out for me
+    typedef logic [PhysicalAddrWidth-1:0] tcdm_addr_t;
     typedef logic [    WideIdWidthIn-1:0] id_dma_mst_t;
     typedef logic [   WideIdWidthOut-1:0] id_dma_slv_t;
     typedef logic [    WideDataWidth-1:0] data_dma_t;
@@ -206,12 +206,12 @@ module tb_snitch_cc;
     };
 
     //---------------------------------------------
-    // VM stuff of snitch
+    // Virtual memory stuff of snitch
     //---------------------------------------------
     snitch_pma_t SnitchPMACfg;
 
     //---------------------------------------------
-    // Keep 0 for now
+    // FPU default
     //---------------------------------------------
     fpu_implementation_t FPUImplementation;
 
@@ -268,7 +268,7 @@ module tb_snitch_cc;
     hive_req_t          hive_req_o;
     hive_rsp_t          hive_rsp_i;
 
-    interrupts_t        irq_i; // You can find interrupts_t from the snitch_pkg
+    interrupts_t        irq_i;
 
     reqrsp_req_t        data_req_o;
     reqrsp_rsp_t        data_rsp_i;
@@ -287,17 +287,15 @@ module tb_snitch_cc;
     logic clk_i;
     logic rst_ni;
 
-
     //---------------------------------------------
     // Main snax shell module
     //---------------------------------------------
-
     snitch_cc #(
       .AddrWidth              ( PhysicalAddrWidth       ), 
       .DataWidth              ( NarrowDataWidth         ),
       .DMADataWidth           ( WideDataWidth           ),
       .DMAIdWidth             ( WideIdWidthIn           ),
-      //.SnitchPMACfg           ( SnitchPMACfg          ), // TODO: Find me later
+      //.SnitchPMACfg           ( SnitchPMACfg          ), // Use core cluster default for virtual memory. Won't be using now.
       .DMAAxiReqFifoDepth     ( DMAAxiReqFifoDepth      ),
       .DMAReqFifoDepth        ( DMAReqFifoDepth         ),
       .dreq_t                 ( reqrsp_req_t            ),
@@ -333,14 +331,14 @@ module tb_snitch_cc;
       .NumIntOutstandingMem   ( NumIntOutstandingMem    ),
       .NumFPOutstandingLoads  ( NumFPOutstandingLoads   ),
       .NumFPOutstandingMem    ( NumFPOutstandingMem     ),
-      //.FPUImplementation      ( FPUImplementation     ), //TODO: Find out about this
+      //.FPUImplementation      ( FPUImplementation     ), // Use core cluster default for FPU implementation. Won't be using now.
       .NumDTLBEntries         ( NumDTLBEntries          ),
       .NumITLBEntries         ( NumITLBEntries          ),
       .NumSequencerInstr      ( NumSequencerInstr       ),
       .NumSsrs                ( NumSsrs                 ),
       .SsrMuxRespDepth        ( SsrMuxRespDepth         ),
-      .SsrCfgs                ( '0                      ), //TODO: Fix me later
-      .SsrRegs                ( '0                      ), //TODO: Fix me later
+      .SsrCfgs                ( '0                      ), // Not using SSRs in this setup
+      .SsrRegs                ( '0                      ), // Not using SSRs in this setup
       .RegisterOffloadReq     ( RegisterOffloadReq      ),
       .RegisterOffloadRsp     ( RegisterOffloadRsp      ),
       .RegisterCoreReq        ( RegisterCoreReq         ),
@@ -352,11 +350,11 @@ module tb_snitch_cc;
       .TCDMAddrWidth          ( TCDMAddrWidth           )
     ) i_snitch_cc (
       .clk_i                  ( clk_i                   ),
-      .clk_d2_i               ( clk_i                   ), // Note: Use same clock
+      .clk_d2_i               ( clk_i                   ), // Use same clock. No clock domain crossings involved.
       .rst_ni                 ( rst_ni                  ),
-      .rst_int_ss_ni          ( 1'b1                    ), // Always available
-      .rst_fp_ss_ni           ( 1'b1                    ), // Always available
-      .hart_id_i              ( '0                      ), // 9-bits hardwired naming
+      .rst_int_ss_ni          ( 1'b1                    ),
+      .rst_fp_ss_ni           ( 1'b1                    ),
+      .hart_id_i              ( '0                      ),
       .hive_req_o             ( hive_req_o              ),
       .hive_rsp_i             ( '0                      ),
       .irq_i                  ( '0                      ),
@@ -366,13 +364,15 @@ module tb_snitch_cc;
       .tcdm_rsp_i             ( '0                      ),
       .axi_dma_req_o          ( axi_dma_req_o           ),
       .axi_dma_res_i          ( '0                      ),
-      .axi_dma_busy_o         (                         ), // Leave this unused first
-      .axi_dma_perf_o         (                         ), // Leave this unused first
-      .axi_dma_events_o       (                         ), // Leave this unused first
-      .core_events_o          (                         ), // Leave this unused first
+      // The next *_o signals are unused for this test because
+      // they are used as performance signals that go into the Snitch cluster
+      // but this test only runs a single core cluster
+      .axi_dma_busy_o         (                         ),
+      .axi_dma_perf_o         (                         ),
+      .axi_dma_events_o       (                         ),
+      .core_events_o          (                         ),
       .tcdm_addr_base_i       ( 48'h0000_0000_1000      )
     );
-
 
 
 // verilog_lint: waive-stop line-length
