@@ -14,7 +14,7 @@ def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
     verilog_sources = []
 
     # For every item in the filelist,
-    # assign them to include direcotires, defines list, and rtl sources
+    # assign them to include directories, defines list, and rtl sources
     # Skip comments and empty spaces
     for item in filelist:
         if item == "":
