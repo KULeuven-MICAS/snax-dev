@@ -1,7 +1,8 @@
 import subprocess
+from typing import List, Tuple
 
 
-def extract_bender_filelist():
+def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
     # Use verilator script because it has the complete and ordered filelist
     # bender script flist has incomplete include directories
     filelist = subprocess.run(["bender", "script", "verilator"], stdout=subprocess.PIPE)
