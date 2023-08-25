@@ -29,15 +29,6 @@ async def snitch_cc_dut(dut):
     dut.rst_ni.value = 1
 
     for i in range(CLOCK_CYCLES):
-        # TODO: Fix me to be working later
-        # Simple check if instructions are running normally
-        # instruction_value = hex(dut.i_snitch_cc.i_snitch.inst_data_i.value)
-        # instruction_address = int(dut.instruction_addr_offset.value)
-
-        # cocotb.log.info('---------- Instruction Info ----------')
-        # cocotb.log.info(f'Instruction Value: {instruction_value}')
-        # cocotb.log.info(f'Instruction Addr: {instruction_address}')
-
         await RisingEdge(dut.clk_i)
 
 
