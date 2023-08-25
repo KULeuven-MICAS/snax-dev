@@ -1,5 +1,5 @@
 import subprocess
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
@@ -31,10 +31,12 @@ def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
     return includes, defines, verilog_sources
 
 
-def extract_bender_filepath(target_module: str, given_list: List[str]) -> str:
+def extract_bender_filepath(target_module: str, given_list: List[str]) -> Optional[str]:
     # Iterate through list and find the target path
     # for a specific target_module
     for path in given_list:
         if target_module in path:
             filepath = path
             return filepath
+        else:
+            return None
