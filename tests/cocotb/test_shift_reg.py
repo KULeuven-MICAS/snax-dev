@@ -74,11 +74,11 @@ def test_shift_reg(parameters, simulator):
 
     # Just get necessary files for shift_reg only
     shift_reg_rtl_src = []
-    shift_reg_rtl_src.append(
-        snax_util.extract_bender_filepath("shift_reg.sv", verilog_sources)
-    )
-    shift_reg_rtl_src.append(
-        snax_util.extract_bender_filepath("shift_reg_gated.sv", verilog_sources)
+    shift_reg_rtl_src.extend(
+        [
+            snax_util.extract_bender_filepath("shift_reg.sv", verilog_sources),
+            snax_util.extract_bender_filepath("shift_reg_gated.sv", verilog_sources),
+        ]
     )
 
     # Append testbench
