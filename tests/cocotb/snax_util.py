@@ -34,9 +34,16 @@ def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
 def extract_bender_filepath(target_module: str, given_list: List[str]) -> Optional[str]:
     # Iterate through list and find the target path
     # for a specific target_module
+    # if there is more than 1 instance, raise an error
+    num_instance = 0
+    valid_path = None
+
     for path in given_list:
         if target_module in path:
-            filepath = path
-            return filepath
+            valid_path = path
+            num_instance += 1
 
-    return None
+    if num_instance > 1:
+        raise Exception("Multiple instances in bender filelist.")
+    else:
+        return valid_path
