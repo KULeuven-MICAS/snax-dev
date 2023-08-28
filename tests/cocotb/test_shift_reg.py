@@ -5,13 +5,13 @@
 # Author: Ryan Antonio (ryan.antonio@esat.kuleuven.be)
 # ---------------------------------
 
-import subprocess
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import random
 import pytest
+import snax_util
 
 # -----------------------------------
 # Variables
@@ -70,19 +70,19 @@ async def shift_reg_dut(dut):
 def test_shift_reg(parameters, simulator):
     # RTL paths
     # Extract paths for benderized files
-    common_cells_dir = subprocess.run(
-        ["bender", "path", "common_cells"], stdout=subprocess.PIPE
+    includes, defines, verilog_sources = snax_util.extract_bender_filelist()
+
+    # Just get necessary files for shift_reg only
+    shift_reg_rtl_src = []
+    shift_reg_rtl_src.extend(
+        [
+            snax_util.extract_bender_filepath("shift_reg.sv", verilog_sources),
+            snax_util.extract_bender_filepath("shift_reg_gated.sv", verilog_sources),
+        ]
     )
 
-    common_cells_dir = common_cells_dir.stdout.decode("utf-8").strip()
-
-    rtl_sources = [
-        common_cells_dir + "/src/shift_reg.sv",
-        common_cells_dir + "/src/shift_reg_gated.sv",
-        "tests/tb/tb_shift_reg.sv",
-    ]
-
-    include_folders = [common_cells_dir + "/include"]
+    # Append testbench
+    shift_reg_rtl_src.append("tests/tb/tb_shift_reg.sv")
 
     toplevel = "tb_shift_reg"
 
@@ -93,8 +93,9 @@ def test_shift_reg(parameters, simulator):
     sim_build = "tests/sim_build/{}/".format(toplevel)
 
     run(
-        verilog_sources=rtl_sources,
-        includes=include_folders,
+        verilog_sources=shift_reg_rtl_src,  # Use shift reg only
+        includes=includes,
+        defines=defines,
         toplevel=toplevel,
         module=module,
         simulator=simulator,
