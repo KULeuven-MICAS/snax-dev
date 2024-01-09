@@ -7,8 +7,14 @@
 `include "mem_interface/typedef.svh"
 `include "tcdm_interface/typedef.svh"
 
+//-----------------------------------
+// Parameter definitions
+//-----------------------------------
+//
+//
+//-----------------------------------
+
 module tcdm_subsys #(
-  parameter int unsigned AddrWidth        = 48,
   parameter int unsigned NarrowDataWidth  = 64,
   parameter int unsigned TCDMDepth        = 512,
   parameter int unsigned NrBanks          = 32,
@@ -22,9 +28,11 @@ module tcdm_subsys #(
   input  logic                                      rst_ni,
   input  logic  [NumInp-1:0]                        tcdm_req_write_i,
   input  logic  [NumInp-1:0][TCDMAddrWidth-1:0]     tcdm_req_addr_i,
-  input  logic  [NumInp-1:0][3:0]                   tcdm_req_amo_i, //Note that this is 4 bits based on reqrsp definition
+  //Note that tcdm_req_amo_i is 4 bits based on reqrsp definition
+  input  logic  [NumInp-1:0][3:0]                   tcdm_req_amo_i,
   input  logic  [NumInp-1:0][NarrowDataWidth-1:0]   tcdm_req_data_i,
-  input  logic  [NumInp-1:0][4:0]                   tcdm_req_user_core_id_i, //Note that this is 5 bits based on Snitch definition
+  //Note that tcdm_req_user_core_id_i is 5 bits based on Snitch definition
+  input  logic  [NumInp-1:0][4:0]                   tcdm_req_user_core_id_i,
   input  bit    [NumInp-1:0]                        tcdm_req_user_is_core_i,
   input  logic  [NumInp-1:0][NarrowDataWidth/8-1:0] tcdm_req_strb_i,
   input  logic  [NumInp-1:0]                        tcdm_req_q_valid_i,
@@ -33,7 +41,6 @@ module tcdm_subsys #(
   output logic  [NumInp-1:0][NarrowDataWidth-1:0]   tcdm_rsp_data_o
 );
 
-  typedef logic [        AddrWidth-1:0] addr_t;
   typedef logic [  NarrowDataWidth-1:0] data_t;
   typedef logic [NarrowDataWidth/8-1:0] strb_t;
   typedef logic [    TCDMAddrWidth-1:0] tcdm_addr_t;
@@ -84,18 +91,19 @@ module tcdm_subsys #(
       // This is necessary due to SV limitations of strict
       // Typedef declarations
       case(tcdm_req_amo_i[i])
-        4'h0: tcdm_req[i].q.amo = reqrsp_pkg::AMONone;
-        4'h1: tcdm_req[i].q.amo = reqrsp_pkg::AMOSwap;
-        4'h2: tcdm_req[i].q.amo = reqrsp_pkg::AMOAdd;
-        4'h3: tcdm_req[i].q.amo = reqrsp_pkg::AMOAnd;
-        4'h4: tcdm_req[i].q.amo = reqrsp_pkg::AMOOr;
-        4'h5: tcdm_req[i].q.amo = reqrsp_pkg::AMOXor;
-        4'h6: tcdm_req[i].q.amo = reqrsp_pkg::AMOMax;
-        4'h7: tcdm_req[i].q.amo = reqrsp_pkg::AMOMaxu;
-        4'h8: tcdm_req[i].q.amo = reqrsp_pkg::AMOMin;
-        4'h9: tcdm_req[i].q.amo = reqrsp_pkg::AMOMinu;
-        4'hA: tcdm_req[i].q.amo = reqrsp_pkg::AMOLR;
-        4'hB: tcdm_req[i].q.amo = reqrsp_pkg::AMOSC;
+        4'h0:    tcdm_req[i].q.amo = reqrsp_pkg::AMONone;
+        4'h1:    tcdm_req[i].q.amo = reqrsp_pkg::AMOSwap;
+        4'h2:    tcdm_req[i].q.amo = reqrsp_pkg::AMOAdd;
+        4'h3:    tcdm_req[i].q.amo = reqrsp_pkg::AMOAnd;
+        4'h4:    tcdm_req[i].q.amo = reqrsp_pkg::AMOOr;
+        4'h5:    tcdm_req[i].q.amo = reqrsp_pkg::AMOXor;
+        4'h6:    tcdm_req[i].q.amo = reqrsp_pkg::AMOMax;
+        4'h7:    tcdm_req[i].q.amo = reqrsp_pkg::AMOMaxu;
+        4'h8:    tcdm_req[i].q.amo = reqrsp_pkg::AMOMin;
+        4'h9:    tcdm_req[i].q.amo = reqrsp_pkg::AMOMinu;
+        4'hA:    tcdm_req[i].q.amo = reqrsp_pkg::AMOLR;
+        4'hB:    tcdm_req[i].q.amo = reqrsp_pkg::AMOSC;
+        default: tcdm_req[i].q.amo = reqrsp_pkg::AMONone;
       endcase
 
       // Response (outgoing) remapping
@@ -126,7 +134,7 @@ module tcdm_subsys #(
     .rsp_o                 ( tcdm_rsp                            ),
     .mem_req_o             ( mem_req                             ),
     .mem_rsp_i             ( mem_rsp                             )
-  );        
+  );
 
   // Generate multi-bank memories
   // Number of banks matches number of memories
@@ -200,6 +208,5 @@ module tcdm_subsys #(
       .d_o    ( mem_rsp[i].p.data )
     );
   end
-  
 
 endmodule
