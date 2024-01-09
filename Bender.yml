@@ -8,6 +8,7 @@ package:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
     - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
     - Guilherme Paim <gpaim@esat.kuleuven.be>
+    - Xiaoling Yi <xyi@esat.kuleuven.be>
 
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
