@@ -47,3 +47,12 @@ def extract_bender_filepath(target_module: str, given_list: List[str]) -> Option
         raise Exception("Multiple instances in bender filelist.")
     else:
         return valid_path
+
+
+def extract_src_path(target_src: str) -> str:
+    # This extracts the bender file path to
+    # a specified package
+    src_path = subprocess.run(["bender", "path", target_src], stdout=subprocess.PIPE)
+    src_path = src_path.stdout.decode("utf-8").strip().split("\n")[0]
+
+    return src_path
