@@ -3,7 +3,7 @@
 # Solderpad Hardware License, Version 0.51, see LICENSE for details.
 # SPDX-License-Identifier: SHL-0.51
 # Author: Ryan Antonio (ryan.antonio@esat.kuleuven.be)
-# 
+#
 # Description:
 # This tests the basic read and write funtcionality for each
 # input port and checks if we can read/write data into the TCDM
@@ -13,6 +13,7 @@ import cocotb
 from cocotb.triggers import RisingEdge, Timer
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
+from decimal import Decimal
 import pytest
 import snax_util
 
@@ -26,10 +27,11 @@ NUM_INPUT = 2
 NUM_OUTPUT = NR_BANKS
 MIN_VAL = 0
 MAX_VAL = 2**64
-BANK_INCREMENT = NARROW_DATA_WIDTH/8
+BANK_INCREMENT = NARROW_DATA_WIDTH / 8
 
 # Configurable testing parameters
 NUM_TESTS = 5
+
 
 @cocotb.test()
 async def tcdm_subsys_dut(dut):
@@ -52,30 +54,30 @@ async def tcdm_subsys_dut(dut):
         dut.tcdm_req_q_valid_i[i].value = 0
 
     await RisingEdge(dut.clk_i)
-    await Timer(1, units="ns")
+    await Timer(Decimal(1), units="ns")
 
     # Release reset
     dut.rst_ni.value = 1
 
     await RisingEdge(dut.clk_i)
-    await Timer(1, units="ns")
+    await Timer(Decimal(1), units="ns")
 
     # Begin test
     for i in range(NUM_INPUT):
-        golden_list = snax_util.gen_rand_int_list(NUM_TESTS,MIN_VAL,MAX_VAL)
+        golden_list = snax_util.gen_rand_int_list(NUM_TESTS, MIN_VAL, MAX_VAL)
 
         # Cycle through values that change
         # Per item or element
         # Explicitly write the control signals
         for j in range(len(golden_list)):
-            dut.tcdm_req_addr_i[i].value = int(j*BANK_INCREMENT)
+            dut.tcdm_req_addr_i[i].value = int(j * BANK_INCREMENT)
             dut.tcdm_req_data_i[i].value = golden_list[j]
-            dut.tcdm_req_strb_i[i].value = 0xff
+            dut.tcdm_req_strb_i[i].value = 0xFF
             dut.tcdm_req_write_i[i].value = 1
             dut.tcdm_req_q_valid_i[i].value = 1
             await RisingEdge(dut.clk_i)
-            await Timer(1, units="ns")
-        
+            await Timer(Decimal(1), units="ns")
+
         # Clear default inputs for reading
         dut.tcdm_req_addr_i[i].value = 0
         dut.tcdm_req_data_i[i].value = 0
@@ -83,25 +85,25 @@ async def tcdm_subsys_dut(dut):
         dut.tcdm_req_write_i[i].value = 0
         dut.tcdm_req_q_valid_i[i].value = 0
         await RisingEdge(dut.clk_i)
-        await Timer(1, units="ns")
+        await Timer(Decimal(1), units="ns")
 
         # Cycle through reads
         # And check immediately if result is correct
         for j in range(len(golden_list)):
-            dut.tcdm_req_addr_i[i].value = int(j*BANK_INCREMENT)
+            dut.tcdm_req_addr_i[i].value = int(j * BANK_INCREMENT)
             dut.tcdm_req_data_i[i].value = 0
             dut.tcdm_req_strb_i[i].value = 0
             dut.tcdm_req_write_i[i].value = 0
             dut.tcdm_req_q_valid_i[i].value = 1
             await RisingEdge(dut.clk_i)
-            await Timer(1, units="ns")
-            
+            await Timer(Decimal(1), units="ns")
+
             # Check for results
             check_val = int(dut.tcdm_rsp_data_o[i].value)
             cocotb.log.info(f"Port {i} Actual output: {check_val}")
             cocotb.log.info(f"Golden output: {golden_list[j]}")
-            assert(check_val == golden_list[j])
-        
+            assert check_val == golden_list[j]
+
         # Clear default inputs for reading
         dut.tcdm_req_addr_i[i].value = 0
         dut.tcdm_req_data_i[i].value = 0
@@ -109,7 +111,7 @@ async def tcdm_subsys_dut(dut):
         dut.tcdm_req_write_i[i].value = 0
         dut.tcdm_req_q_valid_i[i].value = 0
         await RisingEdge(dut.clk_i)
-        await Timer(1, units="ns")
+        await Timer(Decimal(1), units="ns")
 
 
 # Main test run
