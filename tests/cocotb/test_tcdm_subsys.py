@@ -32,7 +32,8 @@ BANK_INCREMENT = NARROW_DATA_WIDTH / 8
 # Configurable testing parameters
 # In the default value below, the number
 # of tests fills the entire memory
-NUM_TESTS = TCDM_DEPTH*NR_BANKS
+NUM_TESTS = TCDM_DEPTH * NR_BANKS
+
 
 @cocotb.test()
 async def tcdm_subsys_dut(dut):
