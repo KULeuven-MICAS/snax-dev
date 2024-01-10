@@ -1,8 +1,11 @@
+# Import packages
 import subprocess
 import os
+import random
 from typing import List, Tuple, Optional
 
 
+# This extracts all benderized files
 def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
     # Use verilator script because it has the complete and ordered filelist
     # bender script flist has incomplete include directories
@@ -32,6 +35,8 @@ def extract_bender_filelist() -> Tuple[List[str], List[str], List[str]]:
     return includes, defines, verilog_sources
 
 
+# This extracts only a specific subset of modules from
+# The benderized filelist
 def extract_bender_filepath(target_module: str, given_list: List[str]) -> Optional[str]:
     # Iterate through list and find the target path
     # for a specific target_module
@@ -50,15 +55,17 @@ def extract_bender_filepath(target_module: str, given_list: List[str]) -> Option
         return valid_path
 
 
+# This extracts the bender file path to
+# a specified package
 def extract_src_path(target_src: str) -> str:
-    # This extracts the bender file path to
-    # a specified package
     src_path = subprocess.run(["bender", "path", target_src], stdout=subprocess.PIPE)
     src_path = src_path.stdout.decode("utf-8").strip().split("\n")[0]
 
     return src_path
 
 
+# This lists all necessary files for the
+# TCDM subsystem
 def extract_tcdm_list() -> Tuple[List[str], List[str]]:
     # Extract bender path names
     common_cells_path = extract_src_path("common_cells")
@@ -131,3 +138,14 @@ def extract_tcdm_list() -> Tuple[List[str], List[str]]:
     )
 
     return include_list, verilog_list
+
+
+# This generates a random list of integers
+# Input is list length, the minimum value and max value
+def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
+    uint_list = []
+
+    for i in range(list_len):
+        uint_list.append(random.randint(min_val, max_val))
+
+    return uint_list
