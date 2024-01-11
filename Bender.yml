@@ -8,7 +8,8 @@ package:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
     - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
     - Guilherme Paim <gpaim@esat.kuleuven.be>
+    - Xiaoling Yi <xyi@esat.kuleuven.be>
 
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
-  snitch_cluster: { git: "https://github.com/pulp-platform/snitch_cluster", rev: ca5e74453ab08a7e3079aecfdf0547c97c98e247 }
+  snitch_cluster: { git: "https://github.com/KULeuven-MICAS/snitch_cluster", rev: 1da938ddfdc60d3409cbac69db0cc7d05700e013 }
