@@ -10,8 +10,15 @@
 //-----------------------------------
 // Parameter definitions
 //-----------------------------------
-//
-//
+// NarrowDataWidth - data width
+// TCDMDepth - number of elements per bank
+// NrBanks - number of banks
+// TCDMMemAddrWidth - address width of a single bank
+// TCDMSize - total size of TCDM memory
+// TCDMAddrWidth - total address width of memory
+// NumInp - number of requesters (core or accelerator)
+// NumOut - number of ports connected to memory
+//        - this one should actually be equal to NrBanks
 //-----------------------------------
 
 module tcdm_subsys #(
