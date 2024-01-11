@@ -49,7 +49,7 @@ async def tcdm_subsys_dut(dut):
     # modifications done in the /tb/tb_tcdm_subsys.sv
     # where the hard remappings were
     # included so that cocotb can see the signals
-    # regardless of simulator 
+    # regardless of simulator
     for i in range(NUM_INPUT):
         dut.tcdm_req_write_i[i].value = 0
         dut.tcdm_req_addr_i[i].value = 0
