@@ -26,7 +26,7 @@ NUM_INPUT = 2
 # Optinally configurable parameters
 NUM_OUTPUT = NR_BANKS
 MIN_VAL = 0
-MAX_VAL = 2**64
+MAX_VAL = 2**NARROW_DATA_WIDTH
 BANK_INCREMENT = NARROW_DATA_WIDTH / 8
 
 # Configurable testing parameters
@@ -45,6 +45,11 @@ async def tcdm_subsys_dut(dut):
     # Verilator assumes 0, no don't care states
     dut.rst_ni.value = 0
 
+    # These mappings are made easier due to the
+    # modifications done in the /tb/tb_tcdm_subsys.sv
+    # where the hard remappings were
+    # included so that cocotb can see the signals
+    # regardless of simulator 
     for i in range(NUM_INPUT):
         dut.tcdm_req_write_i[i].value = 0
         dut.tcdm_req_addr_i[i].value = 0
