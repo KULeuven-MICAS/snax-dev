@@ -5,8 +5,9 @@ from typing import Union, List, Dict
 import hjson
 import argparse
 
+
 # Extract json file
-def get_config (cfg_path: str):
+def get_config(cfg_path: str):
     with open(cfg_path, "r") as jsonf:
         srcfull = jsonf.read()
 
@@ -15,25 +16,39 @@ def get_config (cfg_path: str):
     cfg = JsonRef.replace_refs(cfg)
     return cfg
 
+
 # Read template
-def get_template (tpl_path: str) -> Template:
+def get_template(tpl_path: str) -> Template:
     tpl_list = TemplateLookup(directories=["."], output_encoding="utf-8")
     tpl = tpl_list.get_template(tpl_path)
     return tpl
 
+
 # Generate file
-def gen_file (cfg, tpl, target_path: str) -> None:
+def gen_file(cfg, tpl, target_path: str) -> None:
     with open(target_path, "w") as f:
         f.write(str(tpl.render_unicode(cfg=cfg)))
     return
 
+
 # Main function run and parsing
 def main():
     # Parse all arguments
-    parser = argparse.ArgumentParser(description='Wrapper generator for any file. Inputs are simply the template and configuration files.')
-    parser.add_argument('--cfg_path', type=str, default='./', help='Points to the configuration file path')
-    parser.add_argument('--tpl_path', type=str, default='./', help='Points to the template file path')
-    parser.add_argument('--out_path', type=str, default='./', help='Points to the output directory')
+    parser = argparse.ArgumentParser(
+        description="Wrapper generator for any file. Inputs are simply the template and configuration files."
+    )
+    parser.add_argument(
+        "--cfg_path",
+        type=str,
+        default="./",
+        help="Points to the configuration file path",
+    )
+    parser.add_argument(
+        "--tpl_path", type=str, default="./", help="Points to the template file path"
+    )
+    parser.add_argument(
+        "--out_path", type=str, default="./", help="Points to the output directory"
+    )
 
     # Get the list of parsing
     args = parser.parse_args()
@@ -42,6 +57,7 @@ def main():
     cfg = get_config(args.cfg_path)
     tpl = get_template(args.tpl_path)
     gen_file(cfg=cfg, tpl=tpl, target_path=args.out_path)
+
 
 if __name__ == "__main__":
     main()
