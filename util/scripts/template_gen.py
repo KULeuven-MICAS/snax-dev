@@ -1,7 +1,6 @@
 from mako.lookup import TemplateLookup
 from mako.template import Template
 from jsonref import JsonRef
-from typing import Union, List, Dict
 import hjson
 import argparse
 
@@ -35,7 +34,8 @@ def gen_file(cfg, tpl, target_path: str) -> None:
 def main():
     # Parse all arguments
     parser = argparse.ArgumentParser(
-        description="Wrapper generator for any file. Inputs are simply the template and configuration files."
+        description="Wrapper generator for any file. \
+            Inputs are simply the template and configuration files."
     )
     parser.add_argument(
         "--cfg_path",
