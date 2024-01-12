@@ -1,0 +1,34 @@
+// Streamer configuration file
+{
+    // These handle the fifo data width
+    // and fifo data depth
+    fifoWidthReader: [64,64,64],
+    fifoDepthReader: [2, 2, 2],
+    fifoWidthWriter: [64],
+    fifoDepthWriter: [2],
+
+    // TCDM port handling
+    dataReaderNum: 3,
+    dataWriterNum: 1,
+    dataReaderTcdmPorts: [1,1,1],
+    dataWriterTcdmPorts: [1],
+    readElementWidth: [32, 32, 32],
+    writeElementWidth: [32],
+
+    // TCDM data and address bit widths
+    tcdmDataWidth: 64,
+    addrWidth: 48,
+    tcdmDepth: 256,
+    numBanks: 8,
+    numInputs: 2,
+    numOutputs: 4
+
+    // Unrolling factors
+    unrollingFactorReader: [[2],[2],[2]],
+    unrollingFactorWriter: [[2]],
+    temporalLoopDim: 1,
+    temporalLoopBoundWidth: 8,
+
+    // Stationarity
+    stationarity: [0,0,1,1]
+}
