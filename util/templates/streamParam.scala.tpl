@@ -18,8 +18,8 @@ import chisel3.util._
   * each data reader, useful for generating unrolling addresses
   * writeElementWidth - single data element width for each data writer, useful
   * for generating unrolling addresses tcdmDataWidth - data width for each TCDm
-  * port unrollingFactorReader - spatial unrolling factors (your parfor) for
-  * each data reader unrollingFactorWriter - spatial unrolling factors (your
+  * port spatialBoundsReader - spatial unrolling factors (your parfor) for
+  * each data reader spatialBoundsWriter - spatial unrolling factors (your
   * parfor) for each data writer temporalLoopDim - the dimension of the temporal
   * loop temporalLoopBoundWidth - the register width for storing the temporal
   * loop bound addrWidth - the address width stationarity - accelerator
@@ -27,60 +27,76 @@ import chisel3.util._
   */
 
 // Streamer parameters
-object StreamerParameters {
-  def fifoWidthReader = Seq(${list_elem('fifoWidthWriter')})
-  def fifoDepthReader = Seq(${list_elem('fifoWidthReader')})
-
-  def fifoWidthWriter = ${list_elem('fifoWidthWriter')}
-  def fifoDepthWriter = ${list_elem('fifoDepthWriter')}
-
-  def dataReaderNum = ${cfg["dataReaderNum"]}
-  def dataWriterNum = ${cfg["dataWriterNum"]}
-  def dataReaderTcdmPorts = Seq(${list_elem('dataReaderTcdmPorts')})
-  def dataWriterTcdmPorts = Seq(${list_elem('dataWriterTcdmPorts')})
-  def readElementWidth = Seq(${list_elem('readElementWidth')})
-  def writeElementWidth = Seq(${list_elem('writeElementWidth')})
-
-  def tcdmDataWidth = ${cfg["tcdmDataWidth"]}
-
-  def unrollingFactorReader = Seq(\
-% for c in cfg["unrollingFactorReader"]:
-Seq(\
-  % for d in c:
-${d}${', ' if not loop.last else ''}\
-  % endfor
-)${', ' if not loop.last else ''}\
+object StreamerParams extends CommonParams {
+  def temporalAddrGenUnitParams: TemporalAddrGenUnitParams =
+    TemporalAddrGenUnitParams(
+      loopDim = ${cfg["temporalAddrGenUnitParams"]["loopDim"]},
+      loopBoundWidth = ${cfg["temporalAddrGenUnitParams"]["loopBoundWidth"]},
+      addrWidth = ${cfg["temporalAddrGenUnitParams"]["addrWidth"]}
+    )
+  def fifoReaderParams: Seq[FIFOParams] = Seq(
+% for idx in range(0,len(cfg["fifoReaderParams"]["fifoWidth"])):
+    FIFOParams(\
+${cfg["fifoReaderParams"]["fifoWidth"][idx]},\
+${cfg["fifoReaderParams"]["fifoDepth"][idx]})\
+${', ' if not loop.last else ''}
 % endfor
-)
-  def unrollingFactorWriter = Seq(\
-% for c in cfg["unrollingFactorWriter"]:
-Seq(\
-  % for d in c:
-${d}${', ' if not loop.last else ''}\
-  % endfor
-)${', ' if not loop.last else ''}\
+  )
+  def fifoWriterParams: Seq[FIFOParams] = Seq(
+% for idx in range(0,len(cfg["fifoWriterParams"]["fifoWidth"])):
+    FIFOParams(\
+${cfg["fifoWriterParams"]["fifoWidth"][idx]},\
+${cfg["fifoWriterParams"]["fifoDepth"][idx]})\
+${', ' if not loop.last else ''}
 % endfor
-)
-
-  def temporalLoopDim = ${cfg["temporalLoopDim"]}
-  def temporalLoopBoundWidth = ${cfg["temporalLoopBoundWidth"]}
-
-  def addrWidth = ${cfg["addrWidth"]}
-
+  )
+  def dataReaderParams: Seq[DataMoverParams] = Seq(
+% for idx in range(0,len(cfg["dataReaderParams"]["tcdmPortsNum"])):
+    DataMoverParams(
+      tcdmPortsNum = ${cfg["dataReaderParams"]["tcdmPortsNum"][idx]},
+      spatialBounds = Seq(\
+  % for c in cfg["dataReaderParams"]["spatialBounds"][idx]:
+${c}${', ' if not loop.last else ''}\
+  % endfor
+),
+      spatialDim = ${cfg["dataReaderParams"]["spatialDim"][idx]},
+      elementWidth = ${cfg["dataReaderParams"]["elementWidth"][idx]},
+      fifoWidth = fifoReaderParams(${idx}).width
+    )${', ' if not loop.last else ''}
+% endfor
+  )
+  def dataWriterParams: Seq[DataMoverParams] = Seq(
+ % for idx in range(0,len(cfg["dataWriterParams"]["tcdmPortsNum"])):
+    DataMoverParams(
+      tcdmPortsNum = ${cfg["dataWriterParams"]["tcdmPortsNum"][idx]},
+      spatialBounds = Seq(\
+  % for c in cfg["dataWriterParams"]["spatialBounds"][idx]:
+${c}${', ' if not loop.last else ''}\
+  % endfor
+),
+      spatialDim = ${cfg["dataWriterParams"]["spatialDim"][idx]},
+      elementWidth = ${cfg["dataWriterParams"]["elementWidth"][idx]},
+      fifoWidth = fifoWriterParams(${idx}).width
+    )${', ' if not loop.last else ''}
+% endfor
+  )
   def stationarity = Seq(${list_elem('stationarity')})
+}
 
-  // inferenced parameters
-  def dataMoverNum = dataReaderNum + dataWriterNum
-  def tcdmPortsNum = dataReaderTcdmPorts.sum + dataWriterTcdmPorts.sum
-  def unrollingDimReader = (0 until unrollingFactorReader.length).map(i =>
-    unrollingFactorReader(i).length
-  )
-  def unrollingDimWriter = (0 until unrollingFactorWriter.length).map(i =>
-    unrollingFactorWriter(i).length
-  )
-  def unrollingDim: Seq[Int] = (0 until unrollingFactorReader.length).map(i =>
-    unrollingFactorReader(i).length
-  ) ++ (0 until unrollingFactorWriter.length).map(i =>
-    unrollingFactorWriter(i).length
+object Streamer extends App {
+  emitVerilog(
+    new Streamer(
+      StreamerParams(
+        temporalAddrGenUnitParams =
+          StreamerParameters .temporalAddrGenUnitParams,
+        fifoReaderParams = StreamerParameters .fifoReaderParams,
+        fifoWriterParams = StreamerParameters .fifoWriterParams,
+        stationarity = PostProcessingStreamerParameters.stationarity,
+        dataReaderParams = StreamerParameters .dataReaderParams,
+        dataWriterParams = StreamerParameters .dataWriterParams
+)
+    ),
+    Array("--target-dir", "generated/streamer")
   )
 }
+ 
