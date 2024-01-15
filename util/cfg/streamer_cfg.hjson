@@ -2,18 +2,41 @@
 {
     // These handle the fifo data width
     // and fifo data depth
-    fifoWidthReader: [64,64,64],
-    fifoDepthReader: [2, 2, 2],
-    fifoWidthWriter: [64],
-    fifoDepthWriter: [2],
+    temporalAddrGenUnitParams: {
+      loopDim: 1,
+      loopBoundWidth: 8,
+      addrWidth: 15
+    }
 
-    // TCDM port handling
-    dataReaderNum: 3,
-    dataWriterNum: 1,
-    dataReaderTcdmPorts: [1,1,1],
-    dataWriterTcdmPorts: [1],
-    readElementWidth: [32, 32, 32],
-    writeElementWidth: [32],
+    fifoReaderParams: {
+      fifoWidth: [256,256,256],
+      fifoDepth: [2, 2, 2],
+    }
+
+    fifoWriterParams: {
+      fifoWidth: [64],
+      fifoDepth: [2],
+    }
+
+    dataReaderParams:{
+      tcdmPortsNum: [4,4,1],
+      spatialBounds: [[8],[8],[8]],
+      unrollingDim: [2,2,2],
+      spatialDim: [1,1,1],
+      elementWidth: [32,32,32],
+      fifoWidth: [64,64,64]
+    }
+
+    dataWriterParams:{
+      tcdmPortsNum: [1],
+      spatialBounds: [[2]],
+      spatialDim: [1],
+      elementWidth: [32],
+      fifoWidth: [64]
+    }
+
+    // Stationarity
+    stationarity: [0,0,1,1]
 
     // TCDM data and address bit widths
     tcdmDataWidth: 64,
@@ -22,13 +45,4 @@
     numBanks: 8,
     numInputs: 2,
     numOutputs: 4
-
-    // Unrolling factors
-    unrollingFactorReader: [[2],[2],[2]],
-    unrollingFactorWriter: [[2]],
-    temporalLoopDim: 1,
-    temporalLoopBoundWidth: 8,
-
-    // Stationarity
-    stationarity: [0,0,1,1]
 }
