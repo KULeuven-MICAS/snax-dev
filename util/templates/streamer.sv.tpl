@@ -5,9 +5,8 @@
 module streamer_wrapper #(
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth = ${cfg["tcdmDepth"]},
-  parameter int unsigned NrBanks = ${cfg["numBanks"]},
-  parameter int unsigned NumInp = ${cfg["numInputs"]},
-  parameter int unsigned NumOut = ${cfg["numOutputs"]},
+  parameter int unsigned NrBanks = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
+  parameter int unsigned NumOut = NrBanks,
   parameter int unsigned TCDMMemAddrWidth = $clog2(TCDMDepth),
   parameter int unsigned TCDMSize = NrBanks * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth = $clog2(TCDMSize)
@@ -23,17 +22,17 @@ module streamer_wrapper #(
   // Accelerator ports
   //-----------------------------
   // Output ports from streamer to accelerator
-% for idx, dw in enumerate(cfg['fifoWidthWriter']):
+% for idx, dw in enumerate(cfg["fifoWriterParams"]['fifoWidth']):
   input logic [${dw-1}:0] acc2stream_data_${idx}_bits_i,
   input logic acc2stream_data_${idx}_valid_i,
   output logic acc2stream_data_${idx}_ready_o,
 
 % endfor
   // Input ports from acclerator to streamer
-% for idx, dw in enumerate(cfg['fifoWidthReader']):
-  output logic [${dw-1}:0] stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_bits_o,
-  output logic stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_valid_o,
-  input logic stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_ready_i,
+% for idx, dw in enumerate(cfg["fifoReaderParams"]['fifoWidth']):
+  output logic [${dw-1}:0] stream2acc_data_${idx}_bits_o,
+  output logic stream2acc_data_${idx}_valid_o,
+  input logic stream2acc_data_${idx}_ready_i,
 
 % endfor
   //-----------------------------
@@ -59,7 +58,7 @@ module streamer_wrapper #(
   //-----------------------------
   // Request
   input logic [31:0] io_csr_req_bits_data_i,
-  input logic io_csr_req_bits_addr_i,
+  input logic [31:0] io_csr_req_bits_addr_i,
   input logic io_csr_req_bits_write_i,
   input logic io_csr_req_valid_i,
   output logic io_csr_req_ready_o,
@@ -83,7 +82,7 @@ module streamer_wrapper #(
 
   // Streamer module that is generated
   // with template mechanics
-  Streamer(	
+  StreamerTop i_streamer_top (	
     //-----------------------------
     // Clocks and reset
     //-----------------------------
@@ -93,34 +92,35 @@ module streamer_wrapper #(
     //-----------------------------
     // Accelerator ports
     //-----------------------------
-% for idx, dw in enumerate(cfg['fifoWidthWriter']):
-    .io_accelerator2streamer_data_${idx}_bits ( acc2stream_data_${idx}_bits_i ),
-    .io_accelerator2streamer_data_${idx}_valid ( acc2stream_data_${idx}_valid_i ),
-    .io_accelerator2streamer_data_${idx}_ready ( acc2stream_data_${idx}_ready_o ),
+% for idx, dw in enumerate(cfg["fifoWriterParams"]['fifoWidth']):
+    .io_data_accelerator2streamer_data_${idx}_bits ( acc2stream_data_${idx}_bits_i ),
+    .io_data_accelerator2streamer_data_${idx}_valid ( acc2stream_data_${idx}_valid_i ),
+    .io_data_accelerator2streamer_data_${idx}_ready ( acc2stream_data_${idx}_ready_o ),
 
 % endfor
-% for idx, dw in enumerate(cfg['fifoWidthReader']):
-    .io_streamer2accelerator_data_${idx + len(cfg['fifoWidthWriter'])}_bits ( stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_bits_i ),
-    .io_streamer2accelerator_data_${idx + len(cfg['fifoWidthWriter'])}_valid ( stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_valid_i ),
-    .io_streamer2accelerator_data_${idx + len(cfg['fifoWidthWriter'])}_ready ( stream2acc_data_${idx + len(cfg['fifoWidthWriter'])}_ready_o ),
+% for idx, dw in enumerate(cfg["fifoReaderParams"]['fifoWidth']):
+    .io_data_streamer2accelerator_data_${idx}_bits ( stream2acc_data_${idx}_bits_o ),
+    .io_data_streamer2accelerator_data_${idx}_valid ( stream2acc_data_${idx}_valid_o ),
+    .io_data_streamer2accelerator_data_${idx}_ready ( stream2acc_data_${idx}_ready_i ),
 
 % endfor
     //-----------------------------
     // TCDM Ports
     //-----------------------------
     // Request
-% for idx in range(0, cfg["numOutputs"]):
-    .io_tcdm_rsp_${idx}_bits_data ( tcdm_rsp_data_i[${idx}] ),
-    .io_tcdm_rsp_${idx}_valid ( tcdm_rsp_p_valid_i[${idx}] ),
-    .io_tcdm_req_${idx}_ready ( tcdm_rsp_q_ready_i[${idx}] ),
+% for idx in range(0, sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])):
+    .io_data_tcdm_rsp_${idx}_bits_data ( tcdm_rsp_data_i[${idx}] ),
+    .io_data_tcdm_rsp_${idx}_valid ( tcdm_rsp_p_valid_i[${idx}] ),
+    .io_data_tcdm_req_${idx}_ready ( tcdm_rsp_q_ready_i[${idx}] ),
 
 % endfor
     // Response
-% for idx in range(0, cfg["numOutputs"]):
-    .io_tcdm_req_${idx}_valid ( tcdm_req_q_valid_o[${idx}] ),
-    .io_tcdm_req_${idx}_bits_addr ( tcdm_req_addr_o[${idx}] ),
-    .io_tcdm_req_${idx}_bits_write ( tcdm_req_write_o[${idx}] ),
-    .io_tcdm_req_${idx}_bits_data ( tcdm_req_data_o[${idx}] ),
+% for idx in range(0, sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])):
+
+    .io_data_tcdm_req_${idx}_valid ( tcdm_req_q_valid_o[${idx}] ),
+    .io_data_tcdm_req_${idx}_bits_addr ( tcdm_req_addr_o[${idx}] ),
+    .io_data_tcdm_req_${idx}_bits_write ( tcdm_req_write_o[${idx}] ),
+    .io_data_tcdm_req_${idx}_bits_data ( tcdm_req_data_o[${idx}] ),
 
 % endfor
     //-----------------------------
@@ -135,8 +135,8 @@ module streamer_wrapper #(
 
     // Response
     .io_csr_rsp_bits_data ( io_csr_rsp_bits_data_o ),	
-    .io_csr_rsp_valid ( io_csr_rsp_ready_i ),
-    .io_csr_rsp_ready ( io_csr_rsp_valid_o )
+    .io_csr_rsp_valid ( io_csr_rsp_valid_o ),
+    .io_csr_rsp_ready ( io_csr_rsp_ready_i )
   );
 
 endmodule
