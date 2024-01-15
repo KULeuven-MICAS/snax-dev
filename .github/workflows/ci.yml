@@ -20,5 +20,19 @@ jobs:
         run: |
           pytest -v -o log_cli=True
 
+jobs:
+  tpl-test-gen:
+    name: Template generation test
+    runs-on: ubuntu-22.04
+    container:
+      image: rgantonio/snax-cocotb
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate streamer SV template
+        run: |
+        util/scripts/template_gen.py \
+        --cfg_path="./util/cfg/streamer_cfg.hjson" \
+        --tpl_path="./util/templates/streamer.sv.tpl" \
+        --out_path="./rtl/streamer_wrapper.sv"
   
 
