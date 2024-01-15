@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Generate streamer SV template
         run: |
-        util/scripts/template_gen.py \
+        python3 util/scripts/template_gen.py \
         --cfg_path="./util/cfg/streamer_cfg.hjson" \
         --tpl_path="./util/templates/streamer.sv.tpl" \
         --out_path="./rtl/streamer_wrapper.sv"
