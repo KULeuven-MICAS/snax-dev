@@ -1,0 +1,48 @@
+// Streamer configuration file
+{
+    // These handle the fifo data width
+    // and fifo data depth
+    temporalAddrGenUnitParams: {
+      loopDim: 1,
+      loopBoundWidth: 8,
+      addrWidth: 15
+    }
+
+    fifoReaderParams: {
+      fifoWidth: [256,256,256],
+      fifoDepth: [2, 2, 2],
+    }
+
+    fifoWriterParams: {
+      fifoWidth: [64],
+      fifoDepth: [2],
+    }
+
+    dataReaderParams:{
+      tcdmPortsNum: [4,4,1],
+      spatialBounds: [[8],[8],[8]],
+      unrollingDim: [2,2,2],
+      spatialDim: [1,1,1],
+      elementWidth: [32,32,32],
+      fifoWidth: [64,64,64]
+    }
+
+    dataWriterParams:{
+      tcdmPortsNum: [1],
+      spatialBounds: [[2]],
+      spatialDim: [1],
+      elementWidth: [32],
+      fifoWidth: [64]
+    }
+
+    // Stationarity
+    stationarity: [0,0,1,1]
+
+    // TCDM data and address bit widths
+    tcdmDataWidth: 64,
+    addrWidth: 48,
+    tcdmDepth: 256,
+    numBanks: 8,
+    numInputs: 2,
+    numOutputs: 4
+}
