@@ -28,8 +28,9 @@ module tcdm_subsys #(
   parameter int unsigned TCDMMemAddrWidth = $clog2(TCDMDepth),
   parameter int unsigned TCDMSize         = NrBanks * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth    = $clog2(TCDMSize),
-  parameter int unsigned NumInp           = 2,
-  parameter int unsigned NumOut           = 2
+  parameter int unsigned NumOut           = 2,
+  parameter int unsigned NumInp           = NumOut
+ 
 )(
   input  logic                                      clk_i,
   input  logic                                      rst_ni,

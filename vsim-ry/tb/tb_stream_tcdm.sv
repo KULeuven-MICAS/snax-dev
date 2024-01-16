@@ -71,18 +71,11 @@ module tb_stream_tcdm;
   always_comb begin
 
     // Instant loop backs for easier control
-    acc2stream_data_0_valid_i = acc2stream_data_0_ready_o;
-    stream2acc_data_0_ready_i = stream2acc_data_0_valid_o;
-    stream2acc_data_1_ready_i = stream2acc_data_1_valid_o;
-    stream2acc_data_2_ready_i = stream2acc_data_2_valid_o;
+    acc2stream_data_0_valid_i = 1'b0;
+    stream2acc_data_0_ready_i = 1'b1;
+    stream2acc_data_1_ready_i = 1'b1;
+    stream2acc_data_2_ready_i = 1'b1;
 
-    // Always on signals
-    for(int i = 0; i < TCDMReqPorts; i++) begin
-      //tcdm_rsp_q_ready_i[i] = tcdm_req_q_valid_o[i];
-      tcdm_rsp_p_valid_i[i] = '0;
-      tcdm_rsp_data_i[i] = '0;
-    end
-  
   end
 
   // TCDM subsystem
@@ -104,9 +97,9 @@ module tb_stream_tcdm;
     .tcdm_req_user_is_core_i  ( tcdm_req_user_is_core_o ),
     .tcdm_req_strb_i          ( tcdm_req_strb_o         ),
     .tcdm_req_q_valid_i       ( tcdm_req_q_valid_o      ),
-    .tcdm_rsp_q_ready_o       (tcdm_rsp_q_ready_o),
-    .tcdm_rsp_p_valid_o       (       ),
-    .tcdm_rsp_data_o          (          )
+    .tcdm_rsp_q_ready_o       ( tcdm_rsp_q_ready_i    ),
+    .tcdm_rsp_p_valid_o       ( tcdm_rsp_p_valid_i    ),
+    .tcdm_rsp_data_o          ( tcdm_rsp_data_i       )
   );
 
   streamer_wrapper #(
@@ -230,24 +223,24 @@ module tb_stream_tcdm;
     @(posedge clk_i);
 
     cfg_clear();
-    // temporal loop strides
+    // vec len
     cfg_write(0,10);
-    // spatial loop strides
+    // temporal loop strides
     cfg_write(1, 1);
     cfg_write(2, 1);
     cfg_write(3, 1);
     cfg_write(4, 1);
     // spatial loop strides
     // warning!!! give the proper unrolling strides so that is a aligned in one TCDM bank
-    cfg_write(5, 1);
-    cfg_write(6, 1);
-    cfg_write(7, 1);
-    cfg_write(8, 1);
+    cfg_write(5, 4);
+    cfg_write(6, 4);
+    cfg_write(7, 4);
+    cfg_write(8, 4);
     // base ptr
     cfg_write(9, 0);
-    cfg_write(10, 8);
-    cfg_write(11, 16);
-    cfg_write(12, 24);
+    cfg_write(10, 0);
+    cfg_write(11, 0);
+    cfg_write(12, 0);
     // Continuous read
     cfg_read(0);
     cfg_read(1);
