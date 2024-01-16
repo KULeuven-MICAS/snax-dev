@@ -8,7 +8,12 @@ package streamer
 import chisel3._
 import chisel3.util._
 
-/** Parameter definitions fifoWidthReader - FIFO width for the data readers
+/** Parameter definitions
+
+
+
+
+* fifoWidthReader - FIFO width for the data readers
   * fifoDepthReader - FIFO depth for the data readers fifoWidthWriter - FIFO
   * width for the data writers fifoDepthWriter - FIFO depth for the data writers
   * dataReaderNum - number of data readers dataWriterNum - number of data

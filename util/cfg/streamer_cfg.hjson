@@ -9,12 +9,12 @@
     }
 
     fifoReaderParams: {
-      fifoWidth: [256,256,256],
+      fifoWidth: [256,256,64],
       fifoDepth: [2, 2, 2],
     }
 
     fifoWriterParams: {
-      fifoWidth: [64],
+      fifoWidth: [256],
       fifoDepth: [2],
     }
 
@@ -28,7 +28,7 @@
     }
 
     dataWriterParams:{
-      tcdmPortsNum: [1],
+      tcdmPortsNum: [4],
       spatialBounds: [[2]],
       spatialDim: [1],
       elementWidth: [32],
