@@ -1,3 +1,12 @@
+<%
+  import math
+
+  tcdm_data_width = cfg["tcdmDataWidth"]
+  tcdm_depth = cfg["tcdmDepth"]
+  num_banks = cfg["numBanks"]
+  tcdm_size = num_banks * tcdm_depth * (tcdm_data_width/8)
+  tcdm_addr_width = math.ceil(math.log2(tcdm_size))
+%>
 <%def name="list_elem(prop)">\
   % for c in cfg[prop]:
 ${c}${', ' if not loop.last else ''}\
@@ -27,12 +36,12 @@ import chisel3.util._
   */
 
 // Streamer parameters
-object StreamerParams extends CommonParams {
+object StreamerParametersGen extends CommonParams {
   def temporalAddrGenUnitParams: TemporalAddrGenUnitParams =
     TemporalAddrGenUnitParams(
       loopDim = ${cfg["temporalAddrGenUnitParams"]["loopDim"]},
       loopBoundWidth = ${cfg["temporalAddrGenUnitParams"]["loopBoundWidth"]},
-      addrWidth = ${cfg["temporalAddrGenUnitParams"]["addrWidth"]}
+      addrWidth = ${tcdm_addr_width}
     )
   def fifoReaderParams: Seq[FIFOParams] = Seq(
 % for idx in range(0,len(cfg["fifoReaderParams"]["fifoWidth"])):
@@ -83,20 +92,20 @@ ${c}${', ' if not loop.last else ''}\
   def stationarity = Seq(${list_elem('stationarity')})
 }
 
-object Streamer extends App {
+object StreamerTopGen extends App {
   emitVerilog(
-    new Streamer(
+    new StreamerTop(
       StreamerParams(
         temporalAddrGenUnitParams =
-          StreamerParameters .temporalAddrGenUnitParams,
-        fifoReaderParams = StreamerParameters .fifoReaderParams,
-        fifoWriterParams = StreamerParameters .fifoWriterParams,
-        stationarity = PostProcessingStreamerParameters.stationarity,
-        dataReaderParams = StreamerParameters .dataReaderParams,
-        dataWriterParams = StreamerParameters .dataWriterParams
+          StreamerParametersGen.temporalAddrGenUnitParams,
+        fifoReaderParams = StreamerParametersGen.fifoReaderParams,
+        fifoWriterParams = StreamerParametersGen.fifoWriterParams,
+        stationarity = StreamerParametersGen.stationarity,
+        dataReaderParams = StreamerParametersGen.dataReaderParams,
+        dataWriterParams = StreamerParametersGen.dataWriterParams
 )
     ),
-    Array("--target-dir", "generated/streamer")
+    // Array("--target-dir", "generated/streamer")
+    Array("--target-dir", "../../../../rtl/.")
   )
 }
- 
