@@ -1,14 +1,23 @@
+<%
+  import math
+
+  num_loop_dim = cfg["temporalAddrGenUnitParams"]["loopDim"]
+  num_data_mover = (len(cfg["dataReaderParams"]["tcdmPortsNum"]) + len(cfg["dataWriterParams"]["tcdmPortsNum"])) 
+  num_dmove_x_loop_dim = num_data_mover * num_loop_dim
+  num_spatial_dim = sum(cfg["dataReaderParams"]["spatialDim"]) + sum(cfg["dataWriterParams"]["spatialDim"])
+  
+  csr_num = num_loop_dim + num_dmove_x_loop_dim + num_data_mover + num_spatial_dim + 1
+  csr_width = math.ceil(math.log2(csr_num))
+%>
 //-----------------------------
 // Streamer wrapper
 //-----------------------------
-
 module streamer_wrapper #(
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth = ${cfg["tcdmDepth"]},
-  parameter int unsigned NrBanks = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
-  parameter int unsigned NumOut = NrBanks,
+  parameter int unsigned TCDMReqPorts = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
   parameter int unsigned TCDMMemAddrWidth = $clog2(TCDMDepth),
-  parameter int unsigned TCDMSize = NrBanks * TCDMDepth * (NarrowDataWidth/8),
+  parameter int unsigned TCDMSize = TCDMReqPorts * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth = $clog2(TCDMSize)
 )(
 
@@ -39,26 +48,26 @@ module streamer_wrapper #(
   // TCDM ports
   //-----------------------------
   // Request
-  output logic [NumOut-1:0] tcdm_req_write_o,
-  output logic [NumOut-1:0][TCDMAddrWidth-1:0] tcdm_req_addr_o,
-  output logic [NumOut-1:0][3:0] tcdm_req_amo_o, //Note that tcdm_req_amo_i is 4 bits based on reqrsp definition
-  output logic [NumOut-1:0][NarrowDataWidth-1:0] tcdm_req_data_o,
-  output logic [NumOut-1:0][4:0] tcdm_req_user_core_id_o, //Note that tcdm_req_user_core_id_i is 5 bits based on Snitch definition
-  output logic [NumOut-1:0] tcdm_req_user_is_core_o,
-  output logic [NumOut-1:0][NarrowDataWidth/8-1:0] tcdm_req_strb_o,
-  output logic [NumOut-1:0] tcdm_req_q_valid_o,
+  output logic [TCDMReqPorts-1:0] tcdm_req_write_o,
+  output logic [TCDMReqPorts-1:0][TCDMAddrWidth-1:0] tcdm_req_addr_o,
+  output logic [TCDMReqPorts-1:0][3:0] tcdm_req_amo_o, //Note that tcdm_req_amo_i is 4 bits based on reqrsp definition
+  output logic [TCDMReqPorts-1:0][NarrowDataWidth-1:0] tcdm_req_data_o,
+  output logic [TCDMReqPorts-1:0][4:0] tcdm_req_user_core_id_o, //Note that tcdm_req_user_core_id_i is 5 bits based on Snitch definition
+  output logic [TCDMReqPorts-1:0] tcdm_req_user_is_core_o,
+  output logic [TCDMReqPorts-1:0][NarrowDataWidth/8-1:0] tcdm_req_strb_o,
+  output logic [TCDMReqPorts-1:0] tcdm_req_q_valid_o,
 
   // Response
-  input logic [NumOut-1:0] tcdm_rsp_q_ready_i,
-  input logic [NumOut-1:0] tcdm_rsp_p_valid_i,
-  input logic [NumOut-1:0][NarrowDataWidth-1:0] tcdm_rsp_data_i,
+  input logic [TCDMReqPorts-1:0] tcdm_rsp_q_ready_i,
+  input logic [TCDMReqPorts-1:0] tcdm_rsp_p_valid_i,
+  input logic [TCDMReqPorts-1:0][NarrowDataWidth-1:0] tcdm_rsp_data_i,
 
   //-----------------------------
   // CSR control ports
   //-----------------------------
   // Request
   input logic [31:0] io_csr_req_bits_data_i,
-  input logic [31:0] io_csr_req_bits_addr_i,
+  input logic [${csr_width-1}:0] io_csr_req_bits_addr_i,
   input logic io_csr_req_bits_write_i,
   input logic io_csr_req_valid_i,
   output logic io_csr_req_ready_o,
@@ -72,7 +81,7 @@ module streamer_wrapper #(
   // Fixed ports that are defaulted
   // towards the TCDM from the streamer
   always_comb begin
-    for(int i = 0; i < NumOut; i++ ) begin
+    for(int i = 0; i < TCDMReqPorts; i++ ) begin
       tcdm_req_amo_o[i] = '0;
       tcdm_req_user_core_id_o[i] = '0;
       tcdm_req_user_is_core_o[i] = '0;
@@ -116,7 +125,6 @@ module streamer_wrapper #(
 % endfor
     // Response
 % for idx in range(0, sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])):
-
     .io_data_tcdm_req_${idx}_valid ( tcdm_req_q_valid_o[${idx}] ),
     .io_data_tcdm_req_${idx}_bits_addr ( tcdm_req_addr_o[${idx}] ),
     .io_data_tcdm_req_${idx}_bits_write ( tcdm_req_write_o[${idx}] ),
