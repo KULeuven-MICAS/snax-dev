@@ -3,6 +3,7 @@ from mako.template import Template
 from jsonref import JsonRef
 import hjson
 import argparse
+import os
 
 
 # Extract json file
@@ -18,8 +19,10 @@ def get_config(cfg_path: str):
 
 # Read template
 def get_template(tpl_path: str) -> Template:
-    tpl_list = TemplateLookup(directories=["."], output_encoding="utf-8")
-    tpl = tpl_list.get_template(tpl_path)
+    dir_name = os.path.dirname(tpl_path)
+    file_name = os.path.basename(tpl_path)
+    tpl_list = TemplateLookup(directories=[dir_name], output_encoding="utf-8")
+    tpl = tpl_list.get_template(file_name)
     return tpl
 
 
