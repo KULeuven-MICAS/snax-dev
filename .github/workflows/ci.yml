@@ -31,7 +31,7 @@ jobs:
         run: |
           python3 util/scripts/template_gen.py \
           --cfg_path="./util/cfg/streamer_cfg.hjson" \
-          --tpl_path="./util/templates/streamer.sv.tpl" \
+          --tpl_path="./util/templates/streamer_wrapper.sv.tpl" \
           --out_path="./rtl/streamer_wrapper.sv"
   
 
