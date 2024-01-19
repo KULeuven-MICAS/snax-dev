@@ -5,22 +5,21 @@
     temporalAddrGenUnitParams: {
       loopDim: 1,
       loopBoundWidth: 8,
-      addrWidth: 15
     }
 
     fifoReaderParams: {
-      fifoWidth: [256,256,256],
+      fifoWidth: [256,256,64],
       fifoDepth: [2, 2, 2],
     }
 
     fifoWriterParams: {
-      fifoWidth: [64],
+      fifoWidth: [256],
       fifoDepth: [2],
     }
 
     dataReaderParams:{
       tcdmPortsNum: [4,4,1],
-      spatialBounds: [[8],[8],[8]],
+      spatialBounds: [[8],[8],[2]],
       unrollingDim: [2,2,2],
       spatialDim: [1,1,1],
       elementWidth: [32,32,32],
@@ -28,8 +27,8 @@
     }
 
     dataWriterParams:{
-      tcdmPortsNum: [1],
-      spatialBounds: [[2]],
+      tcdmPortsNum: [4],
+      spatialBounds: [[8]],
       spatialDim: [1],
       elementWidth: [32],
       fifoWidth: [64]
@@ -40,9 +39,6 @@
 
     // TCDM data and address bit widths
     tcdmDataWidth: 64,
-    addrWidth: 48,
     tcdmDepth: 256,
-    numBanks: 8,
-    numInputs: 2,
-    numOutputs: 4
+    numBanks: 32,
 }

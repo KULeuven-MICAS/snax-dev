@@ -1,4 +1,9 @@
-name: Hardware Unit Tests
+# ---------------------------------------------------------
+# Copyright 2023 KULeuven
+# Author: Ryan Antonio <ryan.antonio@esat.kuleuven.be>
+# ---------------------------------------------------------
+
+name: Hardware Tests
 on: 
   pull_request:
   workflow_dispatch:
@@ -6,6 +11,17 @@ on:
     branches: [main]
 
 jobs:
+  streamer-test-gen:
+    name: Template generation test
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/kuleuven-micas/snax-cocotb
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate SNAX streamer
+        run: |
+          make gen_stream_top
+
   rtl-test-vlt:
     name: RTL test using verilator
     runs-on: ubuntu-22.04
@@ -19,19 +35,3 @@ jobs:
       - name: Running Pytest
         run: |
           pytest -v -o log_cli=True
-
-  tpl-test-gen:
-    name: Template generation test
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/kuleuven-micas/snax-cocotb
-    steps:
-      - uses: actions/checkout@v3
-      - name: Generate streamer SV template
-        run: |
-          python3 util/scripts/template_gen.py \
-          --cfg_path="./util/cfg/streamer_cfg.hjson" \
-          --tpl_path="./util/templates/streamer.sv.tpl" \
-          --out_path="./rtl/streamer_wrapper.sv"
-  
-
