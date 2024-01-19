@@ -10,7 +10,7 @@ jobs:
     name: RTL test using verilator
     runs-on: ubuntu-22.04
     container:
-      image: rgantonio/snax-cocotb
+      image: ghcr.io/kuleuven-micas/snax-cocotb
     steps:
       - uses: actions/checkout@v3
       - name: Pull Snitch cluster files
@@ -24,7 +24,7 @@ jobs:
     name: Template generation test
     runs-on: ubuntu-22.04
     container:
-      image: rgantonio/snax-cocotb
+      image: ghcr.io/kuleuven-micas/snax-cocotb
     steps:
       - uses: actions/checkout@v3
       - name: Generate streamer SV template
