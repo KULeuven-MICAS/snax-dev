@@ -92,20 +92,22 @@ ${c}${', ' if not loop.last else ''}\
   def stationarity = Seq(${list_elem('stationarity')})
 }
 
-object StreamerTopGen extends App {
-  emitVerilog(
-    new StreamerTop(
-      StreamerParams(
-        temporalAddrGenUnitParams =
-          StreamerParametersGen.temporalAddrGenUnitParams,
-        fifoReaderParams = StreamerParametersGen.fifoReaderParams,
-        fifoWriterParams = StreamerParametersGen.fifoWriterParams,
-        stationarity = StreamerParametersGen.stationarity,
-        dataReaderParams = StreamerParametersGen.dataReaderParams,
-        dataWriterParams = StreamerParametersGen.dataWriterParams
-)
-    ),
-    // Array("--target-dir", "generated/streamer")
-    Array("--target-dir", "../../../../rtl/.")
-  )
+object StreamerTopGen {
+  def main(args: Array[String]) : Unit = {
+    val outPath = args.headOption.getOrElse("../../../../rtl/.")
+    emitVerilog(
+      new StreamerTop(
+        StreamerParams(
+          temporalAddrGenUnitParams =
+            StreamerParametersGen.temporalAddrGenUnitParams,
+          fifoReaderParams = StreamerParametersGen.fifoReaderParams,
+          fifoWriterParams = StreamerParametersGen.fifoWriterParams,
+          stationarity = StreamerParametersGen.stationarity,
+          dataReaderParams = StreamerParametersGen.dataReaderParams,
+          dataWriterParams = StreamerParametersGen.dataWriterParams
+        )
+      ),
+      Array("--target-dir", outPath)
+    )
+  }
 }
