@@ -59,7 +59,7 @@ SPATIAL_STRIDE_1 = 8
 SPATIAL_STRIDE_2 = 8
 BASE_PTR_0 = 0
 BASE_PTR_1 = 32
-BASE_PTR_2 = 48
+BASE_PTR_2 = 64
 
 
 # Some functions for generating golden model
@@ -78,7 +78,7 @@ def gen_basic_stream_gold_list():
         port_a_list = []
         port_b_list = []
         port_c_list = []
-        for j in range(int(TCDM_REQ_PORTS / 2)):
+        for j in range(int(TCDM_REQ_PORTS / 3)):
             port_a = BASE_PTR_0 + j * SPATIAL_STRIDE_0 + i * TEMPORAL_STRIDE_0
             port_a_list.append(port_a)
             port_b = BASE_PTR_1 + j * SPATIAL_STRIDE_1 + i * TEMPORAL_STRIDE_1
@@ -194,7 +194,6 @@ async def basic_streamer_dut(dut):
 
     # First generate the golden answer list
     golden_list = gen_basic_stream_gold_list()
-    print(golden_list)
 
     # Cycle for each TCDM request ports
     # Check the temporal loop
