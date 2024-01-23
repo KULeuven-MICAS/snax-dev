@@ -34,24 +34,21 @@
     // spatialBounds - Spatial unrolling factors (your parfor) for each data mover.
     // spatialDim - The dimension of spatial unrolling factors (your parfor) for each data mover.
     // elementWidth - Single data element width for each data mover, useful for generating spatial addresses.
-    // fifoWidth - FIFO bit width
     //--------------------------------
     // For Readers
     dataReaderParams:{
       tcdmPortsNum: [4, 4],
-      spatialBounds: [[8], [8]],
+      spatialBounds: [[4], [4]],
       spatialDim: [1,1],
       elementWidth: [64,64],
-      fifoWidth: [64,64]
     }
 
     // For Writers
     dataWriterParams:{
       tcdmPortsNum: [4],
-      spatialBounds: [[8]],
+      spatialBounds: [[4]],
       spatialDim: [1],
       elementWidth: [64],
-      fifoWidth: [64]
     }
 
     //--------------------------------
