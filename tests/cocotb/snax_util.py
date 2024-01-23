@@ -3,6 +3,9 @@ import subprocess
 import os
 import random
 from typing import List, Tuple, Optional
+import cocotb
+from cocotb.triggers import RisingEdge, Timer
+from decimal import Decimal
 
 
 # This extracts all benderized files
@@ -149,3 +152,56 @@ def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
         uint_list.append(random.randint(min_val, max_val))
 
     return uint_list
+
+
+# Compare and assert
+def comp_and_assert(golden_data: int, actual_data: int) -> None:
+    cocotb.log.info(f"Golden data: {golden_data}; Actual data: {actual_data}")
+    assert golden_data == actual_data
+    return
+
+
+# Functions for register reading or writing
+# to controls status registers. This one
+# uses the direct connection for the
+# SNAX streamer and SNAX accelerators
+# made by chisel.
+async def clock_and_wait(dut) -> None:
+    await RisingEdge(dut.clk_i)
+    await Timer(Decimal(1), units="ps")
+    return
+
+
+# For writing to registers
+async def reg_write(dut, addr: int, data: int) -> None:
+    dut.io_csr_req_bits_data_i.value = data
+    dut.io_csr_req_bits_addr_i.value = addr
+    dut.io_csr_req_bits_write_i.value = 1
+    dut.io_csr_req_valid_i.value = 1
+    await clock_and_wait(dut)
+
+    return
+
+
+# For reading from registers
+async def reg_read(dut, addr: int) -> int:
+    dut.io_csr_req_bits_data_i.value = 0
+    dut.io_csr_req_bits_addr_i.value = addr
+    dut.io_csr_req_bits_write_i.value = 0
+    dut.io_csr_req_valid_i.value = 1
+    await clock_and_wait(dut)
+
+    reg_read = int(dut.io_csr_rsp_bits_data_o.value)
+
+    return reg_read
+
+
+# For clearing the ports
+async def reg_clr(dut) -> None:
+    dut.io_csr_req_bits_data_i.value = 0
+    dut.io_csr_req_bits_addr_i.value = 0
+    dut.io_csr_req_bits_write_i.value = 0
+    dut.io_csr_req_valid_i.value = 0
+    await clock_and_wait(dut)
+
+    return

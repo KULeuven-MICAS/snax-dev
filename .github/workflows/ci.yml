@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Generate SNAX streamer
         run: |
-          make gen_stream_top
+          make gen_stream_tb
 
   rtl-test-vlt:
     name: RTL test using verilator
