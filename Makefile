@@ -66,7 +66,7 @@ $(STREAM_GEN_OUT_SV_FILE):
 #-----------------------------
 # Generate Streamer Wrapper Testbench
 #-----------------------------
-gen_stream_top:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_SV_FILE)
+gen_stream_tb:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_SV_FILE)
 	${PYTHON} util/scripts/template_gen.py --cfg_path="${STREAM_GEN_CFG_FILE}" \
 	--tpl_path="${STREAM_GEN_TPL_TB_FILE}" \
 	--out_path="${STREAM_GEN_OUT_TB_FILE}"
