@@ -157,7 +157,7 @@ def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
 # Compare and assert
 def comp_and_assert(golden_data: int, actual_data: int) -> None:
     cocotb.log.info(f"Golden data: {golden_data}; Actual data: {actual_data}")
-    assert (golden_data == actual_data)
+    assert golden_data == actual_data
     return
 
 
@@ -171,6 +171,7 @@ async def clock_and_wait(dut) -> None:
     await Timer(Decimal(1), units="ps")
     return
 
+
 # For writing to registers
 async def reg_write(dut, addr: int, data: int) -> None:
     dut.io_csr_req_bits_data_i.value = data
@@ -180,6 +181,7 @@ async def reg_write(dut, addr: int, data: int) -> None:
     await clock_and_wait(dut)
 
     return
+
 
 # For reading from registers
 async def reg_read(dut, addr: int) -> int:
@@ -192,6 +194,7 @@ async def reg_read(dut, addr: int) -> int:
     reg_read = int(dut.io_csr_rsp_bits_data_o.value)
 
     return reg_read
+
 
 # For clearing the ports
 async def reg_clr(dut) -> None:
