@@ -123,7 +123,7 @@ async def basic_streamer_dut(dut):
 
     await RisingEdge(dut.clk_i)
 
-    cocotb.log.info(f" Setting up of CSR registers and verifying if setup is correct")
+    cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
 
     # At this point we'll do explicit declartion
     # of the tests so that it's understandable
@@ -178,7 +178,7 @@ async def basic_streamer_dut(dut):
     # So that we don't have stuck valid
     await snax_util.reg_clr(dut)
 
-    cocotb.log.info(f" Run the streamer and check if addresses are correct")
+    cocotb.log.info("Run the streamer and check if addresses are correct")
 
     # Do a run of the streamer
     # We can write anything on this address
