@@ -25,14 +25,14 @@ module tb_streamer_top;
   logic clk_i;
   logic rst_ni;
 
-  // ports from streamer to accelerator
+  // ports from accelerator to streamer
 % for idx, dw in enumerate(cfg["fifoWriterParams"]['fifoWidth']):
   logic [${dw-1}:0] acc2stream_data_${idx}_bits_i;
   logic acc2stream_data_${idx}_valid_i;
   logic acc2stream_data_${idx}_ready_o;
 
 % endfor
-  // ports from acclerator to streamer
+  // ports from streamer to accelerator
 % for idx, dw in enumerate(cfg["fifoReaderParams"]['fifoWidth']):
   logic [${dw-1}:0] stream2acc_data_${idx}_bits_o;
   logic stream2acc_data_${idx}_valid_o;
