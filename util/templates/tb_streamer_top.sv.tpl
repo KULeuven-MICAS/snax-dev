@@ -12,13 +12,12 @@
 //-----------------------------------
 // Basic SNAX streamer testbench
 //-----------------------------------
-module tb_streamer_top #(
-  parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
-  parameter int unsigned TCDMDepth       = ${cfg["tcdmDepth"]},
-  parameter int unsigned TCDMReqPorts    = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])}
-);
+module tb_streamer_top;
 
-  localparam int unsigned NrBanks        = 32;
+  localparam int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]};
+  localparam int unsigned TCDMDepth       = ${cfg["tcdmDepth"]};
+  localparam int unsigned TCDMReqPorts    = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])};
+  localparam int unsigned NrBanks        = ${cfg["numBanks"]};
   localparam int unsigned TCDMSize       = NrBanks * TCDMDepth * (NarrowDataWidth/8);
   localparam int unsigned TCDMAddrWidth  = $clog2(TCDMSize);
 
