@@ -12,7 +12,8 @@ def pytest_addoption(parser):
         "--waves",
         dest="waves",
         default=0,
-        help="enabling wave generation. verilator generates .fst; modelsim generats .wlf ",
+        help="enabling wave generation. verilator \
+            generates .fst; modelsim generats .wlf ",
     )
 
 
