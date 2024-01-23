@@ -18,7 +18,6 @@ import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
-import pytest
 import snax_util
 import os
 import subprocess
