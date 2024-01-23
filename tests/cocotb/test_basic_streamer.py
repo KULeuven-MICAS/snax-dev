@@ -24,8 +24,6 @@ import os
 import subprocess
 
 # Configurable design time parameters
-NARROW_DATA_WIDTH = 64
-TCDM_DEPTH = 256
 TCDM_REQ_PORTS = 12
 
 # DON'T TOUCH ME PLEASE
@@ -198,17 +196,7 @@ async def basic_streamer_dut(dut):
 
 
 # Main test run
-@pytest.mark.parametrize(
-    "parameters",
-    [
-        {
-            "NarrowDataWidth": str(NARROW_DATA_WIDTH),
-            "TCDMDepth": str(TCDM_DEPTH),
-            "TCDMReqPorts": str(TCDM_REQ_PORTS),
-        }
-    ],
-)
-def test_basic_streamer(parameters, simulator, waves):
+def test_basic_streamer(simulator, waves):
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
 
