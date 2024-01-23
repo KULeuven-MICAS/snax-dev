@@ -8,7 +8,6 @@
 # This tests the basic configuration of the streamer
 # found in ./util/cfg/streamer_cfg.hjson
 #
-#
 # Sequence of tests:
 # 1. First test read and write to CSR registers
 # 2. Check if the output addresses of TCDM
@@ -16,10 +15,9 @@
 # ---------------------------------
 
 import cocotb
-from cocotb.triggers import RisingEdge, Timer
+from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
-from decimal import Decimal
 import pytest
 import snax_util
 import os
@@ -66,11 +64,10 @@ BASE_PTR_2 = 64
 # This is only useful here in this test
 # Basically it uses the default configuration
 # For the gen_basic_stream_gold_list,
-# Note that TCDM ports 0-3 are for reader
-# While the TCDM ports 4-7 are for writing
-# The working port_a and port_b
-# Are the working equations for the for loops
-# We are using for the streamer configuration
+# Note that TCDM ports 0-3, and 4-7 are for readers
+# (specifically port_a and port_b)
+# While the TCDM ports 8-11 are for writing
+# (specifically port_c)
 def gen_basic_stream_gold_list():
     golden_list = []
 
@@ -126,9 +123,7 @@ async def basic_streamer_dut(dut):
 
     await RisingEdge(dut.clk_i)
 
-    cocotb.log.info(f"--------------------------------------------------------------")
     cocotb.log.info(f" Setting up of CSR registers and verifying if setup is correct")
-    cocotb.log.info(f"--------------------------------------------------------------")
 
     # At this point we'll do explicit declartion
     # of the tests so that it's understandable
@@ -183,9 +178,7 @@ async def basic_streamer_dut(dut):
     # So that we don't have stuck valid
     await snax_util.reg_clr(dut)
 
-    cocotb.log.info(f"--------------------------------------------------------------")
     cocotb.log.info(f" Run the streamer and check if addresses are correct")
-    cocotb.log.info(f"--------------------------------------------------------------")
 
     # Do a run of the streamer
     # We can write anything on this address
