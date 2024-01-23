@@ -157,6 +157,7 @@ def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
 # Compare and assert
 def comp_and_assert(golden_data: int, actual_data: int) -> None:
     cocotb.log.info(f"Golden data: {golden_data}; Actual data: {actual_data}")
+    assert (golden_data == actual_data)
     return
 
 
