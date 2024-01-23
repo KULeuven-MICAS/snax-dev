@@ -30,14 +30,14 @@ module streamer_wrapper #(
   //-----------------------------
   // Accelerator ports
   //-----------------------------
-  // Output ports from streamer to accelerator
+  // Output ports from accelerator to streamer
 % for idx, dw in enumerate(cfg["fifoWriterParams"]['fifoWidth']):
   input logic [${dw-1}:0] acc2stream_data_${idx}_bits_i,
   input logic acc2stream_data_${idx}_valid_i,
   output logic acc2stream_data_${idx}_ready_o,
 
 % endfor
-  // Input ports from acclerator to streamer
+  // Input ports from streamer to accelerator
 % for idx, dw in enumerate(cfg["fifoReaderParams"]['fifoWidth']):
   output logic [${dw-1}:0] stream2acc_data_${idx}_bits_o,
   output logic stream2acc_data_${idx}_valid_o,
