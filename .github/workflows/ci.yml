@@ -34,4 +34,4 @@ jobs:
           bender script flist
       - name: Running Pytest
         run: |
-          pytest -v -o log_cli=True
+          pytest
