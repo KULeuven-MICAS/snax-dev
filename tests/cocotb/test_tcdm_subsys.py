@@ -27,6 +27,7 @@ NUM_INPUT = 2
 # TCDM interconnection because
 # We need to make sure that the memory
 # and interconnect matches the addressing
+# note that this is an internal checker
 TCDM_SIZE = int(NR_BANKS * TCDM_DEPTH * NARROW_DATA_WIDTH / 8)
 TCDM_ADDR_WIDTH = math.ceil(math.log2(TCDM_SIZE))
 TCDM_MEM_ADDR_WIDTH = math.ceil(math.log2(TCDM_DEPTH))
