@@ -248,8 +248,8 @@ async def tcdm_clr(dut, idx: int) -> None:
     return
 
 
-# Functions for TCDM control
-# Writing to TCDM
+# Functions for Wide TCDM control
+# Writing to Wide TCDM
 async def wide_tcdm_write(dut, addr: int, data: int) -> None:
     dut.tcdm_dma_req_addr_i.value = addr
     dut.tcdm_dma_req_data_i.value = data
@@ -261,7 +261,7 @@ async def wide_tcdm_write(dut, addr: int, data: int) -> None:
     return
 
 
-# Reading from TCDM
+# Reading from Wide TCDM
 async def wide_tcdm_read(dut, addr: int) -> int:
     dut.tcdm_dma_req_addr_i.value = addr
     dut.tcdm_dma_req_data_i.value = 0
@@ -275,7 +275,7 @@ async def wide_tcdm_read(dut, addr: int) -> int:
     return reg_read
 
 
-# Clear TCDM
+# Clear Wide TCDM
 async def wide_tcdm_clr(dut) -> None:
     dut.tcdm_dma_req_addr_i.value = 0
     dut.tcdm_dma_req_data_i.value = 0
