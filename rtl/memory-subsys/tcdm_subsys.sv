@@ -156,20 +156,20 @@ module tcdm_subsys #(
   always_comb begin
 
     // These signals are never used
-    tcdm_dma_req.q.amo   = reqrsp_pkg::AMONone;
-    tcdm_dma_req.q.user = '0;
+    tcdm_dma_req.q.amo     = reqrsp_pkg::AMONone;
+    tcdm_dma_req.q.user    = '0;
 
     // Remapping for visibility
     // Request (incoming) remapping
-    tcdm_dma_req.q.write  = tcdm_dma_req_write_i;
-    tcdm_dma_req.q.addr   = tcdm_dma_req_addr_i;
-    tcdm_dma_req.q.data   = tcdm_dma_req_data_i;
-    tcdm_dma_req.q.strb   = tcdm_dma_req_strb_i;
-    tcdm_dma_req.q_valid  = tcdm_dma_req_q_valid_i;
+    tcdm_dma_req.q.write   = tcdm_dma_req_write_i;
+    tcdm_dma_req.q.addr    = tcdm_dma_req_addr_i;
+    tcdm_dma_req.q.data    = tcdm_dma_req_data_i;
+    tcdm_dma_req.q.strb    = tcdm_dma_req_strb_i;
+    tcdm_dma_req.q_valid   = tcdm_dma_req_q_valid_i;
 
     // Response (outgoing) remapping
     tcdm_dma_rsp_q_ready_o = tcdm_dma_rsp.q_ready;
-    tcdm_dma_rsp_p_valid_o     = tcdm_dma_rsp.p_valid;
+    tcdm_dma_rsp_p_valid_o = tcdm_dma_rsp.p_valid;
     tcdm_dma_rsp_data_o    = tcdm_dma_rsp.p.data;
   end
 
