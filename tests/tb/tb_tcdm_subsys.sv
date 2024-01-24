@@ -1,14 +1,14 @@
 //-----------------------------------
-// Tightly Coupled Data Memory Sub-System 
+// Tightly Coupled Data Memory Sub-System
 // Local testbench
 //-----------------------------------
 
 module tb_tcdm_subsys #(
   parameter int unsigned NarrowDataWidth   = 64,
+  parameter int unsigned WideDataWidth     = 512,
   parameter int unsigned TCDMDepth         = 64,
   parameter int unsigned NrBanks           = 8,
-  parameter int unsigned NumInp            = 2,
-  parameter int unsigned NumOut            = NrBanks
+  parameter int unsigned NumInp            = 2
 );
 
   // Local parameters that need to be managed automatically
@@ -48,6 +48,15 @@ module tb_tcdm_subsys #(
   logic [0:0]                   tcdm_rsp_p_valid_o      [NumInp];
   logic [NarrowDataWidth-1:0]   tcdm_rsp_data_o         [NumInp];
 
+  logic                       tcdm_dma_req_write_i;
+  logic [  TCDMAddrWidth-1:0] tcdm_dma_req_addr_i;
+  logic [  WideDataWidth-1:0] tcdm_dma_req_data_i;
+  logic [WideDataWidth/8-1:0] tcdm_dma_req_strb_i;
+  logic                       tcdm_dma_req_q_valid_i;
+  logic                       tcdm_dma_rsp_q_ready_o;
+  logic                       tcdm_dma_rsp_p_valid_o;
+  logic [  WideDataWidth-1:0] tcdm_dma_rsp_data_o;
+
   // Hard re-mapping just to handle the cocotb verilator translation
   always_comb begin
     for(int i = 0; i < NumInp; i++) begin
@@ -70,10 +79,15 @@ module tb_tcdm_subsys #(
     .TCDMDepth                ( TCDMDepth             ),
     .NrBanks                  ( NrBanks               ),
     .NumInp                   ( NumInp                ),
-    .NumOut                   ( NumOut                )
   ) i_tcdm_subsys (
+    //-----------------------------
+    // Clock and reset
+    //-----------------------------
     .clk_i                    ( clk_i                 ),
     .rst_ni                   ( rst_ni                ),
+    //-----------------------------
+    // TCDM ports
+    //-----------------------------
     .tcdm_req_write_i         ( tcdm_req_write        ),
     .tcdm_req_addr_i          ( tcdm_req_addr         ),
     .tcdm_req_amo_i           ( tcdm_req_amo          ),
@@ -84,7 +98,18 @@ module tb_tcdm_subsys #(
     .tcdm_req_q_valid_i       ( tcdm_req_q_valid      ),
     .tcdm_rsp_q_ready_o       ( tcdm_rsp_q_ready      ),
     .tcdm_rsp_p_valid_o       ( tcdm_rsp_p_valid      ),
-    .tcdm_rsp_data_o          ( tcdm_rsp_data         )
+    .tcdm_rsp_data_o          ( tcdm_rsp_data         ),
+    //-----------------------------
+    // Wide TCDM ports
+    //-----------------------------
+    .tcdm_dma_req_write_i     ( tcdm_dma_req_write_i   ),
+    .tcdm_dma_req_addr_i      ( tcdm_dma_req_addr_i    ),
+    .tcdm_dma_req_data_i      ( tcdm_dma_req_data_i    ),
+    .tcdm_dma_req_strb_i      ( tcdm_dma_req_strb_i    ),
+    .tcdm_dma_req_q_valid_i   ( tcdm_dma_req_q_valid_i ),
+    .tcdm_dma_rsp_q_ready_o   ( tcdm_dma_rsp_q_ready_o ),
+    .tcdm_dma_rsp_p_valid_o   ( tcdm_dma_rsp_p_valid_o ),
+    .tcdm_dma_rsp_data_o      ( tcdm_dma_rsp_data_o    )
   );
 
 endmodule
