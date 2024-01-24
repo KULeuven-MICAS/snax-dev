@@ -119,6 +119,7 @@ def extract_tcdm_list() -> Tuple[List[str], List[str]]:
         snitch_cluster_path + "/hw/snitch/src/snitch_pkg.sv",
         snitch_cluster_path + "/hw/snitch_cluster/src/snitch_tcdm_interconnect.sv",
         snitch_cluster_path + "/hw/snitch_cluster/src/snitch_amo_shim.sv",
+        snitch_cluster_path + "/hw/mem_interface/src/mem_wide_narrow_mux.sv",
     ]
 
     # Get repo path (from snax-dev directory)
@@ -172,6 +173,7 @@ async def clock_and_wait(dut) -> None:
     return
 
 
+# Functions for reading and writing to registers
 # For writing to registers
 async def reg_write(dut, addr: int, data: int) -> None:
     dut.io_csr_req_bits_data_i.value = data
@@ -202,6 +204,84 @@ async def reg_clr(dut) -> None:
     dut.io_csr_req_bits_addr_i.value = 0
     dut.io_csr_req_bits_write_i.value = 0
     dut.io_csr_req_valid_i.value = 0
+    await clock_and_wait(dut)
+
+    return
+
+
+# Functions for TCDM control
+# Writing to TCDM
+async def tcdm_write(dut, idx: int, addr: int, data: int) -> None:
+    dut.tcdm_req_addr_i[idx].value = addr
+    dut.tcdm_req_data_i[idx].value = data
+    dut.tcdm_req_strb_i[idx].value = 0xFF
+    dut.tcdm_req_write_i[idx].value = 1
+    dut.tcdm_req_q_valid_i[idx].value = 1
+    await clock_and_wait(dut)
+
+    return
+
+
+# Reading from TCDM
+async def tcdm_read(dut, idx: int, addr: int) -> int:
+    dut.tcdm_req_addr_i[idx].value = addr
+    dut.tcdm_req_data_i[idx].value = 0
+    dut.tcdm_req_strb_i[idx].value = 0x00
+    dut.tcdm_req_write_i[idx].value = 0
+    dut.tcdm_req_q_valid_i[idx].value = 1
+    await clock_and_wait(dut)
+
+    reg_read = int(dut.tcdm_rsp_data_o[idx].value)
+
+    return reg_read
+
+
+# Clear TCDM
+async def tcdm_clr(dut, idx: int) -> None:
+    dut.tcdm_req_addr_i[idx].value = 0
+    dut.tcdm_req_data_i[idx].value = 0
+    dut.tcdm_req_strb_i[idx].value = 0
+    dut.tcdm_req_write_i[idx].value = 0
+    dut.tcdm_req_q_valid_i[idx].value = 0
+    await clock_and_wait(dut)
+
+    return
+
+
+# Functions for TCDM control
+# Writing to TCDM
+async def wide_tcdm_write(dut, addr: int, data: int) -> None:
+    dut.tcdm_dma_req_addr_i.value = addr
+    dut.tcdm_dma_req_data_i.value = data
+    dut.tcdm_dma_req_strb_i.value = 0xFFFFFFFFFFFFFFFF
+    dut.tcdm_dma_req_write_i.value = 1
+    dut.tcdm_dma_req_q_valid_i.value = 1
+    await clock_and_wait(dut)
+
+    return
+
+
+# Reading from TCDM
+async def wide_tcdm_read(dut, addr: int) -> int:
+    dut.tcdm_dma_req_addr_i.value = addr
+    dut.tcdm_dma_req_data_i.value = 0
+    dut.tcdm_dma_req_strb_i.value = 0x00
+    dut.tcdm_dma_req_write_i.value = 0
+    dut.tcdm_dma_req_q_valid_i.value = 1
+    await clock_and_wait(dut)
+
+    reg_read = int(dut.tcdm_dma_rsp_data_o.value)
+
+    return reg_read
+
+
+# Clear TCDM
+async def wide_tcdm_clr(dut) -> None:
+    dut.tcdm_dma_req_addr_i.value = 0
+    dut.tcdm_dma_req_data_i.value = 0
+    dut.tcdm_dma_req_strb_i.value = 0
+    dut.tcdm_dma_req_write_i.value = 0
+    dut.tcdm_dma_req_q_valid_i.value = 0
     await clock_and_wait(dut)
 
     return
