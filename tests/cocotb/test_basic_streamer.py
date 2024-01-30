@@ -201,9 +201,9 @@ def test_basic_streamer(simulator, waves):
 
     # Make sure to generate the StreamerTop.sv
     # If it does not exist
-    streamer_top_file = repo_path + "/rtl/StreamerTop.sv"
+    streamer_top_file = repo_path + "/tests/tb/tb_streamer_top.sv"
     if not os.path.exists(streamer_top_file):
-        subprocess.run(["make", "gen_stream_tb"])
+        subprocess.run(["make", streamer_top_file])
 
     verilog_sources = [
         repo_path + "/rtl/StreamerTop.sv",
