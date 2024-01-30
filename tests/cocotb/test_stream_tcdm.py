@@ -279,7 +279,7 @@ def test_stream_tcdm(simulator, waves):
     # If it does not exist
     stream_tcdm_tb_file = repo_path + "/tests/tb/tb_stream_tcdm_top.sv"
     if not os.path.exists(stream_tcdm_tb_file):
-        subprocess.run(["make", "gen_stream_tcdm_tb"])
+        subprocess.run(["make", stream_tcdm_tb_file])
 
     streamer_verilog_sources = [
         repo_path + "/rtl/StreamerTop.sv",
