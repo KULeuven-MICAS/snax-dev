@@ -155,9 +155,33 @@ def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
     return uint_list
 
 
+# This is for repacking data from a contigious list
+# into a list of packed data for DMA read and write chunks
+def gen_wide_list(
+    narrow_list: List[int], narrow_width: int, wide_width: int
+) -> List[int]:
+    # This one checks if the number of narrow elements
+    # Is divisible by the ratio of wide and narrow widths
+    # Otherwise you will not utilize the entire DMA
+    wide_list = []
+    wide_narrow_ratio = int(wide_width / narrow_width)
+    if len(narrow_list) % wide_narrow_ratio:
+        print("WARNING! Number of elements and wide-narrow ratio are not divisible")
+
+    wide_len = int(len(narrow_list) / wide_narrow_ratio)
+
+    for i in range(wide_len):
+        wide_num = 0
+        for j in range(wide_narrow_ratio - 1, -1, -1):
+            wide_num += narrow_list[i * wide_narrow_ratio + j] << (narrow_width * j)
+        wide_list.append(wide_num)
+
+    return wide_list
+
+
 # Compare and assert
 def comp_and_assert(golden_data: int, actual_data: int) -> None:
-    cocotb.log.info(f"Golden data: {golden_data}; Actual data: {actual_data}")
+    cocotb.log.info(f"Golden data: {hex(golden_data)}; Actual data: {hex(actual_data)}")
     assert golden_data == actual_data
     return
 
