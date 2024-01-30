@@ -11,17 +11,6 @@ on:
     branches: [main]
 
 jobs:
-  streamer-test-gen:
-    name: Template generation test
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/kuleuven-micas/snax-cocotb
-    steps:
-      - uses: actions/checkout@v3
-      - name: Generate SNAX streamer
-        run: |
-          make gen_stream_tb
-
   rtl-test-vlt:
     name: RTL test using verilator
     runs-on: ubuntu-22.04
