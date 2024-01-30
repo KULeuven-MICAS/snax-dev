@@ -277,8 +277,8 @@ def test_stream_tcdm(simulator, waves):
 
     # Make sure to generate the StreamerTop.sv
     # If it does not exist
-    streamer_top_file = repo_path + "/rtl/StreamerTop.sv"
-    if not os.path.exists(streamer_top_file):
+    stream_tcdm_tb_file = repo_path + "/tests/tb/tb_stream_tcdm_top.sv"
+    if not os.path.exists(stream_tcdm_tb_file):
         subprocess.run(["make", "gen_stream_tcdm_tb"])
 
     streamer_verilog_sources = [
@@ -290,7 +290,7 @@ def test_stream_tcdm(simulator, waves):
     tcdm_includes, tcdm_verilog_sources = snax_util.extract_tcdm_list()
 
     tb_verilog_source = [
-        repo_path + "/tests/tb/tb_stream_tcdm_top.sv",
+        stream_tcdm_tb_file,
     ]
 
     verilog_sources = (
