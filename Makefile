@@ -80,7 +80,7 @@ $(STREAM_GEN_OUT_RTL_FILE):
 #-----------------------------
 # Generate Streamer Wrapper Testbench
 #-----------------------------
-gen_stream_tb:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_RTL_FILE)
+${STREAM_GEN_OUT_TB_FILE}:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_RTL_FILE)
 	${PYTHON} util/scripts/template_gen.py --cfg_path="${STREAM_GEN_CFG_FILE}" \
 	--tpl_path="${STREAM_GEN_TPL_TB_FILE}" \
 	--out_path="${STREAM_GEN_OUT_TB_FILE}"
@@ -88,7 +88,7 @@ gen_stream_tb:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_
 #-----------------------------
 # Generate Streamer-TCDM Wrapper Testbench
 #-----------------------------
-gen_stream_tcdm_tb:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_RTL_FILE)
+${STREAM_TCDM_GEN_OUT_TB_FILE}:	$(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_GEN_OUT_RTL_FILE)
 	${PYTHON} util/scripts/template_gen.py --cfg_path="${STREAM_GEN_CFG_FILE}" \
 	--tpl_path="${STREAM_TCDM_GEN_TPL_TB_FILE}" \
 	--out_path="${STREAM_TCDM_GEN_OUT_TB_FILE}"
