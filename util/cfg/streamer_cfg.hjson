@@ -65,6 +65,7 @@
     // numBanks - Total number of banks
     //--------------------------------
     tcdmDataWidth: 64,
+    tcdmDmaDataWidth: 512,
     tcdmDepth: 256,
     numBanks: 32,
 }
