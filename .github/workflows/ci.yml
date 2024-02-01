@@ -18,6 +18,8 @@ jobs:
       image: ghcr.io/kuleuven-micas/snax-cocotb
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
       - name: Pull Snitch cluster files
         run: |
           bender script flist
