@@ -1,0 +1,18 @@
+[submodule "rtl/pulp-submodules/common_cells"]
+	path = rtl/pulp-submodules/common_cells
+	url = https://github.com/pulp-platform/common_cells.git
+[submodule "rtl/pulp-submodules/axi"]
+	path = rtl/pulp-submodules/axi
+	url = https://github.com/pulp-platform/axi.git
+[submodule "rtl/pulp-submodules/register_interface"]
+	path = rtl/pulp-submodules/register_interface
+	url = https://github.com/pulp-platform/register_interface.git
+[submodule "rtl/pulp-submodules/riscv-dbg"]
+	path = rtl/pulp-submodules/riscv-dbg
+	url = https://github.com/pulp-platform/riscv-dbg.git
+[submodule "rtl/pulp-submodules/tech_cells_generic"]
+	path = rtl/pulp-submodules/tech_cells_generic
+	url = https://github.com/pulp-platform/tech_cells_generic.git
+[submodule "rtl/pulp-submodules/snitch_cluster"]
+	path = rtl/pulp-submodules/snitch_cluster
+	url = https://github.com/KULeuven-MICAS/snitch_cluster.git
