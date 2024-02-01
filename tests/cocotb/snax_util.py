@@ -70,13 +70,17 @@ def extract_src_path(target_src: str) -> str:
 # This lists all necessary files for the
 # TCDM subsystem
 def extract_tcdm_list() -> Tuple[List[str], List[str]]:
+    # Get repo path (from snax-dev directory)
+    repo_path = os.getcwd()
+    pulp_submodule_path = repo_path + "/rtl/pulp-submodules"
+
     # Extract bender path names
-    common_cells_path = extract_src_path("common_cells")
-    axi_path = extract_src_path("axi")
-    register_interface_path = extract_src_path("register_interface")
-    snitch_cluster_path = extract_src_path("snitch_cluster")
-    dm_pkg_path = extract_src_path("riscv-dbg")
-    tech_cells_path = extract_src_path("tech_cells_generic")
+    common_cells_path = pulp_submodule_path + "/common_cells"
+    axi_path = pulp_submodule_path + "/axi"
+    register_interface_path = pulp_submodule_path + "/register_interface"
+    snitch_cluster_path = pulp_submodule_path + "/snitch_cluster"
+    dm_pkg_path = pulp_submodule_path + "/riscv-dbg"
+    tech_cells_path = pulp_submodule_path + "/tech_cells_generic"
 
     # Extract include list for typedefs
     include_list = [
@@ -121,9 +125,6 @@ def extract_tcdm_list() -> Tuple[List[str], List[str]]:
         snitch_cluster_path + "/hw/snitch_cluster/src/snitch_amo_shim.sv",
         snitch_cluster_path + "/hw/mem_interface/src/mem_wide_narrow_mux.sv",
     ]
-
-    # Get repo path (from snax-dev directory)
-    repo_path = os.getcwd()
 
     # Add top-level tcdm components
     tcdm_subsys = [
