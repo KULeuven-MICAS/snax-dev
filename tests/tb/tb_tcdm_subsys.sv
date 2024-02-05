@@ -78,7 +78,7 @@ module tb_tcdm_subsys #(
     .NarrowDataWidth          ( NarrowDataWidth       ),
     .TCDMDepth                ( TCDMDepth             ),
     .NrBanks                  ( NrBanks               ),
-    .NumInp                   ( NumInp                ),
+    .NumInp                   ( NumInp                )
   ) i_tcdm_subsys (
     //-----------------------------
     // Clock and reset

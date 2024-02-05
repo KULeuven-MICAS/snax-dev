@@ -16,7 +16,6 @@ module streamer_wrapper #(
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth = ${cfg["tcdmDepth"]},
   parameter int unsigned TCDMReqPorts = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
-  parameter int unsigned TCDMMemAddrWidth = $clog2(TCDMDepth),
   parameter int unsigned TCDMSize = TCDMReqPorts * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth = $clog2(TCDMSize)
 )(
