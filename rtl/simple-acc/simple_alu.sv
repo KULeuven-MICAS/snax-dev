@@ -2,7 +2,7 @@
 // Simple multiplier that follows
 // the valid-ready responses per port
 //-------------------------------
-module simple_mul #(
+module simple_alu #(
   parameter int unsigned DataWidth = 64
 )(
   input  logic                 clk_i,

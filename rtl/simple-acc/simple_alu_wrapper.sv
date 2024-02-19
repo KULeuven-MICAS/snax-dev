@@ -2,7 +2,7 @@
 // Simple multiplier that follows
 // the valid-ready responses per port
 //-------------------------------
-module simple_mul_wrapper #(
+module simple_alu_wrapper #(
   parameter int unsigned SpatPar = 4,
   parameter int unsigned DataWidth = 64
 )(
@@ -52,9 +52,9 @@ module simple_mul_wrapper #(
   // Generate Simple Multipliers
   //-------------------------------
   for (genvar i = 0; i < SpatPar; i ++) begin: gen_spatpar_muls
-    simple_mul #(
+    simple_alu #(
       .DataWidth      ( DataWidth       )
-    ) i_simple_mul (
+    ) i_simple_alu (
       .clk_i          ( clk_i           ),
       .rst_ni         ( rst_ni          ),
       .a_i            ( a_split[i]      ),
