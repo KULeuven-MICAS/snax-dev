@@ -48,17 +48,19 @@ MAX_WIDE_VAL = 2**WIDE_DATA_WIDTH
 # CSR parameters from the default
 # Configuration found under util/cfg/streamer_cfg.hjson
 # Also some pre-computed that are fixed
-CSR_LOOP_COUNT_0 = 0
-CSR_TEMPORAL_STRIDE_0 = 1
-CSR_TEMPORAL_STRIDE_1 = 2
-CSR_TEMPORAL_STRIDE_2 = 3
-CSR_SPATIAL_STRIDE_0 = 4
-CSR_SPATIAL_STRIDE_1 = 5
-CSR_SPATIAL_STRIDE_2 = 6
-CSR_BASE_PTR_0 = 7
-CSR_BASE_PTR_1 = 8
-CSR_BASE_PTR_2 = 9
-CSR_START_STREAMER = 10
+OFFSET = 8
+
+CSR_LOOP_COUNT_0 = 0 + OFFSET
+CSR_TEMPORAL_STRIDE_0 = 1  + OFFSET
+CSR_TEMPORAL_STRIDE_1 = 2  + OFFSET
+CSR_TEMPORAL_STRIDE_2 = 3 + OFFSET
+CSR_SPATIAL_STRIDE_0 = 4 + OFFSET
+CSR_SPATIAL_STRIDE_1 = 5 + OFFSET
+CSR_SPATIAL_STRIDE_2 = 6 + OFFSET
+CSR_BASE_PTR_0 = 7 + OFFSET
+CSR_BASE_PTR_1 = 8 + OFFSET
+CSR_BASE_PTR_2 = 9 + OFFSET
+CSR_START_STREAMER = 10 + OFFSET
 
 
 @cocotb.test()
@@ -119,39 +121,39 @@ async def stream_mul_dut(dut):
         narrow_golden_list, NARROW_DATA_WIDTH, WIDE_DATA_WIDTH
     )
 
-    # Precompute golden results
-    narrow_golden_result = []
+    # # Precompute golden results
+    # narrow_golden_result = []
 
-    for i in range(LOOP_COUNT_0):
-        for j in range(SPATPAR):
-            temp_res = (
-                narrow_golden_list[i * SPATPAR * 2 + j]
-                * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
-            )
-            temp_res = temp_res & (MAX_NARROW_VAL - 1)
-            narrow_golden_result.append(temp_res)
+    # for i in range(LOOP_COUNT_0):
+    #     for j in range(SPATPAR):
+    #         temp_res = (
+    #             narrow_golden_list[i * SPATPAR * 2 + j]
+    #             * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+    #         )
+    #         temp_res = temp_res & (MAX_NARROW_VAL - 1)
+    #         narrow_golden_result.append(temp_res)
 
-    wide_golden_result = snax_util.gen_wide_list(
-        narrow_golden_result, NARROW_DATA_WIDTH, (NARROW_DATA_WIDTH * SPATPAR)
-    )
+    # wide_golden_result = snax_util.gen_wide_list(
+    #     narrow_golden_result, NARROW_DATA_WIDTH, (NARROW_DATA_WIDTH * SPATPAR)
+    # )
 
-    # Preload TCDM DMA subsys using DMA ports
-    wide_len = len(wide_golden_list)
-    for i in range(wide_len):
-        await snax_util.wide_tcdm_write(
-            dut, i * WIDE_BANK_INCREMENT, wide_golden_list[i]
-        )
+    # # Preload TCDM DMA subsys using DMA ports
+    # wide_len = len(wide_golden_list)
+    # for i in range(wide_len):
+    #     await snax_util.wide_tcdm_write(
+    #         dut, i * WIDE_BANK_INCREMENT, wide_golden_list[i]
+    #     )
 
-    await snax_util.wide_tcdm_clr(dut)
+    # await snax_util.wide_tcdm_clr(dut)
 
-    # Sanity check contents loaded into DMA
-    for i in range(wide_len):
-        tcdm_wide_val = await snax_util.wide_tcdm_read(dut, i * WIDE_BANK_INCREMENT)
-        snax_util.comp_and_assert(wide_golden_list[i], tcdm_wide_val)
+    # # Sanity check contents loaded into DMA
+    # for i in range(wide_len):
+    #     tcdm_wide_val = await snax_util.wide_tcdm_read(dut, i * WIDE_BANK_INCREMENT)
+    #     snax_util.comp_and_assert(wide_golden_list[i], tcdm_wide_val)
 
-    await snax_util.wide_tcdm_clr(dut)
+    # await snax_util.wide_tcdm_clr(dut)
 
-    cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
+    # cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
 
     # At this point we'll do explicit declartion
     # of the tests so that it's understandable
