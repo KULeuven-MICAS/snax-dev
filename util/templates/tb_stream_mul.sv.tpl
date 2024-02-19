@@ -12,7 +12,7 @@
 //-----------------------------------
 // Basic SNAX streamer testbench
 //-----------------------------------
-module tb_stream_mul;
+module tb_stream_alu;
 
   localparam int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]};
   localparam int unsigned WideDataWidth = ${cfg["tcdmDmaDataWidth"]};
@@ -32,14 +32,14 @@ module tb_stream_mul;
   //-----------------------------
   // Request
   logic [31:0] io_csr_req_bits_data_i;
-  logic [${csr_width-1}:0] io_csr_req_bits_addr_i;
-  logic io_csr_req_bits_write_i;
-  logic io_csr_req_valid_i;
-  logic io_csr_req_ready_o;
+  logic [31:0] io_csr_req_bits_addr_i;
+  logic        io_csr_req_bits_write_i;
+  logic        io_csr_req_valid_i;
+  logic        io_csr_req_ready_o;
 
   // Response
-  logic io_csr_rsp_ready_i;
-  logic io_csr_rsp_valid_o;
+  logic        io_csr_rsp_ready_i;
+  logic        io_csr_rsp_valid_o;
   logic [31:0] io_csr_rsp_bits_data_o;
 
   //-----------------------------
@@ -70,87 +70,87 @@ module tb_stream_mul;
 
   // TCDM subsystem
   tcdm_subsys #(
-    .NarrowDataWidth ( NarrowDataWidth ),
-    .TCDMDepth ( TCDMDepth ),
-    .TCDMAddrWidth ( TCDMAddrWidth ),
-    .NrBanks ( NrBanks ),
-    .NumInp ( TCDMReqPorts )
+    .NarrowDataWidth  ( NarrowDataWidth ),
+    .TCDMDepth        ( TCDMDepth       ),
+    .TCDMAddrWidth    ( TCDMAddrWidth   ),
+    .NrBanks          ( NrBanks         ),
+    .NumInp           ( TCDMReqPorts    )
   ) i_tcdm_subsys (
     //-----------------------------
     // Clock and reset
     //-----------------------------
-    .clk_i ( clk_i ),
+    .clk_i  ( clk_i  ),
     .rst_ni ( rst_ni ),
     //-----------------------------
     // TCDM ports
     //-----------------------------
-    .tcdm_req_write_i ( tcdm_req_write ),
-    .tcdm_req_addr_i ( tcdm_req_addr ),
-    .tcdm_req_amo_i ( tcdm_req_amo ),
-    .tcdm_req_data_i ( tcdm_req_data ),
-    .tcdm_req_user_core_id_i ( tcdm_req_user_core_id ),
-    .tcdm_req_user_is_core_i ( tcdm_req_user_is_core ),
-    .tcdm_req_strb_i ( tcdm_req_strb ),
-    .tcdm_req_q_valid_i ( tcdm_req_q_valid ),
-    .tcdm_rsp_q_ready_o ( tcdm_rsp_q_ready ),
-    .tcdm_rsp_p_valid_o ( tcdm_rsp_p_valid ),
-    .tcdm_rsp_data_o ( tcdm_rsp_data ),
+    .tcdm_req_write_i         ( tcdm_req_write         ),
+    .tcdm_req_addr_i          ( tcdm_req_addr          ),
+    .tcdm_req_amo_i           ( tcdm_req_amo           ),
+    .tcdm_req_data_i          ( tcdm_req_data          ),
+    .tcdm_req_user_core_id_i  ( tcdm_req_user_core_id  ),
+    .tcdm_req_user_is_core_i  ( tcdm_req_user_is_core  ),
+    .tcdm_req_strb_i          ( tcdm_req_strb          ),
+    .tcdm_req_q_valid_i       ( tcdm_req_q_valid       ),
+    .tcdm_rsp_q_ready_o       ( tcdm_rsp_q_ready       ),
+    .tcdm_rsp_p_valid_o       ( tcdm_rsp_p_valid       ),
+    .tcdm_rsp_data_o          ( tcdm_rsp_data          ),
     //-----------------------------
     // Wide TCDM ports
     //-----------------------------
-    .tcdm_dma_req_write_i ( tcdm_dma_req_write_i ),
-    .tcdm_dma_req_addr_i ( tcdm_dma_req_addr_i ),
-    .tcdm_dma_req_data_i ( tcdm_dma_req_data_i ),
-    .tcdm_dma_req_strb_i ( tcdm_dma_req_strb_i ),
-    .tcdm_dma_req_q_valid_i ( tcdm_dma_req_q_valid_i ),
-    .tcdm_dma_rsp_q_ready_o ( tcdm_dma_rsp_q_ready_o ),
-    .tcdm_dma_rsp_p_valid_o ( tcdm_dma_rsp_p_valid_o ),
-    .tcdm_dma_rsp_data_o ( tcdm_dma_rsp_data_o )
+    .tcdm_dma_req_write_i     ( tcdm_dma_req_write_i   ),
+    .tcdm_dma_req_addr_i      ( tcdm_dma_req_addr_i    ),
+    .tcdm_dma_req_data_i      ( tcdm_dma_req_data_i    ),
+    .tcdm_dma_req_strb_i      ( tcdm_dma_req_strb_i    ),
+    .tcdm_dma_req_q_valid_i   ( tcdm_dma_req_q_valid_i ),
+    .tcdm_dma_rsp_q_ready_o   ( tcdm_dma_rsp_q_ready_o ),
+    .tcdm_dma_rsp_p_valid_o   ( tcdm_dma_rsp_p_valid_o ),
+    .tcdm_dma_rsp_data_o      ( tcdm_dma_rsp_data_o    )
   );
 
-  stream_mul_wrapper #(
-    .NarrowDataWidth ( NarrowDataWidth ),
-    .TCDMDepth ( TCDMDepth ),
-    .TCDMReqPorts ( TCDMReqPorts ),
-    .TCDMSize ( TCDMSize ),
-    .TCDMAddrWidth ( TCDMAddrWidth )
-  ) i_stream_mul_wrapper (
+  stream_alu_wrapper #(
+    .NarrowDataWidth  ( NarrowDataWidth ),
+    .TCDMDepth        ( TCDMDepth       ),
+    .TCDMReqPorts     ( TCDMReqPorts    ),
+    .TCDMSize         ( TCDMSize        ),
+    .TCDMAddrWidth    ( TCDMAddrWidth   )
+  ) i_stream_alu_wrapper (
     //-----------------------------
     // Clocks and reset
     //-----------------------------
-    .clk_i ( clk_i ),
+    .clk_i  ( clk_i  ),
     .rst_ni ( rst_ni ),
 
     //-----------------------------
     // TCDM ports
     //-----------------------------
     // Request
-    .tcdm_req_write_o ( tcdm_req_write ),
-    .tcdm_req_addr_o ( tcdm_req_addr ),
-    .tcdm_req_amo_o ( tcdm_req_amo ), 
-    .tcdm_req_data_o ( tcdm_req_data ),
-    .tcdm_req_user_core_id_o ( tcdm_req_user_core_id ), 
-    .tcdm_req_user_is_core_o ( tcdm_req_user_is_core ),
-    .tcdm_req_strb_o ( tcdm_req_strb ),
-    .tcdm_req_q_valid_o ( tcdm_req_q_valid ),
+    .tcdm_req_write_o         ( tcdm_req_write        ),
+    .tcdm_req_addr_o          ( tcdm_req_addr         ),
+    .tcdm_req_amo_o           ( tcdm_req_amo          ), 
+    .tcdm_req_data_o          ( tcdm_req_data         ),
+    .tcdm_req_user_core_id_o  ( tcdm_req_user_core_id ), 
+    .tcdm_req_user_is_core_o  ( tcdm_req_user_is_core ),
+    .tcdm_req_strb_o          ( tcdm_req_strb         ),
+    .tcdm_req_q_valid_o       ( tcdm_req_q_valid      ),
     // Response
-    .tcdm_rsp_q_ready_i ( tcdm_rsp_q_ready ),
-    .tcdm_rsp_p_valid_i ( tcdm_rsp_p_valid ),
-    .tcdm_rsp_data_i ( tcdm_rsp_data ),
+    .tcdm_rsp_q_ready_i       ( tcdm_rsp_q_ready      ),
+    .tcdm_rsp_p_valid_i       ( tcdm_rsp_p_valid      ),
+    .tcdm_rsp_data_i          ( tcdm_rsp_data         ),
 
     //-----------------------------
     // CSR control ports
     //-----------------------------
     // Request
-    .io_csr_req_bits_data_i ( io_csr_req_bits_data_i ),
-    .io_csr_req_bits_addr_i ( io_csr_req_bits_addr_i ),
-    .io_csr_req_bits_write_i ( io_csr_req_bits_write_i ),
-    .io_csr_req_valid_i ( io_csr_req_valid_i ),
-    .io_csr_req_ready_o ( io_csr_req_ready_o ),
+    .io_csr_req_bits_data_i   ( io_csr_req_bits_data_i  ),
+    .io_csr_req_bits_addr_i   ( io_csr_req_bits_addr_i  ),
+    .io_csr_req_bits_write_i  ( io_csr_req_bits_write_i ),
+    .io_csr_req_valid_i       ( io_csr_req_valid_i      ),
+    .io_csr_req_ready_o       ( io_csr_req_ready_o      ),
     // Response
-    .io_csr_rsp_ready_i ( io_csr_rsp_ready_i ),
-    .io_csr_rsp_valid_o ( io_csr_rsp_valid_o ),
-    .io_csr_rsp_bits_data_o ( io_csr_rsp_bits_data_o )
+    .io_csr_rsp_ready_i       ( io_csr_rsp_ready_i      ),
+    .io_csr_rsp_valid_o       ( io_csr_rsp_valid_o      ),
+    .io_csr_rsp_bits_data_o   ( io_csr_rsp_bits_data_o  )
   );
 
 endmodule
