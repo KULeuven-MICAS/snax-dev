@@ -12,13 +12,19 @@ This directory has the following:
 You can build the docker with:
 
 ```bash
-docker build -t ghcr.io/kuleuven-micas/snax-cocotb .
+docker build -t snax-cocotb util/container/.
+```
+
+Alternatively, you can download the latest pre-built container with:
+
+```bash
+docker pull ghcr.io/kuleuven-micas/snax-cocotb:latest
 ```
 
 You can run the container with (make sure you are at the root of the repo):
 
 ```bash
-podman run -it -v `pwd`:/repo -w /repo ghcr.io/kuleuven-micas/snax-cocotb
+docker run -it -v `pwd`:/repo -w /repo ghcr.io/kuleuven-micas/snax-cocotb
 ```
 
 # Template Generation Usage
