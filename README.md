@@ -65,7 +65,7 @@ Below shows a figure for the test and test bench setup:
 There are three major key sections:
 
 * `TCDM Subsystem` - is at the top-most area. This is a replica of the Snitch's TCDM subsystem where it contains narrow and wide TCDM ports. The narrow are for the accelerator's ports while the wide are for the DMA's ports.
-* `Accelerator Wrapper` - is the main accelerator DUT. The figure shows that it has streamers connected to the main accelerator data path. There also exists a CSR Control which is also a manager for setting configurations. **Note** It is possible to design or have your own streamer, if you have an accelerator built this way, then we connect it directly to the TCDM interconnect following the given ports.
+* `Accelerator Wrapper` - is the main accelerator DUT. The figure shows that it has streamers connected to the main accelerator data path. The CSR Control is a manager for setting accelerator configurations. **Note** It is possible to design or have your own streamer, if you have an accelerator built this way, then we connect it directly to the TCDM interconnect following the given ports.
 * `Cocotb Driver` - acts as the main stimuli. It controls the CSR of the accelerator and a port that handles DMA transactions unto the wide TCDM. The latter was developed so users can simulate the DMA transfers into the memory.
 
 When a designer makes an accelerator wrapper, they only need to connect the accelerator CSR ports and the TCDM ports. The succeeding subsections discuss these ports in detail.
@@ -96,7 +96,7 @@ The signal definitions for the response port are:
 * A source cannot wait for READY to be asserted before asserting `VALID`.
 * A destination can wait for VALID to be asserted before asserting `READY`.
 
-The accelerator ports for getting data from streamers uses the same mechanism. They only have one channel which is the `data` port. The interaction between streamers and the accelerator involves only data transfers. If you are to use streamers, refer to the [SNAX Streamer](https://github.com/KULeuven-MICAS/snax-streamer) repository.
+The accelerator ports for getting data from streamers use the same mechanism. They only have one channel which is the `data` port. The interaction between streamers and the accelerator involves only data transfers. If you are to use streamers, refer to the [SNAX Streamer](https://github.com/KULeuven-MICAS/snax-streamer) repository.
 
 ##  TCDM Ports:
 
