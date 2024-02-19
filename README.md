@@ -49,9 +49,9 @@ pre-commit install
 * `/rtl` - contains custom and generated RTL source files.
     * We use Chisel to generate the streamers and the RTL source files are placed here.
     * The TCDM sub-system uses PULP's Snitch platform and we sub-module these IPs into this directory.
-    * 
+    * There are also examples on how to make the top-level wrappers which we connect to the SNAX platform.
 * `/tests` - contains the Cocotb test and test bench wrappers.
     * The Cocotb tests function as the main test bench and stimuli for the design under test (DUT).
     * The test bench wrappers function as top-level wrappers to connect to cocotb.
-    * The `snax_util.py` contains utility components for 
-* `/util` - contains configuration files, scripts, templates, and the container for quick setups.
+    * The `snax_util.py` contains utility components for tests and read-write register or direct memory access (DMA) operations.
+ * `/util` - contains configuration files, scripts, templates, and the container for quick setups.
