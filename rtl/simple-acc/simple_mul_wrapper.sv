@@ -16,7 +16,10 @@ module simple_mul_wrapper #(
   output logic                           b_ready_o,
   output logic [(SpatPar*DataWidth)-1:0] result_o,
   output logic                           result_valid_o,
-  input  logic                           result_ready_i
+  input  logic                           result_ready_i,
+  // Fix this to 2 bits only
+  // Let's do 4 ALU operations for simplicity
+  input  logic                     [1:0] alu_config_i
 );
 
   //-------------------------------
@@ -62,7 +65,8 @@ module simple_mul_wrapper #(
       .b_ready_o      ( b_ready[i]      ),
       .result_o       ( result_split[i] ),
       .result_valid_o ( result_valid[i] ),
-      .result_ready_i ( result_ready_i  )
+      .result_ready_i ( result_ready_i  ),
+      .alu_config_i   ( alu_config_i    )
     );
   end
 
