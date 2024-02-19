@@ -20,7 +20,10 @@ module stream_alu_wrapper # (
   parameter int unsigned TCDMReqPorts    = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
   parameter int unsigned TCDMSize        = TCDMReqPorts * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth   = $clog2(TCDMSize),
-  parameter int unsigned SpatPar         = ${cfg["dataReaderParams"]["spatialBounds"][0][0]}
+  parameter int unsigned SpatPar         = ${cfg["dataReaderParams"]["spatialBounds"][0][0]},
+  parameter int unsigned RegCount 		   = 32,
+  parameter int unsigned RegDataWidth    = 32,
+	parameter int unsigned RegAddrWidth    = $clog2(RegCount)
 )(
   //-----------------------------
   // Clocks and reset
@@ -94,11 +97,11 @@ module stream_alu_wrapper # (
   // That separate between streamer CSR
   // and ALU CSRs
   //-------------------------------
-  csr_req_1x2_demux #(
-    .AddrSelOffSet        ( 8  ),
-    .TotalRegCount        ( 32 ),
-    .RegDataWidth         ( 32 ),
-  ) i_csr_req_1x2_demux (
+  csr_mux_demux #(
+    .AddrSelOffSet        ( 8            ),
+    .TotalRegCount        ( RegCount     ),
+    .RegDataWidth         ( RegDataWidth ),
+  ) i_csr_mux_demux (
     //-------------------------------
     // Input Core
     //-------------------------------
