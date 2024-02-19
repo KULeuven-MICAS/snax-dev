@@ -3,11 +3,21 @@
 // the valid-ready responses per port
 //-------------------------------
 module simple_alu_wrapper #(
-  parameter int unsigned SpatPar = 4,
-  parameter int unsigned DataWidth = 64
+  parameter int unsigned SpatPar       = 4,
+  parameter int unsigned DataWidth     = 64,
+  parameter int unsigned CsrAddrOffset = 8,
+  parameter int unsigned RegCount 		 = 8,
+  parameter int unsigned RegDataWidth  = 32,
+	parameter int unsigned RegAddrWidth  = $clog2(RegCount)
 )(
+  //-------------------------------
+  // Clocks and reset
+  //-------------------------------
   input  logic                           clk_i,
   input  logic                           rst_ni,
+  //-------------------------------
+  // Accelerator ports
+  //-------------------------------
   input  logic [(SpatPar*DataWidth)-1:0] a_i,
   input  logic                           a_valid_i,
   output logic                           a_ready_o,
@@ -17,9 +27,17 @@ module simple_alu_wrapper #(
   output logic [(SpatPar*DataWidth)-1:0] result_o,
   output logic                           result_valid_o,
   input  logic                           result_ready_i,
-  // Fix this to 2 bits only
-  // Let's do 4 ALU operations for simplicity
-  input  logic                     [1:0] alu_config_i
+  //-------------------------------
+  // CSR manager ports
+  //-------------------------------
+	input  logic [       RegAddrWidth-1:0] csr_addr_i,
+  input  logic [       RegDataWidth-1:0] csr_wr_data_i,
+	input  logic 										       csr_wr_en_i,
+	input  logic 										       csr_req_valid_i,
+	output logic										       csr_req_ready_o,
+	output logic [       RegDataWidth-1:0] csr_rd_data_o,
+	output logic										       csr_rsp_valid_o,
+	input  logic										       csr_rsp_ready_i
 );
 
   //-------------------------------
@@ -66,8 +84,32 @@ module simple_alu_wrapper #(
       .result_o       ( result_split[i] ),
       .result_valid_o ( result_valid[i] ),
       .result_ready_i ( result_ready_i  ),
-      .alu_config_i   ( alu_config_i    )
+      .alu_config_i   ( csr_alu_config  )
     );
   end
+
+  // Wiring for CSR configuration
+  logic [1:0] csr_alu_config;
+
+  //-------------------------------
+  // CSR Manager
+  //-------------------------------
+  simple_alu_csr #(
+    .RegCount         ( RegCount        ),
+    .RegDataWidth     ( RegDataWidth    ),
+    .RegAddrWidth     ( RegAddrWidth    )
+  ) i_simple_alu_csr (
+    .clk_i            ( clk_i           ),
+    .rst_ni           ( rst_ni          ),
+    .csr_addr_i       ( csr_addr_i      ),
+    .csr_wr_data_i    ( csr_wr_data_i   ),
+    .csr_wr_en_i      ( csr_wr_en_i     ),
+    .csr_req_valid_i  ( csr_req_valid_i ),
+    .csr_req_ready_o  ( csr_req_ready_o ),
+    .csr_rd_data_o    ( csr_rd_data_o   ),
+    .csr_rsp_valid_o  ( csr_rsp_valid_o ),
+    .csr_rsp_ready_i  ( csr_rsp_ready_i ),
+    .csr_alu_config_o ( csr_alu_config  )
+  );
 
 endmodule
