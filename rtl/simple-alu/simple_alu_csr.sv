@@ -26,7 +26,7 @@ module simple_alu_csr #(
 	// In this set we use 8 registers
 	// but only the first one is for the configuration
 	//-------------------------------
-	logic [RegWidth-1:0] csr_reg_set [RegCount];
+	logic [RegAddrWidth-1:0] csr_reg_set [RegCount];
 
 	//-------------------------------
 	// The CSR manager is always ready to take
@@ -43,7 +43,7 @@ module simple_alu_csr #(
 	always_ff @ (posedge clk_i or negedge rst_ni) begin
 		if(!rst_ni) begin
 			for( int i = 0; i < RegCount; i++) begin
-				csr_reg_set <= {RegCount{1'b0}};
+				csr_reg_set[i] <= {RegDataWidth{1'b0}};
 			end
 		end else begin
 			if(req_success && csr_wr_en_i) begin
@@ -80,7 +80,8 @@ module simple_alu_csr #(
 				csr_rsp_valid_o <= csr_rsp_valid_o;
 			end
 		end
-	
+  end
+
 	//-------------------------------
 	// Register 0 has its own usefulness
 	//-------------------------------
