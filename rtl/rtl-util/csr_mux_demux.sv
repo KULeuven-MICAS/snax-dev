@@ -6,7 +6,7 @@ module csr_mux_demux #(
   parameter int unsigned AddrSelOffSet   = 7,
   parameter int unsigned TotalRegCount 	 = 8,
   parameter int unsigned RegDataWidth    = 32,
-  parameter int unsigned MaxRegAddrWidth = $clog2(RegCount)
+  parameter int unsigned MaxRegAddrWidth = $clog2(TotalRegCount)
 )(
   //-------------------------------
   // Input Core
@@ -62,7 +62,7 @@ module csr_mux_demux #(
     // because the ready signal is sticky
     // according to core control
     //-------------------------------
-    csr_req_ready_ob = ( sel_output ) ? acc_csr_req_ready_i[1] : acc_csr_req_ready_i[0];
+    csr_req_ready_o = ( sel_output ) ? acc_csr_req_ready_i[1] : acc_csr_req_ready_i[0];
   end
 
   //-------------------------------
