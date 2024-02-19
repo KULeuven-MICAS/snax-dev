@@ -62,7 +62,7 @@ CSR_START_STREAMER = 10
 
 
 @cocotb.test()
-async def stream_tcdm_dut(dut):
+async def stream_mul_dut(dut):
     # Value configurations you can set
     # For exploration and testing
     # These values go into the respective
@@ -235,7 +235,7 @@ def test_stream_mul(simulator, waves):
 
     # Make sure to generate the StreamerTop.sv
     # If it does not exist
-    stream_mul_tb_file = repo_path + "/tests/tb/tb_stream_mul.sv"
+    stream_mul_tb_file = repo_path + "/tests/tb/tb_stream_alu.sv"
     if not os.path.exists(stream_mul_tb_file):
         subprocess.run(["make", stream_mul_tb_file])
 
@@ -249,9 +249,9 @@ def test_stream_mul(simulator, waves):
 
     # Extract resources for simple mul
     simple_mul_sources = [
-        repo_path + "/rtl/simple-mul/simple_mul.sv",
-        repo_path + "/rtl/simple-mul/simple_mul_wrapper.sv",
-        repo_path + "/rtl/stream_mul_wrapper.sv",
+        repo_path + "/rtl/simple-alu/simple_alu.sv",
+        repo_path + "/rtl/simple-alu/simple_alu_wrapper.sv",
+        repo_path + "/rtl/stream_alu_wrapper.sv",
     ]
 
     tb_verilog_source = [
@@ -268,9 +268,9 @@ def test_stream_mul(simulator, waves):
     defines = []
     includes = [] + tcdm_includes
 
-    toplevel = "tb_stream_mul"
+    toplevel = "tb_stream_alu"
 
-    module = "test_stream_mul"
+    module = "test_stream_alu"
 
     sim_build = tests_path + "/sim_build/{}/".format(toplevel)
 
