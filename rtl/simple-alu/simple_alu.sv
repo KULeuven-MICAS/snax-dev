@@ -53,10 +53,10 @@ module simple_alu #(
     end else begin
       if(input_success) begin
         case(alu_config_i)
-          CsrAddrAdd: result_wide <= a_i + b_i;
           CsrAddrSub: result_wide <= a_i - b_i;
           CsrAddrMul: result_wide <= a_i * b_i;
           CsrAddrXor: result_wide <= a_i ^ b_i;
+          default:    result_wide <= a_i + b_i;
         endcase
         result_valid <= 1'b1;
       end else if (output_success) begin
