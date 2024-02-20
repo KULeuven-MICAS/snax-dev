@@ -48,19 +48,31 @@ MAX_WIDE_VAL = 2**WIDE_DATA_WIDTH
 # CSR parameters from the default
 # Configuration found under util/cfg/streamer_cfg.hjson
 # Also some pre-computed that are fixed
-OFFSET = 8
 
-CSR_LOOP_COUNT_0 = 0 + OFFSET
-CSR_TEMPORAL_STRIDE_0 = 1  + OFFSET
-CSR_TEMPORAL_STRIDE_1 = 2  + OFFSET
-CSR_TEMPORAL_STRIDE_2 = 3 + OFFSET
-CSR_SPATIAL_STRIDE_0 = 4 + OFFSET
-CSR_SPATIAL_STRIDE_1 = 5 + OFFSET
-CSR_SPATIAL_STRIDE_2 = 6 + OFFSET
-CSR_BASE_PTR_0 = 7 + OFFSET
-CSR_BASE_PTR_1 = 8 + OFFSET
-CSR_BASE_PTR_2 = 9 + OFFSET
-CSR_START_STREAMER = 10 + OFFSET
+CSR_ALU_CONFIG = 0
+CSR_ALU_GPP_1 = 1
+CSR_ALU_GPP_2 = 2
+CSR_ALU_GPP_3 = 3
+CSR_ALU_GPP_4 = 4
+CSR_ALU_GPP_5 = 5
+CSR_ALU_GPP_6 = 6
+CSR_ALU_GPP_7 = 7
+
+# This STREAMER_OFFSET is the offset
+# For the address registers
+STREAMER_OFFSET = 8
+
+CSR_LOOP_COUNT_0 = 0 + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_0 = 1  + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_1 = 2  + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_2 = 3 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_0 = 4 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_1 = 5 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_2 = 6 + STREAMER_OFFSET
+CSR_BASE_PTR_0 = 7 + STREAMER_OFFSET
+CSR_BASE_PTR_1 = 8 + STREAMER_OFFSET
+CSR_BASE_PTR_2 = 9 + STREAMER_OFFSET
+CSR_START_STREAMER = 10 + STREAMER_OFFSET
 
 
 @cocotb.test()
@@ -69,6 +81,23 @@ async def stream_alu_dut(dut):
     # For exploration and testing
     # These values go into the respective
     # CSR register addresses above
+
+    # ACLU_CONFIG has the following:
+    # 0 - addition
+    # 1 - subtraction
+    # 2 - multiplication
+    # 3 - XOR
+    ALU_CONFIG = 1
+    ALU_GPP_1 = 123
+    ALU_GPP_2 = 456
+    ALU_GPP_3 = 789
+    ALU_GPP_4 = 910
+    ALU_GPP_5 = 101
+    ALU_GPP_6 = 121
+    ALU_GPP_7 = 368
+    
+    # These ones go into the 
+    # streamer registers
     LOOP_COUNT_0 = 100
     TEMPORAL_STRIDE_0 = 64
     TEMPORAL_STRIDE_1 = 64
@@ -121,39 +150,71 @@ async def stream_alu_dut(dut):
         narrow_golden_list, NARROW_DATA_WIDTH, WIDE_DATA_WIDTH
     )
 
-    # # Precompute golden results
-    # narrow_golden_result = []
+    # Precompute golden results
+    narrow_golden_result = []
 
-    # for i in range(LOOP_COUNT_0):
-    #     for j in range(SPATPAR):
-    #         temp_res = (
-    #             narrow_golden_list[i * SPATPAR * 2 + j]
-    #             * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
-    #         )
-    #         temp_res = temp_res & (MAX_NARROW_VAL - 1)
-    #         narrow_golden_result.append(temp_res)
+    for i in range(LOOP_COUNT_0):
+        for j in range(SPATPAR):
+            # Output changes per ALU_CONFIG
+            if( ALU_CONFIG == 1 ):
 
-    # wide_golden_result = snax_util.gen_wide_list(
-    #     narrow_golden_result, NARROW_DATA_WIDTH, (NARROW_DATA_WIDTH * SPATPAR)
-    # )
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    - narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            elif ( ALU_CONFIG == 2):
 
-    # # Preload TCDM DMA subsys using DMA ports
-    # wide_len = len(wide_golden_list)
-    # for i in range(wide_len):
-    #     await snax_util.wide_tcdm_write(
-    #         dut, i * WIDE_BANK_INCREMENT, wide_golden_list[i]
-    #     )
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            elif ( ALU_CONFIG == 3):
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    ^ narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            else:
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    + narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            
+            temp_res = temp_res & (MAX_NARROW_VAL - 1)
+            narrow_golden_result.append(temp_res)
 
-    # await snax_util.wide_tcdm_clr(dut)
+    wide_golden_result = snax_util.gen_wide_list(
+        narrow_golden_result, NARROW_DATA_WIDTH, (NARROW_DATA_WIDTH * SPATPAR)
+    )
 
-    # # Sanity check contents loaded into DMA
-    # for i in range(wide_len):
-    #     tcdm_wide_val = await snax_util.wide_tcdm_read(dut, i * WIDE_BANK_INCREMENT)
-    #     snax_util.comp_and_assert(wide_golden_list[i], tcdm_wide_val)
+    # Preload TCDM DMA subsys using DMA ports
+    wide_len = len(wide_golden_list)
+    for i in range(wide_len):
+        await snax_util.wide_tcdm_write(
+            dut, i * WIDE_BANK_INCREMENT, wide_golden_list[i]
+        )
 
-    # await snax_util.wide_tcdm_clr(dut)
+    await snax_util.wide_tcdm_clr(dut)
 
-    # cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
+    # Sanity check contents loaded into DMA
+    for i in range(wide_len):
+        tcdm_wide_val = await snax_util.wide_tcdm_read(dut, i * WIDE_BANK_INCREMENT)
+        snax_util.comp_and_assert(wide_golden_list[i], tcdm_wide_val)
+
+    await snax_util.wide_tcdm_clr(dut)
+
+    cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
+
+    # Setting of ALU accelerator registers
+    # Only CSR_ALU_CONFIG affects the accelerator
+    # The other registers are for read/write checks only
+    await snax_util.reg_write(dut, CSR_ALU_CONFIG, ALU_CONFIG)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_1, ALU_GPP_1)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_2, ALU_GPP_2)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_3, ALU_GPP_3)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_4, ALU_GPP_4)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_5, ALU_GPP_5)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_6, ALU_GPP_6)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_7, ALU_GPP_7)
 
     # At this point we'll do explicit declartion
     # of the tests so that it's understandable
@@ -183,6 +244,26 @@ async def stream_alu_dut(dut):
 
     # Read and verify the contents
     # of the previously set registers
+
+    # Check ALU registers first
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_CONFIG)
+    snax_util.comp_and_assert(ALU_CONFIG, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_1)
+    snax_util.comp_and_assert(ALU_GPP_1, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_2)
+    snax_util.comp_and_assert(ALU_GPP_2, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_3)
+    snax_util.comp_and_assert(ALU_GPP_3, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_4)
+    snax_util.comp_and_assert(ALU_GPP_4, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_5)
+    snax_util.comp_and_assert(ALU_GPP_5, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_6)
+    snax_util.comp_and_assert(ALU_GPP_6, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_7)
+    snax_util.comp_and_assert(ALU_GPP_7, reg_val)
+
+    # Check Streamer registers
     reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_0)
     snax_util.comp_and_assert(LOOP_COUNT_0, reg_val)
     reg_val = await snax_util.reg_read(dut, CSR_TEMPORAL_STRIDE_0)
@@ -205,29 +286,29 @@ async def stream_alu_dut(dut):
     snax_util.comp_and_assert(BASE_PTR_2, reg_val)
     await snax_util.reg_clr(dut)
 
-    # # In this test we simply continuously
-    # # stream the data in the stream to accelerator ports
-    # # and check if the data is consistent with the preloaded data
-    # cocotb.log.info("Run the streamer and check if data are correct")
+    # In this test we simply continuously
+    # stream the data in the stream to accelerator ports
+    # and check if the data is consistent with the preloaded data
+    cocotb.log.info("Run the streamer and check if data are correct")
 
-    # # Write anything to CSR_STAR_STREAMER CSR
-    # # adderss to activate the streamer
-    # await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
-    # await snax_util.reg_clr(dut)
+    # Write anything to CSR_STAR_STREAMER CSR
+    # adderss to activate the streamer
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_clr(dut)
 
-    # # Wait for the rising edge of the valid
-    # # From here we can continuously stream for ever clock cycle
-    # await RisingEdge(dut.i_stream_alu_wrapper.acc2stream_data_0_valid)
-    # # Necessary for cocotb evaluation step
-    # await Timer(Decimal(1), units="ps")
+    # Wait for the rising edge of the valid
+    # From here we can continuously stream for ever clock cycle
+    await RisingEdge(dut.i_stream_alu_wrapper.acc2stream_data_0_valid)
+    # Necessary for cocotb evaluation step
+    await Timer(Decimal(1), units="ps")
 
-    # for i in range(LOOP_COUNT_0):
-    #     # Extract the data
-    #     write_stream_0 = int(dut.i_stream_alu_wrapper.acc2stream_data_0_bits.value)
+    for i in range(LOOP_COUNT_0):
+        # Extract the data
+        write_stream_0 = int(dut.i_stream_alu_wrapper.acc2stream_data_0_bits.value)
 
-    #     # Streamed data should be consistent
-    #     snax_util.comp_and_assert(wide_golden_result[i], write_stream_0)
-    #     await snax_util.clock_and_wait(dut)
+        # Streamed data should be consistent
+        snax_util.comp_and_assert(wide_golden_result[i], write_stream_0)
+        await snax_util.clock_and_wait(dut)
 
 
 # Main test run
