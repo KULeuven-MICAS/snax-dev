@@ -26,7 +26,7 @@ module simple_alu_csr #(
 	// In this set we use 8 registers
 	// but only the first one is for the configuration
 	//-------------------------------
-	logic [RegAddrWidth-1:0] csr_reg_set [RegCount];
+	logic [RegDataWidth-1:0] csr_reg_set [RegCount];
 
 	//-------------------------------
 	// The CSR manager is always ready to take
