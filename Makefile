@@ -138,6 +138,10 @@ $(GEMM_GEN_OUT_TOP_FILE):
 	sbt "runMain gemm.BareBlockGemmTopGen ${RTL_PATH}"
 	@echo "Generates output for GEMM: ${GEMM_GEN_OUT_TOP_FILE}"
 
+#-----------------------------
+# Generate streamer related files
+#-----------------------------
+
 STREAM_GEMM_CFG_FILENAME ?= streamer_gemm_cfg.hjson
 STREAM_GEMM_CFG_FILE = ${CFG_PATH}/${STREAM_GEMM_CFG_FILENAME}
 
