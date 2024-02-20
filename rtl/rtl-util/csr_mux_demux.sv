@@ -4,7 +4,7 @@
 //-------------------------------
 module csr_mux_demux #(
   parameter int unsigned AddrSelOffSet   = 8,
-  parameter int unsigned TotalRegCount 	 = 8,
+  parameter int unsigned TotalRegCount   = 8,
   parameter int unsigned RegDataWidth    = 32,
   parameter int unsigned MaxRegAddrWidth = $clog2(TotalRegCount)
 )(
@@ -13,23 +13,23 @@ module csr_mux_demux #(
   //-------------------------------
   input  logic [MaxRegAddrWidth-1:0]      csr_addr_i,
   input  logic [   RegDataWidth-1:0]      csr_wr_data_i,
-	input  logic 										        csr_wr_en_i,
-	input  logic 										        csr_req_valid_i,
-	output logic										        csr_req_ready_o,
-	output logic [   RegDataWidth-1:0]      csr_rd_data_o,
-	output logic										        csr_rsp_valid_o,
-	input  logic										        csr_rsp_ready_i,
+  input  logic                            csr_wr_en_i,
+  input  logic                            csr_req_valid_i,
+  output logic                            csr_req_ready_o,
+  output logic [   RegDataWidth-1:0]      csr_rd_data_o,
+  output logic                            csr_rsp_valid_o,
+  input  logic                            csr_rsp_ready_i,
   //-------------------------------
   // Output Port
   //-------------------------------
   output logic [1:0][MaxRegAddrWidth-1:0] acc_csr_addr_o,
   output logic [1:0][   RegDataWidth-1:0] acc_csr_wr_data_o,
-	output logic [1:0][0:0]                 acc_csr_wr_en_o,
-	output logic [1:0][0:0]                 acc_csr_req_valid_o,
-	input  logic [1:0][0:0]                 acc_csr_req_ready_i,
-	input  logic [1:0][   RegDataWidth-1:0] acc_csr_rd_data_i,
-	input  logic [1:0][0:0]                 acc_csr_rsp_valid_i,
-	output logic [1:0][0:0]                 acc_csr_rsp_ready_o
+  output logic [1:0][0:0]                 acc_csr_wr_en_o,
+  output logic [1:0][0:0]                 acc_csr_req_valid_o,
+  input  logic [1:0][0:0]                 acc_csr_req_ready_i,
+  input  logic [1:0][   RegDataWidth-1:0] acc_csr_rd_data_i,
+  input  logic [1:0][0:0]                 acc_csr_rsp_valid_i,
+  output logic [1:0][0:0]                 acc_csr_rsp_ready_o
 );
 
   //-------------------------------
@@ -71,7 +71,7 @@ module csr_mux_demux #(
   // MUX-ing happens from accelerators to core
   // We take the upper part ports to have priority
   // This is just for simplicity's sake
-  //------------------------------- 
+  //-------------------------------
   always begin
     // For read and valid ports
     csr_rd_data_o   = ( acc_csr_rsp_valid_i[1] ) ? acc_csr_rd_data_i[1] : acc_csr_rd_data_i[0];
@@ -81,6 +81,6 @@ module csr_mux_demux #(
     acc_csr_rsp_ready_o[1] = ( acc_csr_rsp_valid_i[1] ) ? csr_rsp_ready_i : '0;
     acc_csr_rsp_ready_o[0] = ( acc_csr_rsp_valid_i[1] ) ? '0              : csr_rsp_ready_i;
   end
- 
+
 endmodule
 
