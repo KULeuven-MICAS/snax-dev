@@ -1,0 +1,74 @@
+//--------------------------------
+// Streamer configuration file
+//--------------------------------
+{
+    //--------------------------------
+    // These handle the temporal address generation
+    // loopDim - The dimension of the temporal loops = the number of for loops
+    // loopBoundWidth - The bit width of the loop bounds.
+    //--------------------------------
+    temporalAddrGenUnitParams: {
+      loopDim: 3,
+      loopBoundWidth: 8,
+    }
+
+    //--------------------------------
+    // FIFO parameters
+    // fifoWidth - FIFO bit-width
+    // fifoDepth - FIFO depth or number of elements
+    //--------------------------------
+    // For FIFO internal reader
+    fifoReaderParams: {
+      fifoWidth: [512, 512],
+      fifoDepth: [2, 2],
+    }
+    // FIFO interal writer
+    fifoWriterParams: {
+      fifoWidth: [2048],
+      fifoDepth: [2],
+    }
+
+    //--------------------------------
+    // Data mover parameters
+    // tcdmPortsNum - The number of TCDM ports connected to each data mover.
+    // spatialBounds - Spatial unrolling factors (your parfor) for each data mover.
+    // spatialDim - The dimension of spatial unrolling factors (your parfor) for each data mover.
+    // elementWidth - Single data element width for each data mover, useful for generating spatial addresses.
+    //--------------------------------
+    // For Readers
+    dataReaderParams:{
+      tcdmPortsNum: [8, 8],
+      spatialBounds: [[8,8], [8,8]],
+      spatialDim: [2,2],
+      elementWidth: [8,8],
+    }
+
+    // For Writers
+    dataWriterParams:{
+      tcdmPortsNum: [32],
+      spatialBounds: [[8,8]],
+      spatialDim: [2],
+      elementWidth: [32],
+    }
+
+    //--------------------------------
+    // Stationarity - The parameters for stationarity
+    // for each data mover. If the stationarity bit is set,
+    // the innermost loop for that data mover is set to 1
+    //--------------------------------
+    stationarity: [0,0,1]
+
+    //--------------------------------
+    // TCDM parameters
+    // tcdmDataWidth - Datawidth of TCDM banks
+    // tcdmDepth - Depth of each bank
+    // numBanks - Total number of banks
+    //--------------------------------
+    tcdmDataWidth: 64,
+    tcdmDmaDataWidth: 512,
+    tcdmDepth: 256,
+    numBanks: 32,
+
+    gemmCsrNum: 5
+
+}
