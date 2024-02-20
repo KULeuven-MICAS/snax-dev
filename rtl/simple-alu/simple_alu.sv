@@ -2,7 +2,7 @@
 // Simple multiplier that follows
 // the valid-ready responses per port
 //-------------------------------
-module simple_mul #(
+module simple_alu #(
   parameter int unsigned DataWidth = 64
 )(
   input  logic                 clk_i,
@@ -15,8 +15,19 @@ module simple_mul #(
   output logic                 b_ready_o,
   output logic [DataWidth-1:0] result_o,
   output logic                 result_valid_o,
-  input  logic                 result_ready_i
+  input  logic                 result_ready_i,
+  // Fix this to 2 bits only
+  // Let's do 4 ALU operations for simplicity
+  input  logic [          1:0] alu_config_i
 );
+
+  //-------------------------------
+  // Local parameter
+  //-------------------------------
+  localparam int unsigned CsrAddrAdd = 0;
+  localparam int unsigned CsrAddrSub = 1;
+  localparam int unsigned CsrAddrMul = 2;
+  localparam int unsigned CsrAddrXor = 0;
 
   //-------------------------------
   // Wires and combinationa logic
@@ -41,7 +52,12 @@ module simple_mul #(
       result_valid <= 1'b0;
     end else begin
       if(input_success) begin
-        result_wide  <= a_i * b_i;
+        case(alu_config_i)
+          CsrAddrSub: result_wide <= a_i - b_i;
+          CsrAddrMul: result_wide <= a_i * b_i;
+          CsrAddrXor: result_wide <= a_i ^ b_i;
+          default:    result_wide <= a_i + b_i;
+        endcase
         result_valid <= 1'b1;
       end else if (output_success) begin
         result_wide  <= {DataWidth{1'b0}};

@@ -48,25 +48,56 @@ MAX_WIDE_VAL = 2**WIDE_DATA_WIDTH
 # CSR parameters from the default
 # Configuration found under util/cfg/streamer_cfg.hjson
 # Also some pre-computed that are fixed
-CSR_LOOP_COUNT_0 = 0
-CSR_TEMPORAL_STRIDE_0 = 1
-CSR_TEMPORAL_STRIDE_1 = 2
-CSR_TEMPORAL_STRIDE_2 = 3
-CSR_SPATIAL_STRIDE_0 = 4
-CSR_SPATIAL_STRIDE_1 = 5
-CSR_SPATIAL_STRIDE_2 = 6
-CSR_BASE_PTR_0 = 7
-CSR_BASE_PTR_1 = 8
-CSR_BASE_PTR_2 = 9
-CSR_START_STREAMER = 10
+
+CSR_ALU_CONFIG = 0
+CSR_ALU_GPP_1 = 1
+CSR_ALU_GPP_2 = 2
+CSR_ALU_GPP_3 = 3
+CSR_ALU_GPP_4 = 4
+CSR_ALU_GPP_5 = 5
+CSR_ALU_GPP_6 = 6
+CSR_ALU_GPP_7 = 7
+
+# This STREAMER_OFFSET is the offset
+# For the address registers
+STREAMER_OFFSET = 8
+
+CSR_LOOP_COUNT_0 = 0 + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_0 = 1 + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_1 = 2 + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_2 = 3 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_0 = 4 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_1 = 5 + STREAMER_OFFSET
+CSR_SPATIAL_STRIDE_2 = 6 + STREAMER_OFFSET
+CSR_BASE_PTR_0 = 7 + STREAMER_OFFSET
+CSR_BASE_PTR_1 = 8 + STREAMER_OFFSET
+CSR_BASE_PTR_2 = 9 + STREAMER_OFFSET
+CSR_START_STREAMER = 10 + STREAMER_OFFSET
 
 
 @cocotb.test()
-async def stream_tcdm_dut(dut):
+async def stream_alu_dut(dut):
     # Value configurations you can set
     # For exploration and testing
     # These values go into the respective
     # CSR register addresses above
+
+    # ACLU_CONFIG has the following:
+    # 0 - addition
+    # 1 - subtraction
+    # 2 - multiplication
+    # 3 - XOR
+    ALU_CONFIG = 1
+    ALU_GPP_1 = 123
+    ALU_GPP_2 = 456
+    ALU_GPP_3 = 789
+    ALU_GPP_4 = 910
+    ALU_GPP_5 = 101
+    ALU_GPP_6 = 121
+    ALU_GPP_7 = 368
+
+    # These ones go into the
+    # streamer registers
     LOOP_COUNT_0 = 100
     TEMPORAL_STRIDE_0 = 64
     TEMPORAL_STRIDE_1 = 64
@@ -124,10 +155,28 @@ async def stream_tcdm_dut(dut):
 
     for i in range(LOOP_COUNT_0):
         for j in range(SPATPAR):
-            temp_res = (
-                narrow_golden_list[i * SPATPAR * 2 + j]
-                * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
-            )
+            # Output changes per ALU_CONFIG
+            if ALU_CONFIG == 1:
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    - narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            elif ALU_CONFIG == 2:
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            elif ALU_CONFIG == 3:
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    ^ narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+            else:
+                temp_res = (
+                    narrow_golden_list[i * SPATPAR * 2 + j]
+                    + narrow_golden_list[(2 * i + 1) * SPATPAR + j]
+                )
+
             temp_res = temp_res & (MAX_NARROW_VAL - 1)
             narrow_golden_result.append(temp_res)
 
@@ -152,6 +201,18 @@ async def stream_tcdm_dut(dut):
     await snax_util.wide_tcdm_clr(dut)
 
     cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
+
+    # Setting of ALU accelerator registers
+    # Only CSR_ALU_CONFIG affects the accelerator
+    # The other registers are for read/write checks only
+    await snax_util.reg_write(dut, CSR_ALU_CONFIG, ALU_CONFIG)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_1, ALU_GPP_1)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_2, ALU_GPP_2)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_3, ALU_GPP_3)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_4, ALU_GPP_4)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_5, ALU_GPP_5)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_6, ALU_GPP_6)
+    await snax_util.reg_write(dut, CSR_ALU_GPP_7, ALU_GPP_7)
 
     # At this point we'll do explicit declartion
     # of the tests so that it's understandable
@@ -181,6 +242,26 @@ async def stream_tcdm_dut(dut):
 
     # Read and verify the contents
     # of the previously set registers
+
+    # Check ALU registers first
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_CONFIG)
+    snax_util.comp_and_assert(ALU_CONFIG, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_1)
+    snax_util.comp_and_assert(ALU_GPP_1, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_2)
+    snax_util.comp_and_assert(ALU_GPP_2, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_3)
+    snax_util.comp_and_assert(ALU_GPP_3, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_4)
+    snax_util.comp_and_assert(ALU_GPP_4, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_5)
+    snax_util.comp_and_assert(ALU_GPP_5, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_6)
+    snax_util.comp_and_assert(ALU_GPP_6, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_ALU_GPP_7)
+    snax_util.comp_and_assert(ALU_GPP_7, reg_val)
+
+    # Check Streamer registers
     reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_0)
     snax_util.comp_and_assert(LOOP_COUNT_0, reg_val)
     reg_val = await snax_util.reg_read(dut, CSR_TEMPORAL_STRIDE_0)
@@ -215,13 +296,13 @@ async def stream_tcdm_dut(dut):
 
     # Wait for the rising edge of the valid
     # From here we can continuously stream for ever clock cycle
-    await RisingEdge(dut.i_stream_mul_wrapper.acc2stream_data_0_valid)
+    await RisingEdge(dut.i_stream_alu_wrapper.acc2stream_data_0_valid)
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
         # Extract the data
-        write_stream_0 = int(dut.i_stream_mul_wrapper.acc2stream_data_0_bits.value)
+        write_stream_0 = int(dut.i_stream_alu_wrapper.acc2stream_data_0_bits.value)
 
         # Streamed data should be consistent
         snax_util.comp_and_assert(wide_golden_result[i], write_stream_0)
@@ -229,15 +310,15 @@ async def stream_tcdm_dut(dut):
 
 
 # Main test run
-def test_stream_mul(simulator, waves):
+def test_stream_alu(simulator, waves):
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
 
     # Make sure to generate the StreamerTop.sv
     # If it does not exist
-    stream_mul_tb_file = repo_path + "/tests/tb/tb_stream_mul.sv"
-    if not os.path.exists(stream_mul_tb_file):
-        subprocess.run(["make", stream_mul_tb_file])
+    stream_alu_tb_file = repo_path + "/tests/tb/tb_stream_alu.sv"
+    if not os.path.exists(stream_alu_tb_file):
+        subprocess.run(["make", stream_alu_tb_file])
 
     streamer_verilog_sources = [
         repo_path + "/rtl/StreamerTop.sv",
@@ -249,18 +330,24 @@ def test_stream_mul(simulator, waves):
 
     # Extract resources for simple mul
     simple_mul_sources = [
-        repo_path + "/rtl/simple-mul/simple_mul.sv",
-        repo_path + "/rtl/simple-mul/simple_mul_wrapper.sv",
-        repo_path + "/rtl/stream_mul_wrapper.sv",
+        repo_path + "/rtl/simple-alu/simple_alu.sv",
+        repo_path + "/rtl/simple-alu/simple_alu_csr.sv",
+        repo_path + "/rtl/simple-alu/simple_alu_wrapper.sv",
+        repo_path + "/rtl/stream_alu_wrapper.sv",
+    ]
+
+    rtl_util_sources = [
+        repo_path + "/rtl/rtl-util/csr_mux_demux.sv",
     ]
 
     tb_verilog_source = [
-        stream_mul_tb_file,
+        stream_alu_tb_file,
     ]
 
     verilog_sources = (
         tcdm_verilog_sources
         + streamer_verilog_sources
+        + rtl_util_sources
         + simple_mul_sources
         + tb_verilog_source
     )
@@ -268,9 +355,9 @@ def test_stream_mul(simulator, waves):
     defines = []
     includes = [] + tcdm_includes
 
-    toplevel = "tb_stream_mul"
+    toplevel = "tb_stream_alu"
 
-    module = "test_stream_mul"
+    module = "test_stream_alu"
 
     sim_build = tests_path + "/sim_build/{}/".format(toplevel)
 

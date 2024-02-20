@@ -13,11 +13,11 @@ STREAM_TPL_RTL_FILENAME ?= streamer_wrapper.sv.tpl
 STREAM_TPL_SCALA_FILENAME ?= StreamParamGen.scala.tpl
 STREAM_TPL_TB_FILENAME ?= tb_streamer_top.sv.tpl
 STREAM_TCDM_TPL_TB_FILENAME ?= tb_stream_tcdm_top.sv.tpl
-STREAM_MUL_TPL_TB_FILENAME ?= tb_stream_mul.sv.tpl
-STREAM_MUL_TPL_RTL_FILENAME ?= stream_mul_wrapper.sv.tpl
+STREAM_MUL_TPL_TB_FILENAME ?= tb_stream_alu.sv.tpl
+STREAM_MUL_TPL_RTL_FILENAME ?= stream_alu_wrapper.sv.tpl
 
 STREAM_WRAPPER_FILENAME ?= streamer_wrapper.sv
-STREAM_MUL_WRAPPER_FILENAME ?= stream_mul_wrapper.sv
+STREAM_MUL_WRAPPER_FILENAME ?= stream_alu_wrapper.sv
 
 STREAM_SCALA_PARAM_FILENAME ?= StreamParamGen.scala
 
@@ -25,7 +25,7 @@ STREAM_TOP_FILENAME ?= StreamerTop.sv
 
 STREAM_TB_FILENAME ?= tb_streamer_top.sv
 STREAM_TCDM_TB_FILENAME ?= tb_stream_tcdm_top.sv
-STREAM_MUL_TB_FILENAME ?= tb_stream_mul.sv
+STREAM_MUL_TB_FILENAME ?= tb_stream_alu.sv
 
 #-----------------------------
 # Default Path Declarations 
