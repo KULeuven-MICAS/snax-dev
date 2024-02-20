@@ -187,8 +187,8 @@ module stream_alu_wrapper # (
     .io_csr_req_valid_i       ( acc_csr_req_valid[1]  ),
     .io_csr_req_ready_o       ( acc_csr_req_ready[1]  ),
     // Response
-    .io_csr_rsp_ready_i       ( acc_csr_rsp_valid[1]  ),
-    .io_csr_rsp_valid_o       ( acc_csr_rsp_ready[1]  ),
+    .io_csr_rsp_ready_i       ( acc_csr_rsp_ready[1]  ),
+    .io_csr_rsp_valid_o       ( acc_csr_rsp_valid[1]  ),
     .io_csr_rsp_bits_data_o   ( acc_csr_rd_data[1]    )
   );
 
