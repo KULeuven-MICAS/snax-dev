@@ -64,7 +64,7 @@ CSR_START_STREAMER = 10 + OFFSET
 
 
 @cocotb.test()
-async def stream_mul_dut(dut):
+async def stream_alu_dut(dut):
     # Value configurations you can set
     # For exploration and testing
     # These values go into the respective
@@ -217,13 +217,13 @@ async def stream_mul_dut(dut):
 
     # # Wait for the rising edge of the valid
     # # From here we can continuously stream for ever clock cycle
-    # await RisingEdge(dut.i_stream_mul_wrapper.acc2stream_data_0_valid)
+    # await RisingEdge(dut.i_stream_alu_wrapper.acc2stream_data_0_valid)
     # # Necessary for cocotb evaluation step
     # await Timer(Decimal(1), units="ps")
 
     # for i in range(LOOP_COUNT_0):
     #     # Extract the data
-    #     write_stream_0 = int(dut.i_stream_mul_wrapper.acc2stream_data_0_bits.value)
+    #     write_stream_0 = int(dut.i_stream_alu_wrapper.acc2stream_data_0_bits.value)
 
     #     # Streamed data should be consistent
     #     snax_util.comp_and_assert(wide_golden_result[i], write_stream_0)
@@ -231,15 +231,15 @@ async def stream_mul_dut(dut):
 
 
 # Main test run
-def test_stream_mul(simulator, waves):
+def test_stream_alu(simulator, waves):
     repo_path = os.getcwd()
     tests_path = repo_path + "/tests/cocotb/"
 
     # Make sure to generate the StreamerTop.sv
     # If it does not exist
-    stream_mul_tb_file = repo_path + "/tests/tb/tb_stream_alu.sv"
-    if not os.path.exists(stream_mul_tb_file):
-        subprocess.run(["make", stream_mul_tb_file])
+    stream_alu_tb_file = repo_path + "/tests/tb/tb_stream_alu.sv"
+    if not os.path.exists(stream_alu_tb_file):
+        subprocess.run(["make", stream_alu_tb_file])
 
     streamer_verilog_sources = [
         repo_path + "/rtl/StreamerTop.sv",
@@ -262,7 +262,7 @@ def test_stream_mul(simulator, waves):
     ]
 
     tb_verilog_source = [
-        stream_mul_tb_file,
+        stream_alu_tb_file,
     ]
 
     verilog_sources = (
