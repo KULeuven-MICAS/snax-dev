@@ -3,7 +3,7 @@
 // Fully combinational connections
 //-------------------------------
 module csr_mux_demux #(
-  parameter int unsigned AddrSelOffSet   = 7,
+  parameter int unsigned AddrSelOffSet   = 8,
   parameter int unsigned TotalRegCount 	 = 8,
   parameter int unsigned RegDataWidth    = 32,
   parameter int unsigned MaxRegAddrWidth = $clog2(TotalRegCount)
@@ -22,22 +22,24 @@ module csr_mux_demux #(
   //-------------------------------
   // Output Port
   //-------------------------------
-  output logic [MaxRegAddrWidth-1:0][1:0] acc_csr_addr_o,
-  output logic [   RegDataWidth-1:0][1:0] acc_csr_wr_data_o,
-	output logic 									    [1:0] acc_csr_wr_en_o,
-	output logic 									    [1:0] acc_csr_req_valid_o,
-	input  logic									    [1:0] acc_csr_req_ready_i,
-	input  logic [   RegDataWidth-1:0][1:0] acc_csr_rd_data_i,
-	input  logic									    [1:0] acc_csr_rsp_valid_i,
-	output logic									    [1:0] acc_csr_rsp_ready_o
+  output logic [1:0][MaxRegAddrWidth-1:0] acc_csr_addr_o,
+  output logic [1:0][   RegDataWidth-1:0] acc_csr_wr_data_o,
+	output logic [1:0][0:0]                 acc_csr_wr_en_o,
+	output logic [1:0][0:0]                 acc_csr_req_valid_o,
+	input  logic [1:0][0:0]                 acc_csr_req_ready_i,
+	input  logic [1:0][   RegDataWidth-1:0] acc_csr_rd_data_i,
+	input  logic [1:0][0:0]                 acc_csr_rsp_valid_i,
+	output logic [1:0][0:0]                 acc_csr_rsp_ready_o
 );
 
   //-------------------------------
   // For simplicity the upper [1]
   // ports take priority over [0]
   //-------------------------------
-  logic sel_output      = csr_addr_i > AddrSelOffSet;
-  logic csr_addr_offset = csr_addr_i - AddrSelOffSet;
+  logic sel_output;
+  assign sel_output = (csr_addr_i >= AddrSelOffSet);
+  logic [MaxRegAddrWidth-1:0] csr_addr_offset;
+  assign csr_addr_offset = csr_addr_i - AddrSelOffSet;
 
   //-------------------------------
   // Demuxing happens from core to accelerators.
