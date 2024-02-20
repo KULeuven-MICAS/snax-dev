@@ -63,8 +63,8 @@ CSR_ALU_GPP_7 = 7
 STREAMER_OFFSET = 8
 
 CSR_LOOP_COUNT_0 = 0 + STREAMER_OFFSET
-CSR_TEMPORAL_STRIDE_0 = 1  + STREAMER_OFFSET
-CSR_TEMPORAL_STRIDE_1 = 2  + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_0 = 1 + STREAMER_OFFSET
+CSR_TEMPORAL_STRIDE_1 = 2 + STREAMER_OFFSET
 CSR_TEMPORAL_STRIDE_2 = 3 + STREAMER_OFFSET
 CSR_SPATIAL_STRIDE_0 = 4 + STREAMER_OFFSET
 CSR_SPATIAL_STRIDE_1 = 5 + STREAMER_OFFSET
@@ -95,8 +95,8 @@ async def stream_alu_dut(dut):
     ALU_GPP_5 = 101
     ALU_GPP_6 = 121
     ALU_GPP_7 = 368
-    
-    # These ones go into the 
+
+    # These ones go into the
     # streamer registers
     LOOP_COUNT_0 = 100
     TEMPORAL_STRIDE_0 = 64
@@ -156,19 +156,17 @@ async def stream_alu_dut(dut):
     for i in range(LOOP_COUNT_0):
         for j in range(SPATPAR):
             # Output changes per ALU_CONFIG
-            if( ALU_CONFIG == 1 ):
-
+            if ALU_CONFIG == 1:
                 temp_res = (
                     narrow_golden_list[i * SPATPAR * 2 + j]
                     - narrow_golden_list[(2 * i + 1) * SPATPAR + j]
                 )
-            elif ( ALU_CONFIG == 2):
-
+            elif ALU_CONFIG == 2:
                 temp_res = (
                     narrow_golden_list[i * SPATPAR * 2 + j]
                     * narrow_golden_list[(2 * i + 1) * SPATPAR + j]
                 )
-            elif ( ALU_CONFIG == 3):
+            elif ALU_CONFIG == 3:
                 temp_res = (
                     narrow_golden_list[i * SPATPAR * 2 + j]
                     ^ narrow_golden_list[(2 * i + 1) * SPATPAR + j]
@@ -178,7 +176,7 @@ async def stream_alu_dut(dut):
                     narrow_golden_list[i * SPATPAR * 2 + j]
                     + narrow_golden_list[(2 * i + 1) * SPATPAR + j]
                 )
-            
+
             temp_res = temp_res & (MAX_NARROW_VAL - 1)
             narrow_golden_result.append(temp_res)
 
