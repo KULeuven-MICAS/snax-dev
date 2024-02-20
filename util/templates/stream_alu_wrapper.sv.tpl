@@ -83,12 +83,12 @@ module stream_alu_wrapper # (
   //-----------------------------
   // CSR MUXing
   //-----------------------------
-  logic [1:0][RegAddrWidth-1:0] acc_csr_addr;
-  logic [1:0][RegDataWidth-1:0] acc_csr_wr_data;
-	logic [1:0] acc_csr_wr_en;
+  logic [1:0][RegAddrWidth-1:0] acc_csr_req_addr;
+  logic [1:0][RegDataWidth-1:0] acc_csr_req_data;
+	logic [1:0] acc_csr_req_wen;
 	logic [1:0] acc_csr_req_valid;
 	logic [1:0] acc_csr_req_ready;
-	logic [1:0][RegDataWidth-1:0] acc_csr_rd_data;
+	logic [1:0][RegDataWidth-1:0] acc_csr_rsp_data;
 	logic [1:0] acc_csr_rsp_valid;
 	logic [1:0] acc_csr_rsp_ready;
 
@@ -105,24 +105,24 @@ module stream_alu_wrapper # (
     //-------------------------------
     // Input Core
     //-------------------------------
-    .csr_addr_i           ( io_csr_req_bits_addr_i  ),
-    .csr_wr_data_i        ( io_csr_req_bits_data_i  ),
-    .csr_wr_en_i          ( io_csr_req_bits_write_i ),
+    .csr_req_addr_i       ( io_csr_req_bits_addr_i  ),
+    .csr_req_data_i       ( io_csr_req_bits_data_i  ),
+    .csr_req_wen_i        ( io_csr_req_bits_write_i ),
     .csr_req_valid_i      ( io_csr_req_valid_i      ),
     .csr_req_ready_o      ( io_csr_req_ready_o      ),
-    .csr_rd_data_o        ( io_csr_rsp_bits_data_o  ),
+    .csr_rsp_data_o       ( io_csr_rsp_bits_data_o  ),
     .csr_rsp_valid_o      ( io_csr_rsp_valid_o      ),
     .csr_rsp_ready_i      ( io_csr_rsp_ready_i      ),
 
     //-------------------------------
     // Output Port
     //-------------------------------
-    .acc_csr_addr_o       ( acc_csr_addr      ),
-    .acc_csr_wr_data_o    ( acc_csr_wr_data   ),
-    .acc_csr_wr_en_o      ( acc_csr_wr_en     ),
+    .acc_csr_req_addr_o   ( acc_csr_req_addr  ),
+    .acc_csr_req_data_o   ( acc_csr_req_data  ),
+    .acc_csr_req_wen_o    ( acc_csr_req_wen   ),
     .acc_csr_req_valid_o  ( acc_csr_req_valid ),
     .acc_csr_req_ready_i  ( acc_csr_req_ready ),
-    .acc_csr_rd_data_i    ( acc_csr_rd_data   ),
+    .acc_csr_rsp_data_i   ( acc_csr_rsp_data  ),
     .acc_csr_rsp_valid_i  ( acc_csr_rsp_valid ),
     .acc_csr_rsp_ready_o  ( acc_csr_rsp_ready )
   );
@@ -181,15 +181,15 @@ module stream_alu_wrapper # (
     // CSR control ports
     //-----------------------------
     // Request
-    .io_csr_req_bits_data_i   ( acc_csr_wr_data[1]    ),
-    .io_csr_req_bits_addr_i   ( acc_csr_addr[1]       ),
-    .io_csr_req_bits_write_i  ( acc_csr_wr_en[1]      ),
+    .io_csr_req_bits_data_i   ( acc_csr_req_data[1]   ),
+    .io_csr_req_bits_addr_i   ( acc_csr_req_addr[1]   ),
+    .io_csr_req_bits_write_i  ( acc_csr_req_wen[1]    ),
     .io_csr_req_valid_i       ( acc_csr_req_valid[1]  ),
     .io_csr_req_ready_o       ( acc_csr_req_ready[1]  ),
     // Response
     .io_csr_rsp_ready_i       ( acc_csr_rsp_ready[1]  ),
     .io_csr_rsp_valid_o       ( acc_csr_rsp_valid[1]  ),
-    .io_csr_rsp_bits_data_o   ( acc_csr_rd_data[1]    )
+    .io_csr_rsp_bits_data_o   ( acc_csr_rsp_data[1]   )
   );
 
 
@@ -221,13 +221,13 @@ module stream_alu_wrapper # (
     // CSR control ports
     //-----------------------------
     // Request
-    .csr_addr_i       ( acc_csr_addr[0]       ),
-    .csr_wr_data_i    ( acc_csr_wr_data[0]    ),
-    .csr_wr_en_i      ( acc_csr_wr_en[0]      ),
+    .csr_addr_i       ( acc_csr_req_addr[0]   ),
+    .csr_wr_data_i    ( acc_csr_req_data[0]   ),
+    .csr_wr_en_i      ( acc_csr_req_wen[0]    ),
     .csr_req_valid_i  ( acc_csr_req_valid[0]  ),
     .csr_req_ready_o  ( acc_csr_req_ready[0]  ),
     // Response
-    .csr_rd_data_o    ( acc_csr_rd_data[0]    ),
+    .csr_rd_data_o    ( acc_csr_rsp_data[0]   ),
     .csr_rsp_valid_o  ( acc_csr_rsp_valid[0]  ),
     .csr_rsp_ready_i  ( acc_csr_rsp_ready[0]  )
   );
