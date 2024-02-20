@@ -83,14 +83,14 @@ module stream_alu_wrapper # (
   //-----------------------------
   // CSR MUXing
   //-----------------------------
-  logic [RegAddrWidth-1:0][1:0] acc_csr_addr;
-  logic [RegDataWidth-1:0][1:0] acc_csr_wr_data;
-	logic 									[1:0] acc_csr_wr_en;
-	logic 									[1:0] acc_csr_req_valid;
-	logic									  [1:0] acc_csr_req_ready;
-	logic [RegDataWidth-1:0][1:0] acc_csr_rd_data;
-	logic									  [1:0] acc_csr_rsp_valid;
-	logic									  [1:0] acc_csr_rsp_ready;
+  logic [1:0][RegAddrWidth-1:0] acc_csr_addr;
+  logic [1:0][RegDataWidth-1:0] acc_csr_wr_data;
+	logic [1:0] acc_csr_wr_en;
+	logic [1:0] acc_csr_req_valid;
+	logic [1:0] acc_csr_req_ready;
+	logic [1:0][RegDataWidth-1:0] acc_csr_rd_data;
+	logic [1:0] acc_csr_rsp_valid;
+	logic [1:0] acc_csr_rsp_ready;
 
   //-------------------------------
   // MUX and DEMUX for control signals
@@ -221,8 +221,8 @@ module stream_alu_wrapper # (
     // CSR control ports
     //-----------------------------
     // Request
-    .csr_addr_i       ( acc_csr_wr_data[0]    ),
-    .csr_wr_data_i    ( acc_csr_addr[0]       ),
+    .csr_addr_i       ( acc_csr_addr[0]       ),
+    .csr_wr_data_i    ( acc_csr_wr_data[0]    ),
     .csr_wr_en_i      ( acc_csr_wr_en[0]      ),
     .csr_req_valid_i  ( acc_csr_req_valid[0]  ),
     .csr_req_ready_o  ( acc_csr_req_ready[0]  ),
