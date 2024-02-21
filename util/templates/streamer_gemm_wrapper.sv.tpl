@@ -101,7 +101,7 @@ module stream_gemm_wrapper # (
   csr_mux_demux #(
     .AddrSelOffSet        ( AddrSelOffSet),
     .TotalRegCount        ( RegCount     ),
-    .RegDataWidth         ( RegDataWidth ),
+    .RegDataWidth         ( RegDataWidth )
   ) i_csr_mux_demux (
     //-------------------------------
     // Input Core
@@ -225,9 +225,9 @@ module stream_gemm_wrapper # (
     .io_csr_req_valid      ( acc_csr_req_valid[0]  ),
     .io_csr_req_ready      ( acc_csr_req_ready[0]  ),
     // Response
-    .csr_rd_data_o         ( acc_csr_rsp_data[0]   ),
-    .csr_rsp_valid_o       ( acc_csr_rsp_valid[0]  ),
-    .csr_rsp_ready_i       ( acc_csr_rsp_ready[0]  )
+    .io_csr_rsp_bits_data         ( acc_csr_rsp_data[0]   ),
+    .io_csr_rsp_valid       ( acc_csr_rsp_valid[0]  ),
+    .io_csr_rsp_ready       ( acc_csr_rsp_ready[0]  )
   );
 
 
