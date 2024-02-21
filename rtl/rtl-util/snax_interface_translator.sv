@@ -1,11 +1,11 @@
-`ifdef TARGET_SYNTHESIS
+`ifdef QUESTA_SIM_XYI
 import riscv_instr::*;
 import reqrsp_pkg::*;
 `endif 
 
 module snax_interface_translator #(
     parameter type         acc_req_t     = logic,
-    parameter type         acc_rsp_t     = logic,
+    parameter type         acc_rsp_t     = logic
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -33,7 +33,7 @@ module snax_interface_translator #(
     input logic        io_csr_rsp_valid_o,
     input logic [31:0] io_csr_rsp_bits_data_o
 
-)
+);
 
     localparam int unsigned CsrAddrOFfset = 32'h3c0;
 
