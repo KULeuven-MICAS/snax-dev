@@ -183,15 +183,15 @@ module stream_gemm_wrapper # (
     // CSR control ports
     //-----------------------------
     // Request
-    .io_csr_req_bits_data_i   ( acc_csr_req_data[1]   ),
-    .io_csr_req_bits_addr_i   ( acc_csr_req_addr[1]   ),
-    .io_csr_req_bits_write_i  ( acc_csr_req_wen[1]    ),
-    .io_csr_req_valid_i       ( acc_csr_req_valid[1]  ),
-    .io_csr_req_ready_o       ( acc_csr_req_ready[1]  ),
+    .io_csr_req_bits_data_i   ( acc_csr_req_data[0]   ),
+    .io_csr_req_bits_addr_i   ( acc_csr_req_addr[0]   ),
+    .io_csr_req_bits_write_i  ( acc_csr_req_wen[0]    ),
+    .io_csr_req_valid_i       ( acc_csr_req_valid[0]  ),
+    .io_csr_req_ready_o       ( acc_csr_req_ready[0]  ),
     // Response
-    .io_csr_rsp_ready_i       ( acc_csr_rsp_ready[1]  ),
-    .io_csr_rsp_valid_o       ( acc_csr_rsp_valid[1]  ),
-    .io_csr_rsp_bits_data_o   ( acc_csr_rsp_data[1]   )
+    .io_csr_rsp_ready_i       ( acc_csr_rsp_ready[0]  ),
+    .io_csr_rsp_valid_o       ( acc_csr_rsp_valid[0]  ),
+    .io_csr_rsp_bits_data_o   ( acc_csr_rsp_data[0]   )
   );
 
 
@@ -220,15 +220,15 @@ module stream_gemm_wrapper # (
     // CSR control ports
     //-----------------------------
     // Request
-    .io_csr_req_bits_addr  ( acc_csr_req_addr[0]   ),
-    .io_csr_req_bits_data  ( acc_csr_req_data[0]   ),
-    .io_csr_req_bits_write ( acc_csr_req_wen[0]    ),
-    .io_csr_req_valid      ( acc_csr_req_valid[0]  ),
-    .io_csr_req_ready      ( acc_csr_req_ready[0]  ),
+    .io_csr_req_bits_addr  ( acc_csr_req_addr[1]   ),
+    .io_csr_req_bits_data  ( acc_csr_req_data[1]   ),
+    .io_csr_req_bits_write ( acc_csr_req_wen[1]    ),
+    .io_csr_req_valid      ( acc_csr_req_valid[1]  ),
+    .io_csr_req_ready      ( acc_csr_req_ready[1]  ),
     // Response
-    .io_csr_rsp_bits_data         ( acc_csr_rsp_data[0]   ),
-    .io_csr_rsp_valid       ( acc_csr_rsp_valid[0]  ),
-    .io_csr_rsp_ready       ( acc_csr_rsp_ready[0]  )
+    .io_csr_rsp_bits_data         ( acc_csr_rsp_data[1]   ),
+    .io_csr_rsp_valid       ( acc_csr_rsp_valid[1]  ),
+    .io_csr_rsp_ready       ( acc_csr_rsp_ready[1]  )
   );
 
 
