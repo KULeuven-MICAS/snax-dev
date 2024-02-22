@@ -18,7 +18,7 @@ module stream_gemm_wrapper # (
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth       = ${cfg["tcdmDepth"]},
   parameter int unsigned TCDMReqPorts    = ${sum(cfg["dataReaderParams"]["tcdmPortsNum"]) + sum(cfg["dataWriterParams"]["tcdmPortsNum"])},
-  parameter int unsigned NrBanks = ${cfg["numBanks]},
+  parameter int unsigned NrBanks = ${cfg["numBanks"]},
   parameter int unsigned TCDMSize        = NrBanks * TCDMDepth * (NarrowDataWidth/8),
   parameter int unsigned TCDMAddrWidth   = $clog2(TCDMSize),
   parameter int unsigned SpatPar         = ${cfg["dataReaderParams"]["spatialBounds"][0][0]},
