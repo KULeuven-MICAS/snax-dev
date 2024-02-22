@@ -318,10 +318,27 @@ async def wide_tcdm_clr(dut) -> None:
 
     return
 
-
 async def reset_dut(dut) -> None:
     dut.rst_ni.value = 0
     await clock_and_wait(dut)
     dut.rst_ni.value = 1
     await clock_and_wait(dut)
     return
+
+def transform_data(input_list, transform_params):
+
+    data_length = len(input_list)
+    output_list = [0] * data_length
+
+    def apply_transform(input_list, output_list, strides, idx_src = 0, idx_dst = 0):
+        stride = strides.pop(0)
+        for i in range(stride['bound']):
+            if strides:
+                strides.append(apply_transform(input_list, output_list, strides, idx_src + stride['src'] * i, idx_dst + stride['dst'] * i))
+            else:
+                output_list[idx_dst + stride['dst'] * i] = input_list[idx_src + stride['src'] * i]
+        return stride
+
+    apply_transform(input_list, output_list, transform_params['strides'])
+
+    return output_list
