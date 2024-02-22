@@ -23,3 +23,6 @@ sources:
       - rtl/streamer_gemm_wrapper.sv
       - rtl/StreamerTop.sv
       - rtl/streamer_wrapper.sv
+      - rtl-util/csr_mux_demux.sv
+      - rtl-util/snax_interface_translator.sv
+      - rtl-util/snax_streamer_gemm_wrapper.sv

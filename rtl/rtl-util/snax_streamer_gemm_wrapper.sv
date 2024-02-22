@@ -120,7 +120,9 @@ module snax_streamer_gemm_wrapper #(
     end
 
 
-    stream_gemm_wrapper i_stream_gemm_wrapper(
+    stream_gemm_wrapper #(
+        .TCDMAddrWidth(TCDMAddrWidth)
+    )i_stream_gemm_wrapper(
         //-----------------------------
         // Clocks and reset
         //-----------------------------

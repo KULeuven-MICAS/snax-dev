@@ -83,4 +83,3 @@ module csr_mux_demux #(
   end
 
 endmodule
-
