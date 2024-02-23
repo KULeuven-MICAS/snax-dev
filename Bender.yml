@@ -12,8 +12,8 @@ package:
 
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
-  snax-streamer: { git: "https://github.com/KULeuven-MICAS/snax-streamer", rev: main }
-  snax-gemm: { git: "https://github.com/KULeuven-MICAS/snax-gemm", rev: e5dcb78e1cb1898bdd21266bd4e68af5cbae6a7c }
+  snax-streamer: { git: "https://github.com/KULeuven-MICAS/snax-streamer", rev: 5c003a55ca8700a60d72b4abcfb29cb92cbb24d4 }
+  snax-gemm: { git: "https://github.com/KULeuven-MICAS/snax-gemm", rev: 1acd2c78fb4ba7554a2b8253c6157b638db4a139 }
 
 sources:
   - include_dirs:
