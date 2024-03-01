@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: SHL-0.51
 
 package:
-    name: snax-dev-stream-gemm
+  name: snax-dev-stream-gemm
   authors:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
     - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
