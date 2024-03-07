@@ -72,7 +72,7 @@ module csr_mux_demux #(
   // We take the upper part ports to have priority
   // This is just for simplicity's sake
   //-------------------------------
-  always begin
+  always_comb begin
     // For read and valid ports
     csr_rsp_data_o  = ( acc_csr_rsp_valid_i[1] ) ? acc_csr_rsp_data_i[1]  : acc_csr_rsp_data_i[0];
     csr_rsp_valid_o = ( acc_csr_rsp_valid_i[1] ) ? acc_csr_rsp_valid_i[1] : acc_csr_rsp_valid_i[0];
