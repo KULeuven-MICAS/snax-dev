@@ -4,6 +4,10 @@
 BENDER = bender
 PYTHON = python3
 
+ifndef SNAX_DEV_ROOT
+	SNAX_DEV_ROOT = ${CURDIR}
+endif
+
 #-----------------------------
 # Default Filename Declarations
 #-----------------------------
@@ -31,10 +35,10 @@ STREAM_MUL_TB_FILENAME ?= tb_stream_alu.sv
 # Default Path Declarations 
 #-----------------------------
 SNAX_STREAMER_PATH = $(shell $(BENDER) path snax-streamer)
-CFG_PATH ?= ${CURDIR}/util/cfg
-TPL_PATH ?= ${CURDIR}/util/templates
-RTL_PATH ?= ${CURDIR}/rtl
-TB_PATH ?= ${CURDIR}/tests/tb
+CFG_PATH ?= ${SNAX_DEV_ROOT}/util/cfg
+TPL_PATH ?= ${SNAX_DEV_ROOT}/util/templates
+RTL_PATH ?= ${SNAX_DEV_ROOT}/rtl
+TB_PATH ?= ${SNAX_DEV_ROOT}/tests/tb
 STREAM_OUT_SCALA_PATH ?= ${SNAX_STREAMER_PATH}/src/main/scala/streamer
 
 #-----------------------------
@@ -66,7 +70,7 @@ STREAM_MUL_GEN_OUT_TB_FILE = $(TB_PATH)/${STREAM_MUL_TB_FILENAME}
 # Useful function
 #-----------------------------
 define generate_file
-	${PYTHON} util/scripts/template_gen.py --cfg_path="$(1)" \
+	${PYTHON} ${SNAX_DEV_ROOT}/util/scripts/template_gen.py --cfg_path="$(1)" \
 	--tpl_path="$(2)" \
 	--out_path="$(3)"
 endef
