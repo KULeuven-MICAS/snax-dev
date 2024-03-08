@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: SHL-0.51
 
 package:
-  name: snax
+  name: snax-dev
   authors:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
     - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
@@ -13,3 +13,16 @@ package:
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
   snax-streamer: { git: "https://github.com/KULeuven-MICAS/snax-streamer", rev: main }
+  snax-gemm: { git: "https://github.com/KULeuven-MICAS/snax-gemm", rev: main }
+
+sources:
+  - include_dirs:
+    - rtl
+    files:
+      - rtl/BareBlockGemmTop.sv 
+      - rtl/streamer_gemm_wrapper.sv
+      - rtl/StreamerTop.sv
+      - rtl/streamer_wrapper.sv
+      - rtl/rtl-util/csr_mux_demux.sv
+      - rtl/rtl-util/snax_interface_translator.sv
+      - rtl/rtl-util/snax_streamer_gemm_wrapper.sv
