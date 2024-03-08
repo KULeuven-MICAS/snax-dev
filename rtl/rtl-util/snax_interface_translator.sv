@@ -1,7 +1,7 @@
 `ifdef QUESTA_SIM_XYI
 import riscv_instr::*;
 import reqrsp_pkg::*;
-`endif 
+`endif
 
 module snax_interface_translator #(
     parameter type         acc_req_t     = logic,

@@ -2,7 +2,7 @@
 `ifdef QUESTA_SIM_XYI
 import riscv_instr::*;
 import reqrsp_pkg::*;
-`endif 
+`endif
 
 module snax_streamer_gemm_wrapper #(
     parameter int unsigned DataWidth     = 64,
@@ -101,7 +101,7 @@ module snax_streamer_gemm_wrapper #(
 
     always_comb begin: gen_hard_bundle
         for(int i=0; i < SnaxTcdmPorts; i++) begin
-            
+
             snax_tcdm_req_o[i].q.write           = tcdm_req_write_i[i];
             snax_tcdm_req_o[i].q.addr            = tcdm_req_addr_i[i];
             // snax_tcdm_req_o[i].q.amo             = tcdm_req_amo_i[i];
@@ -135,9 +135,11 @@ module snax_streamer_gemm_wrapper #(
         // Request
         .tcdm_req_write_o(tcdm_req_write_i),
         .tcdm_req_addr_o(tcdm_req_addr_i),
-        .tcdm_req_amo_o(tcdm_req_amo_i), //Note that tcdm_req_amo_i is 4 bits based on reqrsp definition
+        //Note that tcdm_req_amo_i is 4 bits based on reqrsp definition
+        .tcdm_req_amo_o(tcdm_req_amo_i),
         .tcdm_req_data_o(tcdm_req_data_i),
-        .tcdm_req_user_core_id_o(tcdm_req_user_core_id_i), //Note that tcdm_req_user_core_id_i is 5 bits based on Snitch definition
+         //Note that tcdm_req_user_core_id_i is 5 bits based on Snitch definition
+        .tcdm_req_user_core_id_o(tcdm_req_user_core_id_i),
         .tcdm_req_user_is_core_o(tcdm_req_user_is_core_i),
         .tcdm_req_strb_o(tcdm_req_strb_i),
         .tcdm_req_q_valid_o(tcdm_req_q_valid_i),
@@ -164,5 +166,5 @@ module snax_streamer_gemm_wrapper #(
     );
 
     assign snax_barrier_o = io_csr_req_ready_o;
-    
+
 endmodule
