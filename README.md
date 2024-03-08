@@ -25,3 +25,7 @@ The number of for loops must also be parametrizable.
 Golden model for the reshuffling can be created with the `transform_data` function in `tests/cocotb/snax_util.py`
 The python file `test.py` shows how to use the function with some sample configurations of reshuffling.
 The file `test_reshuffler.py` in `tests/cocotb` provides a skeleton for the tests for the reshuffler, to what I think it should approximately look like. Feel free to use this / create your own, whatever is most useful!
+
+## Evaluation of reshuffler test cases
+
+Please simply run: `bash eval_reshuffler.sh`
