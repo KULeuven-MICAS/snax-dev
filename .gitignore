@@ -3,3 +3,4 @@ __pycache__
 sim_build
 .bender
 Bender.lock
+*.log

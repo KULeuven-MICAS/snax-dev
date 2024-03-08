@@ -332,13 +332,17 @@ def transform_data(input_list, transform_params):
 
     def apply_transform(input_list, output_list, strides, idx_src = 0, idx_dst = 0):
         stride = strides.pop(0)
+        # print(">> Current Stride: ", stride)
+        # print(">> Current Strides Status: ", strides)
         for i in range(stride['bound']):
             if strides:
                 strides.append(apply_transform(input_list, output_list, strides, idx_src + stride['src'] * i, idx_dst + stride['dst'] * i))
             else:
                 output_list[idx_dst + stride['dst'] * i] = input_list[idx_src + stride['src'] * i]
+            # print(output_list)
         return stride
 
+    # print(">> Original Strides Status: ", transform_params['strides'])
     apply_transform(input_list, output_list, transform_params['strides'])
 
     return output_list

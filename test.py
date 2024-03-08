@@ -65,7 +65,7 @@ TRANSFORMATION_PARAMS = [
             },
         ]
     },
-        {
+    {
         "nb_elements": 64,
         "nb_for_loops": 4,
         "strides": [
