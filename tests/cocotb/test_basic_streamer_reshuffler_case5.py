@@ -178,6 +178,8 @@ async def basic_streamer_dut(dut):
     snax_util.comp_and_assert(LOOP_COUNT_1, reg_val)
     reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_2)
     snax_util.comp_and_assert(LOOP_COUNT_2, reg_val)
+    reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_3)
+    snax_util.comp_and_assert(LOOP_COUNT_3, reg_val)
     
     reg_val = await snax_util.reg_read(dut, CSR_TEMPORAL_STRIDE_M0_L0)
     snax_util.comp_and_assert(TEMPORAL_STRIDE_M0_L0, reg_val)

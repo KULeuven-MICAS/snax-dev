@@ -91,6 +91,23 @@ TRANSFORMATION_PARAMS = [
             },
         ]
     },
+    # My Test Case
+    {
+        "nb_elements": 16,
+        "nb_for_loops": 2,
+        "strides": [
+            {
+                "src": 1,
+                "dst": 1,
+                "bound": 16
+            },
+            {
+                "src": 1,
+                "dst": 1,
+                "bound": 1
+            },
+        ]
+    },    
 ]
 
 
