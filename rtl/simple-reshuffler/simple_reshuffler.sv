@@ -2,7 +2,7 @@
 // Simple multiplier that follows
 // the valid-ready responses per port
 //-------------------------------
-module simple_alu #(
+module simple_reshuffler #(
   parameter int unsigned DataWidth = 64
 )(
   input  logic                 clk_i,
@@ -26,8 +26,8 @@ module simple_alu #(
   logic result_success;
   logic result_valid;
 
-  assign input_success  = a_valid_i && b_valid_i;
-  assign output_success = result_valid_o && result_ready_i;
+  assign input_success  = data_valid_i;
+  assign output_success = data_valid_o && data_ready_i;
 
   //-------------------------------
   // Registered output
@@ -55,9 +55,8 @@ module simple_alu #(
   //-------------------------------
   // Input ports are ready when the output
   // Is actually ready to get data
-  assign a_ready_o      = input_success;
-  assign b_ready_o      = input_success;
-  assign result_valid_o = result_valid;
-  assign result_o       = data_tmp[DataWidth-1:0];
+  assign data_ready_o = input_success;
+  assign data_valid_o = result_valid;
+  assign data_o       = data_tmp[DataWidth-1:0];
 
 endmodule
