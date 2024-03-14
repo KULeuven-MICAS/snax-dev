@@ -150,6 +150,8 @@ def extract_tcdm_list() -> Tuple[List[str], List[str]]:
 def gen_rand_int_list(list_len: int, min_val: int, max_val: int) -> List[int]:
     uint_list = []
 
+    random.seed(0)
+
     for i in range(list_len):
         uint_list.append(random.randint(min_val, max_val))
 

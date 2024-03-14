@@ -208,7 +208,7 @@ async def stream_tcdm_dut(dut):
 
     # Write anything to CSR_STAR_STREAMER CSR
     # adderss to activate the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
 
     # Wait for the rising edge of the valid
@@ -219,6 +219,11 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
+        
+        # Check if signal_valid is high, wait if not
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         # Extract the data
         read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
         read_stream_1 = int(dut.stream2acc_data_1_bits_o.value)
@@ -252,7 +257,7 @@ async def stream_tcdm_dut(dut):
     await snax_util.clock_and_wait(dut)
 
     # Start streamer again
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
 
     # Wait for the rising edge of the valid
@@ -262,6 +267,11 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
+
+        # Check if signal_valid is high, wait if not
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         # Extract the data
         read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
 

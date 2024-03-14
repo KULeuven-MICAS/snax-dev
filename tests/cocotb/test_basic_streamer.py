@@ -111,7 +111,7 @@ async def basic_streamer_dut(dut):
     # Continuous
     for i in range(TCDM_REQ_PORTS):
         dut.tcdm_rsp_q_ready_i[i].value = 1
-        dut.tcdm_rsp_p_valid_i[i].value = 1
+        dut.tcdm_rsp_p_valid_i[i].value = 0
         dut.tcdm_rsp_data_i[i].value = 0
 
     await RisingEdge(dut.clk_i)
@@ -180,7 +180,12 @@ async def basic_streamer_dut(dut):
     # Do a run of the streamer
     # We can write anything on this address
     # And it will automatically run the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+
+    for i in range(TCDM_REQ_PORTS):
+        dut.tcdm_rsp_q_ready_i[i].value = 1
+        dut.tcdm_rsp_p_valid_i[i].value = 1
+        dut.tcdm_rsp_data_i[i].value = 0
 
     # First generate the golden answer list
     golden_list = gen_basic_stream_gold_list()
