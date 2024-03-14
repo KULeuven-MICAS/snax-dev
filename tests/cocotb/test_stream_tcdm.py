@@ -219,7 +219,6 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
-        
         # Check if signal_valid is high, wait if not
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
@@ -267,7 +266,6 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
-
         # Check if signal_valid is high, wait if not
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
