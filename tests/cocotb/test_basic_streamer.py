@@ -15,7 +15,7 @@
 # ---------------------------------
 
 import cocotb
-from cocotb.triggers import RisingEdge
+from cocotb.triggers import RisingEdge, with_timeout
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import snax_util
@@ -114,11 +114,11 @@ async def basic_streamer_dut(dut):
         dut.tcdm_rsp_p_valid_i[i].value = 0
         dut.tcdm_rsp_data_i[i].value = 0
 
-    await RisingEdge(dut.clk_i)
+    await with_timeout(RisingEdge(dut.clk_i), 100, "ns")
 
     dut.rst_ni.value = 1
 
-    await RisingEdge(dut.clk_i)
+    await with_timeout(RisingEdge(dut.clk_i), 100, "ns")
 
     cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
 

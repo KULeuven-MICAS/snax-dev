@@ -15,7 +15,7 @@
 # ---------------------------------
 
 import cocotb
-from cocotb.triggers import RisingEdge, Timer
+from cocotb.triggers import RisingEdge, Timer, with_timeout
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import snax_util
@@ -276,6 +276,9 @@ async def stream_tcdm_dut(dut):
         # Streamed data should be consistent
         snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
         await snax_util.clock_and_wait(dut)
+
+    # make it stall
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
 
 
 # Main test run
