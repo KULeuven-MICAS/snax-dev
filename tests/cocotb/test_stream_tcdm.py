@@ -213,7 +213,7 @@ async def stream_tcdm_dut(dut):
 
     # Wait for the rising edge of the valid
     # From there we can continuously stream for ever clock cycle
-    await RisingEdge(dut.stream2acc_data_0_valid_o)
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
 
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
@@ -261,7 +261,7 @@ async def stream_tcdm_dut(dut):
 
     # Wait for the rising edge of the valid
     # From here we can continuously stream for ever clock cycle
-    await RisingEdge(dut.stream2acc_data_0_valid_o)
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
 
@@ -276,9 +276,6 @@ async def stream_tcdm_dut(dut):
         # Streamed data should be consistent
         snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
         await snax_util.clock_and_wait(dut)
-
-    # make it stall
-    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
 
 
 # Main test run
