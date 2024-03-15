@@ -317,6 +317,7 @@ async def wide_tcdm_clr(dut) -> None:
 
     return
 
+
 async def reset_dut(dut) -> None:
     dut.rst_ni.value = 0
     await clock_and_wait(dut)

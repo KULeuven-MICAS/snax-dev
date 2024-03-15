@@ -219,7 +219,6 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
-
         # Check if signal_valid is high, wait if not
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
@@ -286,7 +285,6 @@ async def stream_tcdm_dut(dut):
         snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
         await snax_util.clock_and_wait(dut)
 
-
     # reset the streamer
     for _ in range(10):
         await snax_util.clock_and_wait(dut)
@@ -318,7 +316,6 @@ async def stream_tcdm_dut(dut):
     await snax_util.reg_write(dut, CSR_BASE_PTR_1, BASE_PTR_1)
     await snax_util.reg_write(dut, CSR_BASE_PTR_2, BASE_PTR_2)
 
-    
     # Write a 1 to CSR_START_STREAMER CSR
     # address to activate the streamer
     await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
@@ -411,7 +408,6 @@ async def stream_tcdm_dut(dut):
     await snax_util.reg_write(dut, CSR_BASE_PTR_1, BASE_PTR_1)
     await snax_util.reg_write(dut, CSR_BASE_PTR_2, BASE_PTR_2)
 
-    
     # Write a 1 to CSR_START_STREAMER CSR
     # address to activate the streamer
     await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
@@ -446,7 +442,7 @@ async def stream_tcdm_dut(dut):
     await snax_util.reg_clr(dut)
 
     # clear read buffers
-    for _ in range(5): 
+    for _ in range(5):
         await snax_util.clock_and_wait(dut)
 
     dut.stream2acc_data_0_ready_i.value = 0
@@ -464,7 +460,6 @@ async def stream_tcdm_dut(dut):
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
-
         # ## test the fifos: only get 1 element from the fifo
         # ## every 10 cycles
         dut.stream2acc_data_0_ready_i.value = 0
@@ -485,8 +480,6 @@ async def stream_tcdm_dut(dut):
         # Streamed data should be consistent
         snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
         await snax_util.clock_and_wait(dut)
-
-
 
 
 # Main test run
