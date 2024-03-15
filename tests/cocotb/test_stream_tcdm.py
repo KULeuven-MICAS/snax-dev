@@ -213,7 +213,7 @@ async def stream_tcdm_dut(dut):
 
     # Wait for the rising edge of the valid
     # From there we can continuously stream for ever clock cycle
-    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
+    # await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
 
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
@@ -244,6 +244,13 @@ async def stream_tcdm_dut(dut):
     for i in range(writer_len):
         dut.acc2stream_data_0_bits_i.value = wide_writer_golden_list[i]
         dut.acc2stream_data_0_valid_i.value = 1
+
+        await Timer(Decimal(1), units="ps")
+
+        # Check if signal_ready is high, wait if not
+        while dut.acc2stream_data_0_ready_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         await snax_util.clock_and_wait(dut)
 
     # Clear step to avoid overwriting
@@ -268,6 +275,7 @@ async def stream_tcdm_dut(dut):
 
     for i in range(LOOP_COUNT_0):
         # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
 
@@ -327,6 +335,7 @@ async def stream_tcdm_dut(dut):
         dut.acc2stream_data_0_valid_i.value = 1
 
         # Check if signal_ready is high, wait if not
+        await Timer(Decimal(1), units="ps")
         while dut.acc2stream_data_0_ready_o.value != 1:
             await snax_util.clock_and_wait(dut)
 
@@ -341,6 +350,7 @@ async def stream_tcdm_dut(dut):
 
     # wait for finish
     await with_timeout(snax_util.reg_write(dut, CSR_START_STREAMER, 0), 100, "ns")
+    await snax_util.reg_clr(dut)
 
     # Switch off 2nd reader since the
     # 1st reader will be the only one used
@@ -359,6 +369,7 @@ async def stream_tcdm_dut(dut):
 
     for i in range(LOOP_COUNT_0):
         # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
 
@@ -417,6 +428,7 @@ async def stream_tcdm_dut(dut):
         dut.acc2stream_data_0_valid_i.value = 1
 
         # Check if signal_ready is high, wait if not
+        await Timer(Decimal(1), units="ps")
         while dut.acc2stream_data_0_ready_o.value != 1:
             await snax_util.clock_and_wait(dut)
 
@@ -431,6 +443,7 @@ async def stream_tcdm_dut(dut):
 
     # wait for finish
     await with_timeout(snax_util.reg_write(dut, CSR_START_STREAMER, 0), 100, "ns")
+    await snax_util.reg_clr(dut)
 
     # clear read buffers
     for _ in range(5): 
@@ -462,6 +475,7 @@ async def stream_tcdm_dut(dut):
         dut.stream2acc_data_1_ready_i.value = 1
 
         # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
         while dut.stream2acc_data_0_valid_o.value != 1:
             await snax_util.clock_and_wait(dut)
 
