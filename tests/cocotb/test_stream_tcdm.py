@@ -213,7 +213,6 @@ async def stream_tcdm_dut(dut):
 
     # Wait for the rising edge of the valid
     # From there we can continuously stream for ever clock cycle
-    # await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
 
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
