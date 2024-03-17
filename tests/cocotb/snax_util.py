@@ -235,7 +235,6 @@ async def reg_clr(dut) -> None:
     dut.io_csr_req_bits_addr_i.value = 0
     dut.io_csr_req_bits_write_i.value = 0
     dut.io_csr_req_valid_i.value = 0
-    # await clock_and_wait(dut)
 
     return
 
