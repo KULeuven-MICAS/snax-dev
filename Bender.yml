@@ -23,7 +23,7 @@ sources:
       - rtl/BareBlockGemmTop.sv 
       - rtl/streamer_gemm_wrapper.sv
       - rtl/StreamerTop.sv
-      - rtl/streamer_wrapper.sv
+      - rtl/streamer_for_gemm_wrapper.sv
       - rtl/rtl-util/csr_mux_demux.sv
       - rtl/rtl-util/snax_interface_translator.sv
       - rtl/rtl-util/snax_streamer_gemm_wrapper.sv
