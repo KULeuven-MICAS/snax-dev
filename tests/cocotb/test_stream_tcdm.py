@@ -15,7 +15,7 @@
 # ---------------------------------
 
 import cocotb
-from cocotb.triggers import RisingEdge, Timer
+from cocotb.triggers import RisingEdge, Timer, with_timeout
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import snax_util
@@ -208,17 +208,20 @@ async def stream_tcdm_dut(dut):
 
     # Write anything to CSR_STAR_STREAMER CSR
     # adderss to activate the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
 
     # Wait for the rising edge of the valid
     # From there we can continuously stream for ever clock cycle
-    await RisingEdge(dut.stream2acc_data_0_valid_o)
 
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
+        # Check if signal_valid is high, wait if not
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         # Extract the data
         read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
         read_stream_1 = int(dut.stream2acc_data_1_bits_o.value)
@@ -239,6 +242,13 @@ async def stream_tcdm_dut(dut):
     for i in range(writer_len):
         dut.acc2stream_data_0_bits_i.value = wide_writer_golden_list[i]
         dut.acc2stream_data_0_valid_i.value = 1
+
+        await Timer(Decimal(1), units="ps")
+
+        # Check if signal_ready is high, wait if not
+        while dut.acc2stream_data_0_ready_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         await snax_util.clock_and_wait(dut)
 
     # Clear step to avoid overwriting
@@ -252,16 +262,217 @@ async def stream_tcdm_dut(dut):
     await snax_util.clock_and_wait(dut)
 
     # Start streamer again
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
 
     # Wait for the rising edge of the valid
     # From here we can continuously stream for ever clock cycle
-    await RisingEdge(dut.stream2acc_data_0_valid_o)
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
     # Necessary for cocotb evaluation step
     await Timer(Decimal(1), units="ps")
 
     for i in range(LOOP_COUNT_0):
+        # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
+        # Extract the data
+        read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
+
+        # Streamed data should be consistent
+        snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
+        await snax_util.clock_and_wait(dut)
+
+    # reset the streamer
+    for _ in range(10):
+        await snax_util.clock_and_wait(dut)
+    dut.rst_ni.value = 0
+    await snax_util.clock_and_wait(dut)
+    await snax_util.clock_and_wait(dut)
+    dut.rst_ni.value = 1
+    for _ in range(10):
+        await snax_util.clock_and_wait(dut)
+
+    cocotb.log.info("Writer-reader test - with contention")
+
+    # Set number of iterations
+    await snax_util.reg_write(dut, CSR_LOOP_COUNT_0, LOOP_COUNT_0)
+
+    # Set spatial strides to 32 banks such that all of the read/writes will
+    # result in bank conflicts
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_0, 256)
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_1, 256)
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_2, 256)
+
+    # Set temporal to just 1 bank
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_0, 8)
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_1, 8)
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_2, 8)
+
+    # Set base pointers
+    await snax_util.reg_write(dut, CSR_BASE_PTR_0, BASE_PTR_0)
+    await snax_util.reg_write(dut, CSR_BASE_PTR_1, BASE_PTR_1)
+    await snax_util.reg_write(dut, CSR_BASE_PTR_2, BASE_PTR_2)
+
+    # Write a 1 to CSR_START_STREAMER CSR
+    # address to activate the streamer
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+    await snax_util.reg_clr(dut)
+
+    # allow the reader to run in background
+    dut.stream2acc_data_0_ready_i.value = 1
+    dut.stream2acc_data_1_ready_i.value = 1
+
+    # Allow the writer to write data unto the streamer
+    writer_len = len(wide_writer_golden_list)
+    for i in range(writer_len):
+        dut.acc2stream_data_0_bits_i.value = wide_writer_golden_list[i]
+        dut.acc2stream_data_0_valid_i.value = 1
+
+        # Check if signal_ready is high, wait if not
+        await Timer(Decimal(1), units="ps")
+        while dut.acc2stream_data_0_ready_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
+        await snax_util.clock_and_wait(dut)
+
+    # Clear step to avoid overwriting
+    dut.acc2stream_data_0_bits_i.value = 0
+    dut.acc2stream_data_0_valid_i.value = 0
+    await snax_util.clock_and_wait(dut)
+
+    ## process reading data from streamers to finish operation
+
+    # wait for finish
+    await with_timeout(snax_util.reg_write(dut, CSR_START_STREAMER, 0), 100, "ns")
+    await snax_util.reg_clr(dut)
+
+    # Switch off 2nd reader since the
+    # 1st reader will be the only one used
+    dut.stream2acc_data_1_ready_i.value = 0
+    await snax_util.clock_and_wait(dut)
+
+    # Start streamer again
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+    await snax_util.reg_clr(dut)
+
+    # Wait for the rising edge of the valid
+    # From here we can continuously stream for ever clock cycle
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
+    # Necessary for cocotb evaluation step
+    await Timer(Decimal(1), units="ps")
+
+    for i in range(LOOP_COUNT_0):
+        # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
+        # Extract the data
+        read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
+
+        # Streamed data should be consistent
+        snax_util.comp_and_assert(wide_writer_golden_list[i], read_stream_0)
+        await snax_util.clock_and_wait(dut)
+
+    # reset the streamer
+    for _ in range(10):
+        await snax_util.clock_and_wait(dut)
+    dut.rst_ni.value = 0
+    await snax_util.clock_and_wait(dut)
+    await snax_util.clock_and_wait(dut)
+    dut.rst_ni.value = 1
+    for _ in range(10):
+        await snax_util.clock_and_wait(dut)
+
+    cocotb.log.info("Writer-reader test - with data contention and read stalling")
+
+    # Set number of iterations
+    await snax_util.reg_write(dut, CSR_LOOP_COUNT_0, LOOP_COUNT_0)
+
+    # Set spatial strides to 32 banks such that all of the read/writes will
+    # result in bank conflicts
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_0, 256)
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_1, 256)
+    await snax_util.reg_write(dut, CSR_SPATIAL_STRIDE_2, 256)
+
+    # Set temporal to just 1 bank
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_0, 8)
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_1, 8)
+    await snax_util.reg_write(dut, CSR_TEMPORAL_STRIDE_2, 8)
+
+    # Set base pointers
+    await snax_util.reg_write(dut, CSR_BASE_PTR_0, BASE_PTR_0)
+    await snax_util.reg_write(dut, CSR_BASE_PTR_1, BASE_PTR_1)
+    await snax_util.reg_write(dut, CSR_BASE_PTR_2, BASE_PTR_2)
+
+    # Write a 1 to CSR_START_STREAMER CSR
+    # address to activate the streamer
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+    await snax_util.reg_clr(dut)
+
+    # allow the reader to run in background
+    dut.stream2acc_data_0_ready_i.value = 1
+    dut.stream2acc_data_1_ready_i.value = 1
+
+    # Allow the writer to write data unto the streamer
+    writer_len = len(wide_writer_golden_list)
+    for i in range(writer_len):
+        dut.acc2stream_data_0_bits_i.value = wide_writer_golden_list[i]
+        dut.acc2stream_data_0_valid_i.value = 1
+
+        # Check if signal_ready is high, wait if not
+        await Timer(Decimal(1), units="ps")
+        while dut.acc2stream_data_0_ready_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
+        await snax_util.clock_and_wait(dut)
+
+    # Clear step to avoid overwriting
+    dut.acc2stream_data_0_bits_i.value = 0
+    dut.acc2stream_data_0_valid_i.value = 0
+    await snax_util.clock_and_wait(dut)
+
+    ## process reading data from streamers to finish operation
+
+    # wait for finish
+    await with_timeout(snax_util.reg_write(dut, CSR_START_STREAMER, 0), 100, "ns")
+    await snax_util.reg_clr(dut)
+
+    # clear read buffers
+    for _ in range(5):
+        await snax_util.clock_and_wait(dut)
+
+    dut.stream2acc_data_0_ready_i.value = 0
+    dut.stream2acc_data_1_ready_i.value = 0
+    await snax_util.clock_and_wait(dut)
+
+    # Start streamer again
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+    await snax_util.reg_clr(dut)
+
+    # Wait for the rising edge of the valid
+    # From here we can continuously stream for ever clock cycle
+    await with_timeout(RisingEdge(dut.stream2acc_data_0_valid_o), 100, "ns")
+    # Necessary for cocotb evaluation step
+    await Timer(Decimal(1), units="ps")
+
+    for i in range(LOOP_COUNT_0):
+        # ## test the fifos: only get 1 element from the fifo
+        # ## every 10 cycles
+        dut.stream2acc_data_0_ready_i.value = 0
+        dut.stream2acc_data_1_ready_i.value = 0
+        for j in range(10):
+            await snax_util.clock_and_wait(dut)
+        dut.stream2acc_data_0_ready_i.value = 1
+        dut.stream2acc_data_1_ready_i.value = 1
+
+        # Check if signal_valid is high, wait if not
+        await Timer(Decimal(1), units="ps")
+        while dut.stream2acc_data_0_valid_o.value != 1:
+            await snax_util.clock_and_wait(dut)
+
         # Extract the data
         read_stream_0 = int(dut.stream2acc_data_0_bits_o.value)
 
