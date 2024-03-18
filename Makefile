@@ -156,7 +156,7 @@ $(STREAM_GEMM_SCALA_FILE):
 #-----------------------------
 # Generate Streamer Wrapper
 #-----------------------------
-STREAM_FOR_GEMM_WRAPPER = ${STREAM_GEN_OUT_RTL_FILE}
+STREAM_FOR_GEMM_WRAPPER = $(RTL_PATH)/streamer_for_gemm_wrapper.sv
 $(STREAM_FOR_GEMM_WRAPPER):
 	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEN_TPL_RTL_FILE},${STREAM_FOR_GEMM_WRAPPER})
 
