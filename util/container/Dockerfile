@@ -39,7 +39,7 @@ RUN wget https://github.com/llvm/circt/releases/download/firtool-1.42.0/firrtl-b
 
 # Install generic LLVM toolchain in /usr/bin - latest stable release is 17
 RUN  wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && ./llvm.sh 17 && rm llvm.sh && \
-sed -i 's/AR = ar/AR = llvm-ar-17/g; s/CXX = g++/CXX = clang++-17/g; s/LINK = g++/LINK = ld.lld-17/g' /usr/share/verilator/include/verilated.mk
+sed -i 's/AR = ar/AR = llvm-ar-17/g; s/CXX = g++/CXX = clang++-17/g; s/LINK = g++/LINK = ld.lld-17/g' /verilator/include/verilated.mk
 
 
 ENV PATH "/tools/firtool-1.42.0/bin/:${PATH}"
