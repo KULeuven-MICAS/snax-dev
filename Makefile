@@ -123,7 +123,9 @@ ${STREAM_MUL_GEN_OUT_TB_FILE}: $(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP
 # Clean
 #-----------------------------
 clean:
-	rm -f ${STREAM_GEN_OUT_RTL_FILE} ${STREAM_GEN_OUT_SCALA_FILE} \
+	rm -rf ${STREAM_GEN_OUT_RTL_FILE} ${STREAM_GEN_OUT_SCALA_FILE} \
 	${STREAM_GEN_OUT_TOP_FILE} ${STREAM_GEN_OUT_TB_FILE} \
 	${STREAM_TCDM_GEN_OUT_TB_FILE} ${STREAM_MUL_OUT_RTL_FILE} \
-	${STREAM_MUL_GEN_OUT_TB_FILE}
+	${STREAM_MUL_GEN_OUT_TB_FILE} \
+	.bender Bender.lock \
+	./tests/cocotb/sim_build ./tests/cocotb/__pycache__
