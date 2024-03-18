@@ -207,6 +207,10 @@ async def reg_write(dut, addr: int, data: int) -> None:
     dut.io_csr_req_bits_addr_i.value = addr
     dut.io_csr_req_bits_write_i.value = 1
     dut.io_csr_req_valid_i.value = 1
+    # Check if ready is high, wait if not
+    await Timer(Decimal(1), units="ps")
+    while dut.io_csr_req_ready_o.value != 1:
+        await clock_and_wait(dut)
     await clock_and_wait(dut)
 
     return
@@ -231,7 +235,6 @@ async def reg_clr(dut) -> None:
     dut.io_csr_req_bits_addr_i.value = 0
     dut.io_csr_req_bits_write_i.value = 0
     dut.io_csr_req_valid_i.value = 0
-    await clock_and_wait(dut)
 
     return
 
@@ -311,4 +314,12 @@ async def wide_tcdm_clr(dut) -> None:
     dut.tcdm_dma_req_q_valid_i.value = 0
     await clock_and_wait(dut)
 
+    return
+
+
+async def reset_dut(dut) -> None:
+    dut.rst_ni.value = 0
+    await clock_and_wait(dut)
+    dut.rst_ni.value = 1
+    await clock_and_wait(dut)
     return
