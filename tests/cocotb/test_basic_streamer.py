@@ -15,7 +15,7 @@
 # ---------------------------------
 
 import cocotb
-from cocotb.triggers import RisingEdge
+from cocotb.triggers import RisingEdge, with_timeout
 from cocotb.clock import Clock
 from cocotb_test.simulator import run
 import snax_util
@@ -46,15 +46,15 @@ CSR_START_STREAMER = 10
 # These values go into the respective
 # CSR register addresses above
 LOOP_COUNT_0 = 20
-TEMPORAL_STRIDE_0 = 2
-TEMPORAL_STRIDE_1 = 2
-TEMPORAL_STRIDE_2 = 2
-SPATIAL_STRIDE_0 = 8
-SPATIAL_STRIDE_1 = 8
-SPATIAL_STRIDE_2 = 8
+TEMPORAL_STRIDE_0 = 8
+TEMPORAL_STRIDE_1 = 16
+TEMPORAL_STRIDE_2 = 32
+SPATIAL_STRIDE_0 = 64
+SPATIAL_STRIDE_1 = 128
+SPATIAL_STRIDE_2 = 256
 BASE_PTR_0 = 0
-BASE_PTR_1 = 32
-BASE_PTR_2 = 64
+BASE_PTR_1 = 64
+BASE_PTR_2 = 128
 
 
 # Some functions for generating golden model
@@ -111,14 +111,14 @@ async def basic_streamer_dut(dut):
     # Continuous
     for i in range(TCDM_REQ_PORTS):
         dut.tcdm_rsp_q_ready_i[i].value = 1
-        dut.tcdm_rsp_p_valid_i[i].value = 1
+        dut.tcdm_rsp_p_valid_i[i].value = 0
         dut.tcdm_rsp_data_i[i].value = 0
 
-    await RisingEdge(dut.clk_i)
+    await with_timeout(RisingEdge(dut.clk_i), 100, "ns")
 
     dut.rst_ni.value = 1
 
-    await RisingEdge(dut.clk_i)
+    await with_timeout(RisingEdge(dut.clk_i), 100, "ns")
 
     cocotb.log.info("Setting up of CSR registers and verifying if setup is correct")
 
@@ -180,7 +180,12 @@ async def basic_streamer_dut(dut):
     # Do a run of the streamer
     # We can write anything on this address
     # And it will automatically run the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
+
+    for i in range(TCDM_REQ_PORTS):
+        dut.tcdm_rsp_q_ready_i[i].value = 1
+        dut.tcdm_rsp_p_valid_i[i].value = 1
+        dut.tcdm_rsp_data_i[i].value = 0
 
     # First generate the golden answer list
     golden_list = gen_basic_stream_gold_list()
