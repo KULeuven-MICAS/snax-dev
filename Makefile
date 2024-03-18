@@ -120,43 +120,47 @@ ${STREAM_MUL_GEN_OUT_TB_FILE}: $(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP
 	$(call generate_file,${STREAM_GEN_CFG_FILE},${STREAM_MUL_GEN_TPL_TB_FILE},${STREAM_MUL_GEN_OUT_TB_FILE})
 
 #####################################
-# Added by xyi
+# Added by xyi for Streamer-GEMM
 #####################################
+
+GEMM_SV_PATH = ${SNAX_DEV_ROOT}/rtl/streamer-gemm
+SNAX_GEMM_PATH = $(shell $(BENDER) path snax-gemm)
 
 #-----------------------------
 # Generate BareBlockGemmTop.sv
 #-----------------------------
 
-SNAX_GEMM_PATH = $(shell $(BENDER) path snax-gemm)
-
 GEMM_TOP_FILENAME ?= BareBlockGemmTop.sv
-
-GEMM_GEN_OUT_TOP_FILE ?= $(RTL_PATH)/${GEMM_TOP_FILENAME}
+GEMM_GEN_OUT_TOP_FILE ?= $(GEMM_SV_PATH)/${GEMM_TOP_FILENAME}
 
 $(GEMM_GEN_OUT_TOP_FILE):
+	mkdir ${GEMM_SV_PATH} || \
 	cd ${SNAX_GEMM_PATH} && \
-	sbt "runMain gemm.BareBlockGemmTopGen ${RTL_PATH}"
+	sbt "runMain gemm.BareBlockGemmTopGen ${GEMM_SV_PATH}"
 	@echo "Generates output for GEMM: ${GEMM_GEN_OUT_TOP_FILE}"
 
 #-----------------------------
 # Generate streamer related files
 #-----------------------------
 
-STREAM_GEMM_CFG_FILENAME ?= streamer_gemm_cfg.hjson
-STREAM_GEMM_CFG_FILE = ${CFG_PATH}/${STREAM_GEMM_CFG_FILENAME}
-
 #-----------------------------
-# Generate streamParamGen.scala with config for GEMM Accelerator
+# Generate StreamerTop.sv for GEMM
 #-----------------------------
 
-STREAM_GEMM_SCALA_FILE = ${STREAM_GEN_OUT_SCALA_FILE}
-$(STREAM_GEMM_SCALA_FILE):
-	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEN_TPL_SCALA_FILE},${STREAM_GEMM_SCALA_FILE})
+GEMM_STREAMER = $(GEMM_SV_PATH)/StreamerTop.sv
+$(GEMM_STREAMER):
+	cd ${SNAX_STREAMER_PATH} && \
+	sbt "runMain streamer.GeMMStreamerTop ${GEMM_SV_PATH}"
+	@echo "Generates output for Streamer for SIMD: ${GEMM_STREAMER}"
 
 #-----------------------------
 # Generate Streamer Wrapper
 #-----------------------------
-STREAM_FOR_GEMM_WRAPPER = ${STREAM_GEN_OUT_RTL_FILE}
+
+STREAM_GEMM_CFG_FILENAME ?= streamer_gemm_cfg.hjson
+STREAM_GEMM_CFG_FILE = ${CFG_PATH}/${STREAM_GEMM_CFG_FILENAME}
+
+STREAM_FOR_GEMM_WRAPPER = $(GEMM_SV_PATH)/streamer_for_gemm_wrapper.sv
 $(STREAM_FOR_GEMM_WRAPPER):
 	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEN_TPL_RTL_FILE},${STREAM_FOR_GEMM_WRAPPER})
 
@@ -168,10 +172,10 @@ STREAM_GEMM_WRAPPER_TPL_RTL_FILENAME ?= streamer_gemm_wrapper.sv.tpl
 STREAM_GEMM_TPL_RTL_FILE = ${TPL_PATH}/${STREAM_GEMM_WRAPPER_TPL_RTL_FILENAME}
 
 STREAM_GEMM_WRAPPER_FILENAME ?= streamer_gemm_wrapper.sv
-STREAM_GEMM_OUT_RTL_FILE ?= $(RTL_PATH)/${STREAM_GEMM_WRAPPER_FILENAME}
+STREAM_GEMM_OUT_RTL_FILE ?= $(GEMM_SV_PATH)/${STREAM_GEMM_WRAPPER_FILENAME}
 
 # streamer_gemm_wrapper replies on gemm.sv, streamer.sv, streamer_wrapper.sv
-$(STREAM_GEMM_OUT_RTL_FILE): $(STREAM_GEMM_CFG_FILE) $(GEMM_GEN_OUT_TOP_FILE) $(STREAM_GEMM_SCALA_FILE) $(STREAM_GEN_OUT_TOP_FILE) $(STREAM_FOR_GEMM_WRAPPER)
+$(STREAM_GEMM_OUT_RTL_FILE): $(STREAM_GEMM_CFG_FILE) $(GEMM_GEN_OUT_TOP_FILE) $(GEMM_STREAMER) $(STREAM_FOR_GEMM_WRAPPER)
 	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEMM_TPL_RTL_FILE},${STREAM_GEMM_OUT_RTL_FILE})
 
 #-----------------------------
@@ -182,4 +186,4 @@ clean:
 	${STREAM_GEN_OUT_TOP_FILE} ${STREAM_GEN_OUT_TB_FILE} \
 	${STREAM_TCDM_GEN_OUT_TB_FILE} ${STREAM_MUL_OUT_RTL_FILE} \
 	${STREAM_MUL_GEN_OUT_TB_FILE} \
-	$(GEMM_GEN_OUT_TOP_FILE) $(STREAM_GEMM_SCALA_FILE) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE)
+	$(GEMM_GEN_OUT_TOP_FILE) $(GEMM_STREAMER) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE)
