@@ -18,7 +18,7 @@
       fifoDepth: [2],
     }
 
-    streamerCsrNum: 13,
+    streamerCsrNum: 11,
     totalTcdmPortsNum: 40,
     //--------------------------------
     // TCDM parameters
@@ -31,6 +31,6 @@
     tcdmDepth: 512,
     numBanks: 32,
 
-    simdCsrNum: 5
+    simdCsrNum: 4
 
 }
