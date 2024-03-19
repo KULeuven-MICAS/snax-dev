@@ -18,7 +18,7 @@ dependencies:
 sources:
   - include_dirs:
     - rtl
-    target: snax-streamer-simd
+    target: snax-streamer-simd-dev
     files:
       - rtl/streamer-simd/SIMDTop.sv 
       - rtl/streamer-simd/streamer_simd_wrapper.sv
