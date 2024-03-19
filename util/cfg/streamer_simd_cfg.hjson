@@ -19,6 +19,7 @@
     }
 
     streamerCsrNum: 13,
+    readTcdmPortsNum: 32,
     totalTcdmPortsNum: 40,
     //--------------------------------
     // TCDM parameters
