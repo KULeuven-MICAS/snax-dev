@@ -10,3 +10,4 @@ black
 # pyright version has to be fixed with '=='. the CI parses this file
 # and installs the exact version for type-checking
 pyright==1.1.323
+numpy

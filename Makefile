@@ -179,6 +179,19 @@ $(STREAM_GEMM_OUT_RTL_FILE): $(STREAM_GEMM_CFG_FILE) $(GEMM_GEN_OUT_TOP_FILE) $(
 	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEMM_TPL_RTL_FILE},${STREAM_GEMM_OUT_RTL_FILE})
 
 #-----------------------------
+# Generate tb_streamer_gemm.sv
+#-----------------------------
+STREAM_GEMM_TB_TPL_FILENAME ?= tb_streamer_gemm.sv.tpl
+STREAM_GEMM_TB_FILENAME ?= tb_streamer_gemm.sv
+
+STREAM_GEMM_TB_TPL_FILE = ${TPL_PATH}/${STREAM_GEMM_TB_TPL_FILENAME}
+STREAM_GEMM_OUT_TB_FILE = ${TB_PATH}/${STREAM_GEMM_TB_FILENAME}
+
+$(STREAM_GEMM_OUT_TB_FILE): $(STREAM_GEMM_OUT_RTL_FILE) $(STREAM_FOR_GEMM_WRAPPER)
+	$(call generate_file,${STREAM_GEMM_CFG_FILE},${STREAM_GEMM_TB_TPL_FILE},${STREAM_GEMM_OUT_TB_FILE})
+
+
+#-----------------------------
 # Clean
 #-----------------------------
 clean:
@@ -187,6 +200,6 @@ clean:
 	${STREAM_TCDM_GEN_OUT_TB_FILE} ${STREAM_MUL_OUT_RTL_FILE} \
 	${STREAM_MUL_GEN_OUT_TB_FILE} \
 	$(GEMM_GEN_OUT_TOP_FILE) $(STREAM_GEMM_SCALA_FILE) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE) \
-	$(GEMM_GEN_OUT_TOP_FILE) $(GEMM_STREAMER) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE) \
+	$(GEMM_GEN_OUT_TOP_FILE) $(GEMM_STREAMER) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE) $(STREAM_GEMM_OUT_TB_FILE) \
 	.bender Bender.lock \
 	./tests/cocotb/sim_build ./tests/cocotb/__pycache__
