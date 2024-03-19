@@ -1,9 +1,3 @@
-
-`ifdef QUESTA_SIM_XYI
-import riscv_instr::*;
-import reqrsp_pkg::*;
-`endif
-
 module snax_streamer_gemm_wrapper #(
     parameter int unsigned DataWidth     = 64,
     parameter int unsigned SnaxTcdmPorts = 24,
