@@ -9,12 +9,12 @@
     //--------------------------------
     // For FIFO internal reader
     fifoReaderParams: {
-      fifoWidth: [512],
+      fifoWidth: [2048],
       fifoDepth: [2],
     }
     // FIFO interal writer
     fifoWriterParams: {
-      fifoWidth: [2048],
+      fifoWidth: [512],
       fifoDepth: [2],
     }
 
