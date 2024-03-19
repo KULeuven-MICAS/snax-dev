@@ -1,0 +1,36 @@
+//--------------------------------
+// Streamer configuration file
+//--------------------------------
+{
+    //--------------------------------
+    // FIFO parameters
+    // fifoWidth - FIFO bit-width
+    // fifoDepth - FIFO depth or number of elements
+    //--------------------------------
+    // For FIFO internal reader
+    fifoReaderParams: {
+      fifoWidth: [512],
+      fifoDepth: [2],
+    }
+    // FIFO interal writer
+    fifoWriterParams: {
+      fifoWidth: [2048],
+      fifoDepth: [2],
+    }
+
+    streamerCsrNum: 13,
+    totalTcdmPortsNum: 48,
+    //--------------------------------
+    // TCDM parameters
+    // tcdmDataWidth - Datawidth of TCDM banks
+    // tcdmDepth - Depth of each bank
+    // numBanks - Total number of banks
+    //--------------------------------
+    tcdmDataWidth: 64,
+    tcdmDmaDataWidth: 512,
+    tcdmDepth: 512,
+    numBanks: 32,
+
+    simdCsrNum: 5
+
+}
