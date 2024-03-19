@@ -13,3 +13,17 @@ package:
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
   snax-streamer: { git: "https://github.com/KULeuven-MICAS/snax-streamer", rev: main }
+  snax-postprocessing-simd: { git: "https://github.com/KULeuven-MICAS/snax-postprocessing-simd", rev: main }
+
+sources:
+  - include_dirs:
+    - rtl
+    target: snax-streamer-simd
+    files:
+      - rtl/streamer-simd/SIMDTop.sv 
+      - rtl/streamer-simd/streamer_simd_wrapper.sv
+      - rtl/streamer-simd/StreamerTop.sv
+      - rtl/streamer-simd/streamer_wrapper.sv
+      - rtl/rtl-util/csr_mux_demux.sv
+      - rtl/rtl-util/snax_interface_translator.sv
+      - rtl/rtl-util/snax_streamer_simd_wrapper.sv

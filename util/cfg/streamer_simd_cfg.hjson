@@ -19,7 +19,7 @@
     }
 
     streamerCsrNum: 13,
-    totalTcdmPortsNum: 48,
+    totalTcdmPortsNum: 40,
     //--------------------------------
     // TCDM parameters
     // tcdmDataWidth - Datawidth of TCDM banks
