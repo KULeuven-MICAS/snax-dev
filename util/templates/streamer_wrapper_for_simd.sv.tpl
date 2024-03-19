@@ -112,14 +112,14 @@ module streamer_wrapper #(
     // TCDM Ports
     //-----------------------------
     // Request
-% for idx in range(0, cfg["readTcdmPortsNum"]):
+% for idx in range(0, cfg["totalTcdmPortsNum"]):
     .io_data_tcdm_rsp_${idx}_bits_data ( tcdm_rsp_data_i[${idx}] ),
     .io_data_tcdm_rsp_${idx}_valid ( tcdm_rsp_p_valid_i[${idx}] ),
+    .io_data_tcdm_req_${idx}_ready ( tcdm_rsp_q_ready_i[${idx}] ),
 
 % endfor
     // Response
 % for idx in range(0, cfg["totalTcdmPortsNum"]):
-    .io_data_tcdm_req_${idx}_ready ( tcdm_rsp_q_ready_i[${idx}] ),
     .io_data_tcdm_req_${idx}_valid ( tcdm_req_q_valid_o[${idx}] ),
     .io_data_tcdm_req_${idx}_bits_addr ( tcdm_req_addr_o[${idx}] ),
     .io_data_tcdm_req_${idx}_bits_write ( tcdm_req_write_o[${idx}] ),
