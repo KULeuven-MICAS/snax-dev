@@ -134,7 +134,7 @@ GEMM_TOP_FILENAME ?= BareBlockGemmTop.sv
 GEMM_GEN_OUT_TOP_FILE ?= $(GEMM_SV_PATH)/${GEMM_TOP_FILENAME}
 
 $(GEMM_GEN_OUT_TOP_FILE):
-	mkdir ${GEMM_SV_PATH} || \
+	mkdir -p ${GEMM_SV_PATH} && \
 	cd ${SNAX_GEMM_PATH} && \
 	sbt "runMain gemm.BareBlockGemmTopGen ${GEMM_SV_PATH}"
 	@echo "Generates output for GEMM: ${GEMM_GEN_OUT_TOP_FILE}"
@@ -201,5 +201,6 @@ clean:
 	${STREAM_MUL_GEN_OUT_TB_FILE} \
 	$(GEMM_GEN_OUT_TOP_FILE) $(STREAM_GEMM_SCALA_FILE) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE) \
 	$(GEMM_GEN_OUT_TOP_FILE) $(GEMM_STREAMER) $(STREAM_FOR_GEMM_WRAPPER) $(STREAM_GEMM_OUT_RTL_FILE) $(STREAM_GEMM_OUT_TB_FILE) \
+	$(GEMM_SV_PATH) \
 	.bender Bender.lock \
 	./tests/cocotb/sim_build ./tests/cocotb/__pycache__
