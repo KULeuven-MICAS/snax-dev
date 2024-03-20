@@ -23,6 +23,9 @@ jobs:
       - name: Pull Snitch cluster files
         run: |
           bender script flist
+      - name: Install python dependencies
+        run: |
+          pip install -r requirements.txt
       - name: Running Pytest
         run: |
           pytest
