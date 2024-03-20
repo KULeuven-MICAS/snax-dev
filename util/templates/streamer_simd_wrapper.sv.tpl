@@ -3,7 +3,7 @@
 // This is the entire accelerator
 // That connecst to the TCDM subsystem
 //-------------------------------
-module stream_simd_wrapper # (
+module streamer_simd_wrapper # (
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth       = ${cfg["tcdmDepth"]},
   parameter int unsigned TCDMReqPorts    = ${cfg["totalTcdmPortsNum"]},

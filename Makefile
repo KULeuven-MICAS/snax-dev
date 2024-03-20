@@ -126,16 +126,13 @@ ${STREAM_MUL_GEN_OUT_TB_FILE}: $(STREAM_GEN_OUT_SCALA_FILE) $(STREAM_GEN_OUT_TOP
 SIMD_SV_PATH = ${SNAX_DEV_ROOT}/rtl/streamer-simd
 
 SIMD_STREAMER = ${SIMD_SV_PATH}/StreamerTop.sv
-SIMD_STREAMER_WRAPPER = ${SIMD_SV_PATH}/streamer_wrapper.sv
-SIMD_TOP = ${SIMD_SV_PATH}/SIMDTop.sv
-STREAMER_SIMD_WRAPPER = ${SIMD_SV_PATH}/streamer_simd_wrapper.sv
-
 $(SIMD_STREAMER):
 	mkdir $(SIMD_SV_PATH) || \
 	cd ${SNAX_STREAMER_PATH} && \
 	sbt "runMain streamer.PostProcessingStreamerTop ${SIMD_SV_PATH}"
 	@echo "Generates output for Streamer for SIMD: ${SIMD_STREAMER}"
 
+SIMD_TOP = ${SIMD_SV_PATH}/SIMDTop.sv
 SNAX_SIMD_PATH = $(shell $(BENDER) path snax-postprocessing-simd)
 $(SIMD_TOP):
 	cd ${SNAX_SIMD_PATH} && \
@@ -146,11 +143,19 @@ STREAMER_SIMD_CFG_FILE = ${CFG_PATH}/streamer_simd_cfg.hjson
 STREAMER_SIMD_TPL_RTL_FILE = ${TPL_PATH}/streamer_simd_wrapper.sv.tpl
 SIMD_STREAMER_WRAPPER_TPL_RTL_FILE = ${TPL_PATH}/streamer_wrapper_for_simd.sv.tpl
 
+SIMD_STREAMER_WRAPPER = ${SIMD_SV_PATH}/streamer_for_simd__wrapper.sv
 $(SIMD_STREAMER_WRAPPER): $(SIMD_STREAMER)
 	$(call generate_file,${STREAMER_SIMD_CFG_FILE},${SIMD_STREAMER_WRAPPER_TPL_RTL_FILE},${SIMD_STREAMER_WRAPPER})
 
+STREAMER_SIMD_WRAPPER = ${SIMD_SV_PATH}/streamer_simd_wrapper.sv
 $(STREAMER_SIMD_WRAPPER): $(SIMD_STREAMER) $(SIMD_TOP) $(SIMD_STREAMER_WRAPPER)
 	$(call generate_file,${STREAMER_SIMD_CFG_FILE},${STREAMER_SIMD_TPL_RTL_FILE},${STREAMER_SIMD_WRAPPER})
+
+TB_STREAMER_SIMD_WRAPPER = ${TB_PATH}/tb_streamer_simd.sv
+STREAMER_SIMD_TPL_TB_FILE = ${TPL_PATH}/tb_streamer_simd.sv.tpl
+
+$(TB_STREAMER_SIMD_WRAPPER): $(SIMD_STREAMER) $(SIMD_TOP) $(STREAMER_SIMD_WRAPPER)
+	$(call generate_file,${STREAMER_SIMD_CFG_FILE},${STREAMER_SIMD_TPL_TB_FILE},${TB_STREAMER_SIMD_WRAPPER})
 
 #-----------------------------
 # Clean
@@ -162,4 +167,4 @@ clean:
 	${STREAM_MUL_GEN_OUT_TB_FILE} \
 	.bender Bender.lock \
 	./tests/cocotb/sim_build ./tests/cocotb/__pycache__ \
-	$(SIMD_STREAMER) $(SIMD_TOP) $(STREAMER_SIMD_WRAPPER)
+	$(SIMD_STREAMER) $(SIMD_TOP) $(STREAMER_SIMD_WRAPPER) $(SIMD_STREAMER_WRAPPER) $(TB_STREAMER_SIMD_WRAPPER)
