@@ -120,9 +120,9 @@ module snax_streamer_simd_wrapper #(
     end
 
 
-    stream_simd_wrapper #(
+    streamer_simd_wrapper #(
         .TCDMAddrWidth(TCDMAddrWidth)
-    )i_stream_simd_wrapper(
+    )i_streamer_simd_wrapper(
         //-----------------------------
         // Clocks and reset
         //-----------------------------
