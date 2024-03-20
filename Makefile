@@ -143,7 +143,7 @@ STREAMER_SIMD_CFG_FILE = ${CFG_PATH}/streamer_simd_cfg.hjson
 STREAMER_SIMD_TPL_RTL_FILE = ${TPL_PATH}/streamer_simd_wrapper.sv.tpl
 SIMD_STREAMER_WRAPPER_TPL_RTL_FILE = ${TPL_PATH}/streamer_wrapper_for_simd.sv.tpl
 
-SIMD_STREAMER_WRAPPER = ${SIMD_SV_PATH}/streamer_for_simd__wrapper.sv
+SIMD_STREAMER_WRAPPER = ${SIMD_SV_PATH}/streamer_for_simd_wrapper.sv
 $(SIMD_STREAMER_WRAPPER): $(SIMD_STREAMER)
 	$(call generate_file,${STREAMER_SIMD_CFG_FILE},${SIMD_STREAMER_WRAPPER_TPL_RTL_FILE},${SIMD_STREAMER_WRAPPER})
 
