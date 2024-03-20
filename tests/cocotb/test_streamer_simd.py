@@ -59,8 +59,8 @@ CSR_SPAT_STRIDE_IN_1 = 7
 CSR_SPAT_STRIDE_OUT_0 = 8
 CSR_SPAT_STRIDE_OUT_1 = 9
 
-CSR_BASE_IN= 10
-CSR_BASE_OUT= 11
+CSR_BASE_IN = 10
+CSR_BASE_OUT = 11
 
 CSR_START_STREAMER = 12
 
@@ -75,14 +75,15 @@ CSR_SIMD_START = 17
 
 # Golden model for postprocessing
 def postprocessing_simd_golden_model(
-        data_in,
-        input_zp_i,
-        output_zp_i,
-        shift_i,
-        max_int_i,
-        min_int_i,
-        double_round_i,
-        multiplier_i):
+    data_in,
+    input_zp_i,
+    output_zp_i,
+    shift_i,
+    max_int_i,
+    min_int_i,
+    double_round_i,
+    multiplier_i,
+):
     out = np.zeros(data_in.shape)
     for i in range(len(data_in)):
         var = data_in[i] - input_zp_i
@@ -104,6 +105,16 @@ def postprocessing_simd_golden_model(
     return out
 
 
+def gen_csr0_config(input_zp_i, output_zp_i, shift_i, max_int_i):
+    # encode the configuration into a single 32-bit integer
+    return (max_int_i << 24) | (shift_i << 16) | (output_zp_i << 8) | input_zp_i
+
+
+def gen_csr1_config(min_int_i, double_round_i):
+    # encode the configuration into a single 32-bit integer
+    return (double_round_i << 8) | min_int_i
+
+
 @cocotb.test()
 async def stream_alu_dut(dut):
     # Start clock
@@ -123,13 +134,13 @@ async def stream_alu_dut(dut):
     MIN_int8 = -128
     MAX_int8 = 127
 
-    MIN_int32 = -2**31
+    MIN_int32 = -(2**31)
     MAX_int32 = 2**31 - 1
 
     # Generating random constant values
     input_zp_i = np.random.randint(MIN_int8, MAX_int8)
     output_zp_i = np.random.randint(MIN_int8, MAX_int8)
-    shift_i = np.random.randint(0, 63) # values between 0-63
+    shift_i = np.random.randint(0, 63)  # values between 0-63
     max_int_i = MAX_int8
     min_int_i = MIN_int8
     double_round_i = np.random.randint(0, 1)
@@ -141,10 +152,7 @@ async def stream_alu_dut(dut):
     # hardware fiex parameter
     veclen = 64
 
-    veclength_in = Tloop0 * Tloop1 * veclen
-
-    low_bound = 0
-    high_bound = 127
+    length_in = Tloop0 * Tloop1 * veclen
 
     np.random.seed(0)
 
@@ -195,17 +203,19 @@ async def stream_alu_dut(dut):
     await snax_util.reg_write(dut, CSR_SPAT_STRIDE_OUT_1, 8)
 
     IN_offset = 0
-    await snax_util.reg_write(dut, CSR_BASE_IN, A_offset)
+    await snax_util.reg_write(dut, CSR_BASE_IN, IN_offset)
     OUT_offset = IN_offset + veclen * Tloop0 * Tloop1 * 4
-    await snax_util.reg_write(dut, CSR_BASE_OUT, B_offset)
+    await snax_util.reg_write(dut, CSR_BASE_OUT, OUT_offset)
 
     await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
 
-    await snax_util.reg_write(dut, CSR_SIMD_CSR0, K_param)
-    await snax_util.reg_write(dut, CSR_SIMD_CSR1, M_param)
-    await snax_util.reg_write(dut, CSR_SIMD_CSR2, N_param)
+    CSR_0 = gen_csr0_config(input_zp_i, output_zp_i, shift_i, max_int_i)
+    CSR_1 = gen_csr1_config(min_int_i, double_round_i)
+    await snax_util.reg_write(dut, CSR_SIMD_CSR0, CSR_0)
+    await snax_util.reg_write(dut, CSR_SIMD_CSR1, CSR_1)
+    await snax_util.reg_write(dut, CSR_SIMD_CSR2, multiplier_i)
 
-    await snax_util.reg_write(dut, CSR_SIMD_LOOP, N_param)
+    await snax_util.reg_write(dut, CSR_SIMD_LOOP, Tloop0 * Tloop1)
 
     await snax_util.reg_write(dut, CSR_SIMD_START, 1)
 
