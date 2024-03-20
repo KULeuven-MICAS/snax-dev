@@ -108,7 +108,7 @@ module tb_streamer_simd;
     .TCDMReqPorts     ( TCDMReqPorts    ),
     .TCDMSize         ( TCDMSize        ),
     .TCDMAddrWidth    ( TCDMAddrWidth   )
-  ) i_streamer_alu_wrapper (
+  ) i_streamer_simd_wrapper (
     //-----------------------------
     // Clocks and reset
     //-----------------------------

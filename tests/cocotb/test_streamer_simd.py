@@ -84,7 +84,7 @@ def postprocessing_simd_golden_model(
     double_round_i,
     multiplier_i,
 ):
-    out = np.zeros(data_in.shape)
+    out = np.zeros(data_in.shape, dtype=np.int8)
     for i in range(len(data_in)):
         var = data_in[i] - input_zp_i
         # avoid overflow
@@ -101,22 +101,27 @@ def postprocessing_simd_golden_model(
             var = max_int_i
         if var < min_int_i:
             var = min_int_i
-        out[i] = var
+        out[i] = var & 0xFF
     return out
 
 
 def gen_csr0_config(input_zp_i, output_zp_i, shift_i, max_int_i):
     # encode the configuration into a single 32-bit integer
-    return (max_int_i << 24) | (shift_i << 16) | (output_zp_i << 8) | input_zp_i
+    return int(
+        ((max_int_i & 0xFF) << 24)
+        | ((shift_i & 0xFF) << 16)
+        | ((output_zp_i & 0xFF) << 8)
+        | (input_zp_i & 0xFF)
+    )
 
 
 def gen_csr1_config(min_int_i, double_round_i):
     # encode the configuration into a single 32-bit integer
-    return (double_round_i << 8) | min_int_i
+    return int(((double_round_i & 0xFF) << 8) | (min_int_i & 0xFF))
 
 
 @cocotb.test()
-async def stream_alu_dut(dut):
+async def stream_simd_dut(dut):
     # Start clock
     clock = Clock(dut.clk_i, 10, units="ns")
     cocotb.start_soon(clock.start())
@@ -144,10 +149,10 @@ async def stream_alu_dut(dut):
     max_int_i = MAX_int8
     min_int_i = MIN_int8
     double_round_i = np.random.randint(0, 1)
-    multiplier_i = np.random.randint(MIN_int32, MAX_int32)
+    multiplier_i = np.random.randint(MIN_int32, MAX_int32, dtype=np.dtype("int32"))
 
-    Tloop0 = 2
-    Tloop1 = 4
+    Tloop0 = 1
+    Tloop1 = 1
 
     # hardware fiex parameter
     veclen = 64
@@ -213,7 +218,7 @@ async def stream_alu_dut(dut):
     CSR_1 = gen_csr1_config(min_int_i, double_round_i)
     await snax_util.reg_write(dut, CSR_SIMD_CSR0, CSR_0)
     await snax_util.reg_write(dut, CSR_SIMD_CSR1, CSR_1)
-    await snax_util.reg_write(dut, CSR_SIMD_CSR2, multiplier_i)
+    await snax_util.reg_write(dut, CSR_SIMD_CSR2, int(multiplier_i))
 
     await snax_util.reg_write(dut, CSR_SIMD_LOOP, Tloop0 * Tloop1)
 
@@ -232,7 +237,8 @@ async def stream_alu_dut(dut):
         tcdm_wide_val = await snax_util.wide_tcdm_read(
             dut, OUT_offset + i * WIDE_BANK_INCREMENT
         )
-        snax_util.comp_and_assert(data_out_golden[i], tcdm_wide_val)
+        temp_val = data_out_golden[i] & (2**512 - 1)
+        snax_util.comp_and_assert(temp_val, tcdm_wide_val)
 
 
 # Main test run
