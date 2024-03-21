@@ -58,7 +58,7 @@ module dev_reshuffler_wrapper #(
     .a_i            ( a_i             ),
     .a_valid_i      ( a_valid_i       ),
     .a_ready_o      ( a_ready_o       ),
-    .z_o            ( z_i             ),
+    .z_o            ( z_o             ),
     .z_valid_o      ( z_valid_o       ),
     .z_ready_i      ( z_ready_i       )
   );

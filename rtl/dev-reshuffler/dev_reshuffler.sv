@@ -25,6 +25,8 @@ module dev_reshuffler #(
   logic [(SpatPar*DataWidth)-1:0] z_wide;
   logic [(SpatPar*DataWidth)-1:0] z_wide_tmp;
 
+  logic z_valid;
+
   for (genvar i = 0; i < SpatPar; i++) begin
     for (genvar j = 0; j < SpatPar; j++) begin
       assign a_split[i][j] = a_i[(i * SpatPar + j) +: Elems];
