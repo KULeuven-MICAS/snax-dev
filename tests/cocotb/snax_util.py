@@ -6,6 +6,7 @@ from typing import List, Tuple, Optional
 import cocotb
 from cocotb.triggers import RisingEdge, Timer
 from decimal import Decimal
+import numpy as np
 
 
 # This extracts all benderized files
@@ -333,3 +334,11 @@ def transform_data(input_list, transform_params):
     apply_transform(input_list, output_list, transform_params['strides'])
 
     return output_list 
+
+
+def matrix_view(input_val, input_addr, matrix_shape):
+    output_val = np.zeros_like(input_val)
+    for idx, addr in enumerate(input_addr):
+        output_val[addr] = input_val[idx]
+    # output_val[input_addr] = input_val[:len(input_addr)]
+    return output_val.reshape(matrix_shape)
