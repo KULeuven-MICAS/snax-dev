@@ -126,17 +126,18 @@ async def stream_alu_dut(dut):
     LOOP_COUNT_0 = TRANSFORMATION_PARAMS['strides'][-2]['bound']    # Outer-Second-Most Loop
     LOOP_COUNT_1 = TRANSFORMATION_PARAMS['strides'][-1]['bound']    # Outer-Most Loop
     # Reader - Mover 0
-    TEMPORAL_STRIDE_M0_L0 = TRANSFORMATION_PARAMS['strides'][-2]['src'] * ALIGN_ELEMS
-    TEMPORAL_STRIDE_M0_L1 = TRANSFORMATION_PARAMS['strides'][-1]['src'] * ALIGN_ELEMS
+    TEMPORAL_STRIDE_M0_L0 = TRANSFORMATION_PARAMS['strides'][-2]['src'] # * ALIGN_ELEMS
+    TEMPORAL_STRIDE_M0_L1 = TRANSFORMATION_PARAMS['strides'][-1]['src'] # * ALIGN_ELEMS
     SPATIAL_STRIDE_M0 = SPATPAR
     BASE_PTR_M0 = 0
     
     # Writer - Mover 1
-    TEMPORAL_STRIDE_M1_L0 = TRANSFORMATION_PARAMS['strides'][-2]['dst'] * ALIGN_ELEMS
-    TEMPORAL_STRIDE_M1_L1 = TRANSFORMATION_PARAMS['strides'][-1]['dst'] * ALIGN_ELEMS
+    TEMPORAL_STRIDE_M1_L0 = TRANSFORMATION_PARAMS['strides'][-2]['dst'] # * ALIGN_ELEMS
+    TEMPORAL_STRIDE_M1_L1 = TRANSFORMATION_PARAMS['strides'][-1]['dst'] # * ALIGN_ELEMS
     SPATIAL_STRIDE_M1 = SPATPAR
     OFFSET = 8                  # Relieve bank confilct via a pre-computed offset
-    BASE_PTR_M1 = NR_BANKS * math.ceil(LOOP_COUNT_0 * LOOP_COUNT_1 * SPATPAR * ALIGN_ELEMS / NR_BANKS) + OFFSET
+    # BASE_PTR_M1 = NR_BANKS * math.ceil(LOOP_COUNT_0 * LOOP_COUNT_1 * SPATPAR * ALIGN_ELEMS / NR_BANKS) + OFFSET
+    BASE_PTR_M1 = 0
 
 
     # Start clock
@@ -250,7 +251,8 @@ async def stream_alu_dut(dut):
     # Read and verify the contents
     # of the previously set registers
 
-    # Check ALU registers first
+    # Check Reshuffler registers first
+    cocotb.log.info("Check Reshuffler CSR registers...")
     reg_val = await snax_util.reg_read(dut, CSR_RESHUFFLER_GPP_0)
     snax_util.comp_and_assert(RESHUFFLER_GPP_0, reg_val)
     reg_val = await snax_util.reg_read(dut, CSR_RESHUFFLER_GPP_1)
@@ -269,6 +271,7 @@ async def stream_alu_dut(dut):
     snax_util.comp_and_assert(RESHUFFLER_GPP_7, reg_val)
 
     # Check Streamer registers
+    cocotb.log.info("Check Streamer CSR registers...")
     reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_0)
     snax_util.comp_and_assert(LOOP_COUNT_0, reg_val)
     reg_val = await snax_util.reg_read(dut, CSR_LOOP_COUNT_1)
@@ -309,20 +312,52 @@ async def stream_alu_dut(dut):
     # await RisingEdge(dut.i_stream_alu_wrapper.acc2stream_data_0_valid)
     # # Necessary for cocotb evaluation step
     # await Timer(Decimal(1), units="ps")
-
+    print(dir(dut.i_stream_dev_reshuffler_wrapper.i_dev_reshuffler_wrapper.i_dev_reshuffler))
     for i in range(LOOP_COUNT_0 * LOOP_COUNT_1):
         # Extract the data
+        # if dut.i_stream_dev_reshuffler_wrapper.stream2acc_data_0_valid.value == 1:
+            # await RisingEdge(dut.i_stream_dev_reshuffler_wrapper.stream2acc_data_0_valid)
+            # # Necessary for cocotb evaluation step
+            # await Timer(Decimal(1), units="ps")
+            # cocotb.log.info("[INFO] Data from TCDM: %s", dut.i_stream_dev_reshuffler_wrapper.i_dev_reshuffler_wrapper.i_dev_reshuffler.a_i.value)
+            
         # [Note] Chao Fang: In case of traffic jam of the streamer, we need to wait for the valid signal
-        if dut.i_dev_stream_reshuffler_wrapper.acc2stream_data_0_valid.value == 0:
-            await RisingEdge(dut.i_dev_stream_reshuffler_wrapper.acc2stream_data_0_valid)
-            # Necessary for cocotb evaluation step
-            await Timer(Decimal(1), units="ps")
-        write_stream_0 = int(dut.i_dev_stream_reshuffler_wrapper.acc2stream_data_0_bits.value)
+        # if dut.i_stream_dev_reshuffler_wrapper.acc2stream_data_0_valid.value == 0:
+        #     await RisingEdge(dut.i_stream_dev_reshuffler_wrapper.acc2stream_data_0_valid)
+        #     # Necessary for cocotb evaluation step
+        #     await Timer(Decimal(1), units="ps")
+        cocotb.log.info("[INFO] Transposed Data to TCDM: %s", dut.i_stream_dev_reshuffler_wrapper.i_dev_reshuffler_wrapper.i_dev_reshuffler.z_o.value)
+        cocotb.log.info("[INFO] Iter: %s, TCDM Req Addr Status: %s", i, dut.tcdm_req_addr.value)
+        # bw_addr = len(dut.tcdm_req_addr.value.binstr) // (2 * SPATPAR)
+        # cocotb.log.info("[INFO] BW of TCDM Addr: %s", bw_addr)
+        # for j in range(SPATPAR):
+        
+        # cocotb.log.info("[INFO] Reader Port 0: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_0_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 1: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_1_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 2: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_2_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 3: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_3_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 4: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_4_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 5: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_5_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 6: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_6_bits_addr.value))
+        # cocotb.log.info("[INFO] Reader Port 7: %s", hex(dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_7_bits_addr.value))
+        cocotb.log.info("[INFO] Writer Port 0 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_8_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 1 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_9_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 2 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_10_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 3 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_11_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 4 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_12_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 5 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_13_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 6 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_14_bits_addr.value.integer - BASE_PTR_M1)
+        cocotb.log.info("[INFO] Writer Port 7 Addr: %s", dut.i_stream_dev_reshuffler_wrapper.i_streamer_wrapper.i_streamer_top.io_data_tcdm_req_15_bits_addr.value.integer - BASE_PTR_M1)
+        write_stream_0 = int(dut.i_stream_dev_reshuffler_wrapper.acc2stream_data_0_bits.value)
 
         # Streamed data should be consistent
         # [TODO] Chao Fang: To be updated
         # snax_util.comp_and_assert(wide_golden_result[i], write_stream_0)
         await snax_util.clock_and_wait(dut)
+    
+    for i in range(20):
+        await snax_util.clock_and_wait(dut)
+    
 
 
 # Main test run
