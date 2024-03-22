@@ -7,7 +7,7 @@
 //-----------------------------
 // Streamer wrapper
 //-----------------------------
-module streamer_wrapper_$cfg["tagName"] #(
+module streamer_wrapper_${cfg["tagName"]} #(
   parameter int unsigned NarrowDataWidth = ${cfg["tcdmDataWidth"]},
   parameter int unsigned TCDMDepth = ${cfg["tcdmDepth"]},
   parameter int unsigned TCDMReqPorts = ${cfg["totalTcdmPortsNum"]},
@@ -86,7 +86,7 @@ module streamer_wrapper_$cfg["tagName"] #(
 
   // Streamer module that is generated
   // with template mechanics
-  $cfg["tagName"]StreamerTop i_$cfg["tagName"]_streamer_top (	
+  ${cfg["tagName"]}StreamerTop i_${cfg["tagName"]}_streamer_top (	
     //-----------------------------
     // Clocks and reset
     //-----------------------------
