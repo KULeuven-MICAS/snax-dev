@@ -50,37 +50,42 @@ module dev_reshuffler_wrapper #(
   // Generate Simple Multipliers
   //-------------------------------
   dev_reshuffler #(
-    .SpatPar        ( SpatPar         ),
-    .DataWidth      ( DataWidth       )
+    .SpatPar            ( SpatPar           ),
+    .DataWidth          ( DataWidth         )
   ) i_dev_reshuffler (
-    .clk_i          ( clk_i           ),
-    .rst_ni         ( rst_ni          ),
-    .a_i            ( a_i             ),
-    .a_valid_i      ( a_valid_i       ),
-    .a_ready_o      ( a_ready_o       ),
-    .z_o            ( z_o             ),
-    .z_valid_o      ( z_valid_o       ),
-    .z_ready_i      ( z_ready_i       )
+    .clk_i              ( clk_i             ),
+    .rst_ni             ( rst_ni            ),
+    .a_i                ( a_i               ),
+    .a_valid_i          ( a_valid_i         ),
+    .a_ready_o          ( a_ready_o         ),
+    .z_o                ( z_o               ),
+    .z_valid_o          ( z_valid_o         ),
+    .z_ready_i          ( z_ready_i         ),
+    .csr_en_transpose_i ( csr_en_transpose  )
   );
+
+  // Wiring for CSR configuration
+  logic csr_en_transpose;
 
   //-------------------------------
   // CSR Manager
   //-------------------------------
   dev_reshuffler_csr #(
-    .RegCount         ( RegCount        ),
-    .RegDataWidth     ( RegDataWidth    ),
-    .RegAddrWidth     ( RegAddrWidth    )
+    .RegCount           ( RegCount          ),
+    .RegDataWidth       ( RegDataWidth      ),
+    .RegAddrWidth       ( RegAddrWidth      )
   ) i_dev_reshuffler_csr (
-    .clk_i            ( clk_i           ),
-    .rst_ni           ( rst_ni          ),
-    .csr_addr_i       ( csr_addr_i      ),
-    .csr_wr_data_i    ( csr_wr_data_i   ),
-    .csr_wr_en_i      ( csr_wr_en_i     ),
-    .csr_req_valid_i  ( csr_req_valid_i ),
-    .csr_req_ready_o  ( csr_req_ready_o ),
-    .csr_rd_data_o    ( csr_rd_data_o   ),
-    .csr_rsp_valid_o  ( csr_rsp_valid_o ),
-    .csr_rsp_ready_i  ( csr_rsp_ready_i )
+    .clk_i              ( clk_i             ),
+    .rst_ni             ( rst_ni            ),
+    .csr_addr_i         ( csr_addr_i        ),
+    .csr_wr_data_i      ( csr_wr_data_i     ),
+    .csr_wr_en_i        ( csr_wr_en_i       ),
+    .csr_req_valid_i    ( csr_req_valid_i   ),
+    .csr_req_ready_o    ( csr_req_ready_o   ),
+    .csr_rd_data_o      ( csr_rd_data_o     ),
+    .csr_rsp_valid_o    ( csr_rsp_valid_o   ),
+    .csr_rsp_ready_i    ( csr_rsp_ready_i   ),
+    .csr_en_transpose_o ( csr_en_transpose  )
   );
 
 endmodule

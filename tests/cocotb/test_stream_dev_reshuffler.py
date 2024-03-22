@@ -112,7 +112,7 @@ async def stream_alu_dut(dut):
     # CSR register addresses above
 
     # Reshuffler_CSR_CONFIG has the following:
-    RESHUFFLER_GPP_0 = 0 # Unused temporarily
+    RESHUFFLER_GPP_0 = 1 # Enable Transpose
     RESHUFFLER_GPP_1 = 0 # Unused temporarily
     RESHUFFLER_GPP_2 = 0 # Unused temporarily
     RESHUFFLER_GPP_3 = 0 # Unused temporarily

@@ -14,7 +14,10 @@ module dev_reshuffler #(
   output logic                           a_ready_o,
   output logic [(SpatPar*DataWidth)-1:0] z_o,
   output logic                           z_valid_o,
-  input  logic                           z_ready_i
+  input  logic                           z_ready_i,
+  // Fix this to 1 bits only
+  // Let's check if transpose is enabled
+  input  logic                           csr_en_transpose_i
 );
 
   //-------------------------------
@@ -32,7 +35,7 @@ module dev_reshuffler #(
       assign a_split[i][j] = a_i[(i * SpatPar + j) * Elems +: Elems];
       // Transpose the data
       assign z_split[i][j] = a_split[j][i];
-      assign z_wide_tmp[(i * SpatPar + j) * Elems +: Elems] = z_split[i][j];
+      assign z_wide_tmp[(i * SpatPar + j) * Elems +: Elems] = (csr_en_transpose_i) ? z_split[i][j] : a_split[i][j];
     end
   end
 

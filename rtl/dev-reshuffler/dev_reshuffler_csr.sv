@@ -17,7 +17,10 @@ module dev_reshuffler_csr #(
   output logic                    csr_req_ready_o,
   output logic [RegDataWidth-1:0] csr_rd_data_o,
   output logic                    csr_rsp_valid_o,
-  input  logic                    csr_rsp_ready_i
+  input  logic                    csr_rsp_ready_i,
+  // Fix this to 1 bits only
+  // To indicate if the transpose operation is enabled 
+  output logic                    csr_en_transpose_o
 );
 
   //-------------------------------
@@ -79,5 +82,10 @@ module dev_reshuffler_csr #(
       end
     end
   end
+
+  //-------------------------------
+  // Register 0 has its own usefulness
+  //-------------------------------
+  assign csr_en_transpose_o = csr_reg_set[0][0];
 
 endmodule
