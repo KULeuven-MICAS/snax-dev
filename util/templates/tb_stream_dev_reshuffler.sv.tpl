@@ -114,7 +114,7 @@ module tb_stream_dev_reshuffler;
     .TCDMReqPorts     ( TCDMReqPorts    ),
     .TCDMSize         ( TCDMSize        ),
     .TCDMAddrWidth    ( TCDMAddrWidth   )
-  ) i_dev_stream_reshuffler_wrapper (
+  ) i_stream_dev_reshuffler_wrapper (
     //-----------------------------
     // Clocks and reset
     //-----------------------------

@@ -29,7 +29,7 @@ module dev_reshuffler #(
 
   for (genvar i = 0; i < SpatPar; i++) begin
     for (genvar j = 0; j < SpatPar; j++) begin
-      assign a_split[i][j] = a_i[(i * SpatPar + j) +: Elems];
+      assign a_split[i][j] = a_i[(i * SpatPar + j) * Elems +: Elems];
       // Transpose the data
       assign z_split[i][j] = a_split[j][i];
       assign z_wide_tmp[(i * SpatPar + j) * Elems +: Elems] = z_split[i][j];

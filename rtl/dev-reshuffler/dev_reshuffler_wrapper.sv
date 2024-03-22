@@ -70,7 +70,7 @@ module dev_reshuffler_wrapper #(
     .RegCount         ( RegCount        ),
     .RegDataWidth     ( RegDataWidth    ),
     .RegAddrWidth     ( RegAddrWidth    )
-  ) i_simple_alu_csr (
+  ) i_dev_reshuffler_csr (
     .clk_i            ( clk_i           ),
     .rst_ni           ( rst_ni          ),
     .csr_addr_i       ( csr_addr_i      ),
