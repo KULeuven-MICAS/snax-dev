@@ -172,7 +172,7 @@ async def basic_streamer_dut(dut):
     # Do a run of the streamer
     # We can write anything on this address
     # And it will automatically run the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
 
     # First generate the golden answer list
     # golden_list = gen_basic_stream_gold_list()

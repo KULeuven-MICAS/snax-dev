@@ -213,7 +213,7 @@ async def stream_tcdm_dut(dut):
 
     # Write anything to CSR_STAR_STREAMER CSR
     # adderss to activate the streamer
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
 
     # Wait for the rising edge of the valid
@@ -261,7 +261,7 @@ async def stream_tcdm_dut(dut):
 
     # Start streamer again
     await snax_util.reg_write(dut, CSR_BASE_PTR_M0, BASE_PTR_M1)
-    await snax_util.reg_write(dut, CSR_START_STREAMER, 0)
+    await snax_util.reg_write(dut, CSR_START_STREAMER, 1)
     await snax_util.reg_clr(dut)
     
     cocotb.log.info("Read written data test")
