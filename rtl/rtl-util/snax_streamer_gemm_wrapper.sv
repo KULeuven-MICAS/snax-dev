@@ -42,7 +42,7 @@ module snax_streamer_gemm_wrapper #(
     snax_interface_translator #(
         .acc_req_t ( acc_req_t ),
         .acc_rsp_t ( acc_rsp_t )
-    ) i_snax_interface_translator(
+    ) i_snax_interface_translator_gemm(
         //-----------------------------
         // Clocks and reset
         //-----------------------------
