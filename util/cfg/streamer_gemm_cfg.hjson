@@ -71,4 +71,5 @@
 
     gemmCsrNum: 5
 
+    tagName: "GeMM"
 }
