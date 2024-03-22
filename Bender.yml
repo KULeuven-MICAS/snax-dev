@@ -22,7 +22,7 @@ sources:
     files:
       - rtl/streamer-simd/SIMDTop.sv 
       - rtl/streamer-simd/streamer_simd_wrapper.sv
-      - rtl/streamer-simd/StreamerTop.sv
+      - rtl/streamer-simd/PostProcessingSIMDStreamerTop.sv
       - rtl/streamer-simd/streamer_for_simd_wrapper.sv
       - rtl/rtl-util/csr_mux_demux.sv
       - rtl/rtl-util/snax_interface_translator.sv
