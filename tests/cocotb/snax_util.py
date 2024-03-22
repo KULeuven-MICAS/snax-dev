@@ -176,7 +176,9 @@ def gen_wide_list(
     for i in range(wide_len):
         wide_num = 0
         for j in range(wide_narrow_ratio - 1, -1, -1):
-            wide_num += narrow_list[i * wide_narrow_ratio + j] << (narrow_width * j)
+            wide_num += (
+                narrow_list[i * wide_narrow_ratio + j] & (2**narrow_width - 1)
+            ) << (narrow_width * j)
         wide_list.append(wide_num)
 
     return wide_list
