@@ -91,7 +91,7 @@ module streamer_simd_wrapper # (
     .AddrSelOffSet        ( AddrSelOffSet),
     .TotalRegCount        ( RegCount     ),
     .RegDataWidth         ( RegDataWidth )
-  ) i_csr_mux_demux (
+  ) i_csr_mux_demux_$cfg["tagName"] (
     //-------------------------------
     // Input Core
     //-------------------------------
@@ -120,13 +120,13 @@ module streamer_simd_wrapper # (
   //-----------------------------
   // Streamer Wrapper
   //-----------------------------
-  streamer_wrapper #(
+  streamer_wrapper_$cfg["tagName"] #(
     .NarrowDataWidth            ( NarrowDataWidth         ),
     .TCDMDepth                  ( TCDMDepth               ),
     .TCDMReqPorts               ( TCDMReqPorts            ),
     .TCDMSize                   ( TCDMSize                ),
     .TCDMAddrWidth              ( TCDMAddrWidth           )
-  ) i_streamer_wrapper (
+  ) i_streamer_wrapper_$cfg["tagName"] (
     //-----------------------------
     // Clocks and reset
     //-----------------------------

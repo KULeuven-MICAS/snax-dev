@@ -33,4 +33,5 @@
 
     simdCsrNum: 4
 
+    tagName: "PostProcessingSIMD",
 }
