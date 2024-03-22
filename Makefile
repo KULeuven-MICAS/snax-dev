@@ -147,7 +147,7 @@ $(GEMM_GEN_OUT_TOP_FILE):
 # Generate StreamerTop.sv for GEMM
 #-----------------------------
 
-GEMM_STREAMER = $(GEMM_SV_PATH)/StreamerTop.sv
+GEMM_STREAMER = $(GEMM_SV_PATH)/GeMMStreamerTop.sv
 $(GEMM_STREAMER):
 	cd ${SNAX_STREAMER_PATH} && \
 	sbt "runMain streamer.GeMMStreamerTop ${GEMM_SV_PATH}"
