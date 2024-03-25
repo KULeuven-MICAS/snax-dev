@@ -7,7 +7,7 @@ PYTHON = python3
 #-----------------------------
 # Default Filename Declarations
 #-----------------------------
-STREAM_CFG_FILENAME ?= streamer_cfg.hjson
+STREAM_CFG_FILENAME ?= data_reshuffler_cfg.hjson
 
 STREAM_TPL_RTL_FILENAME ?= streamer_wrapper.sv.tpl
 STREAM_TPL_SCALA_FILENAME ?= StreamParamGen.scala.tpl
