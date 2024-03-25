@@ -23,8 +23,8 @@ sources:
       - rtl/streamer_wrapper.sv
       - rtl/stream_dev_reshuffler_wrapper.sv
       - rtl/rtl-util/csr_mux_demux.sv
-      - rtl/dev_reshuffler/dev_reshuffler.sv
-      - rtl/dev_reshuffler/dev_reshuffler_wrapper.sv
-      - rtl/dev_reshuffler/dev_reshuffler_csr.sv
+      - rtl/dev-reshuffler/dev_reshuffler.sv
+      - rtl/dev-reshuffler/dev_reshuffler_wrapper.sv
+      - rtl/dev-reshuffler/dev_reshuffler_csr.sv
       - rtl/rtl-util/snax_interface_translator.sv
       - rtl/rtl-util/snax_data_reshuffler.sv
