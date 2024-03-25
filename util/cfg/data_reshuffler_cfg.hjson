@@ -66,6 +66,6 @@
     //--------------------------------
     tcdmDataWidth: 64,
     tcdmDmaDataWidth: 512,
-    tcdmDepth: 256,
+    tcdmDepth: 512,
     numBanks: 32,
 }
