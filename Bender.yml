@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: SHL-0.51
 
 package:
-  name: snax
+  name: snax-data-reshuffler-dev
   authors:
     - Ryan Antonio <ryan.antonio@esat.kuleuven.be>
     - Josse Van Delm <josse.vandelm@esat.kuleuven.be>
@@ -13,3 +13,18 @@ package:
 dependencies:
   # No existing tags for snitch_cluster, so this rev hash is the latest update as of Aug 20, 2023
   snax-streamer: { git: "https://github.com/KULeuven-MICAS/snax-streamer", rev: main }
+
+sources:
+  - include_dirs:
+    - rtl
+    target: snax-data-reshuffler-dev
+    files:
+      - rtl/StreamerTop.sv
+      - rtl/streamer_wrapper.sv
+      - rtl/stream_dev_reshuffler_wrapper.sv
+      - rtl/rtl-util/csr_mux_demux.sv
+      - rtl/dev_reshuffler/dev_reshuffler.sv
+      - rtl/dev_reshuffler/dev_reshuffler_wrapper.sv
+      - rtl/dev_reshuffler/dev_reshuffler_csr.sv
+      - rtl/rtl-util/snax_interface_translator.sv
+      - rtl/rtl-util/snax_data_reshuffler.sv
