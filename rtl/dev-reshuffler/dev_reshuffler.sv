@@ -47,21 +47,13 @@ module dev_reshuffler #(
 
   always_ff @ (posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
-      output_stalled <= 1'b0;
-    end else begin
-      output_stalled <= z_valid_o && !z_ready_i;
-    end
-  end
-
-  always_ff @ (posedge clk_i or negedge rst_ni) begin
-    if (!rst_ni) begin
       z_wide  <= {(SpatPar*DataWidth){1'b0}};
     end else begin
       if(a_success) begin
           z_wide <= z_wide_tmp;
-        else begin
-          z_wide  <= z_wide;
-        end
+      end
+      else begin
+        z_wide  <= z_wide;
       end
     end
   end
@@ -74,39 +66,17 @@ module dev_reshuffler #(
     end
   end
 
+  always_ff @ (posedge clk_i or negedge rst_ni) begin
+    if (!rst_ni) begin
+      output_stalled <= 1'b0;
+    end else begin
+      output_stalled <= z_valid_o && !z_ready_i;
+    end
+  end
+
   assign a_ready_o = !output_stalled && !(z_valid_o && !z_ready_i);
 
   assign z_valid_o = z_valid_init || output_stalled;
   assign z_o      = z_wide;
-
-  // //-------------------------------
-  // // Registered output
-  // //-------------------------------
-  // always_ff @ (posedge clk_i or negedge rst_ni) begin
-  //   if (!rst_ni) begin
-  //     z_wide  <= {(SpatPar*DataWidth){1'b0}};
-  //     z_valid <= 1'b0;
-  //   end else begin
-  //     if(a_success) begin
-  //       z_wide <= z_wide_tmp;
-  //       z_valid <= 1'b1;
-  //     end else if (z_success) begin
-  //       z_wide  <= {(SpatPar*DataWidth){1'b0}};
-  //       z_valid <= 1'b0;
-  //     end else begin
-  //       z_wide  <= z_wide;
-  //       z_valid <= z_valid;
-  //     end
-  //   end
-  // end
-
-  // //-------------------------------
-  // // Assignments
-  // //-------------------------------
-  // // Input ports are ready when the output
-  // // Is actually ready to get data
-  // assign a_ready_o = a_success;
-  // assign z_valid_o = z_valid;
-  // assign z_o       = z_wide;
 
 endmodule
